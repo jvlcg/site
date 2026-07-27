@@ -1,0 +1,244 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --color-accent-400: #34d399;
+  --color-accent-500: #10b981;
+  --color-accent-600: #059669;
+  --color-teal-flow: #2dd4bf;
+  --color-gold: #c9a96a;
+
+  --color-ink-950: #0a0e12;
+  --color-ink-900: #0e141b;
+  --color-ink-800: #16202a;
+  --color-mist-50: #f8faf9;
+  --color-mist-100: #eef2f1;
+
+  --animate-float: float 9s ease-in-out infinite;
+  --animate-mesh: mesh-drift 24s ease-in-out infinite alternate;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+  @keyframes mesh-drift {
+    0% { transform: translate3d(-4%, -3%, 0) scale(1); }
+    100% { transform: translate3d(4%, 3%, 0) scale(1.12); }
+  }
+}
+
+/* ---------- Semantic theme tokens (dual dark/light) ---------- */
+:root {
+  --bg: #f8faf9;
+  --bg-elevated: #ffffff;
+  --fg: #0f172a;
+  --fg-muted: #47566b;
+  --fg-faint: #64748b;
+  --line: rgba(15, 23, 42, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-line: rgba(15, 23, 42, 0.08);
+  --accent: #059669;
+  --accent-soft: rgba(5, 150, 105, 0.1);
+  --gold-soft: rgba(160, 128, 70, 0.9);
+  --mesh-a: rgba(16, 185, 129, 0.16);
+  --mesh-b: rgba(45, 212, 191, 0.14);
+  --mesh-c: rgba(14, 116, 144, 0.1);
+  --header-bg: rgba(248, 250, 249, 0.72);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0a0e12;
+  --bg-elevated: #0e141b;
+  --fg: #edf2f4;
+  --fg-muted: #9fb0bf;
+  --fg-faint: #6b7c8c;
+  --line: rgba(237, 242, 244, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-line: rgba(255, 255, 255, 0.09);
+  --accent: #2dd4bf;
+  --accent-soft: rgba(45, 212, 191, 0.1);
+  --gold-soft: rgba(201, 169, 106, 0.9);
+  --mesh-a: rgba(16, 185, 129, 0.13);
+  --mesh-b: rgba(13, 148, 136, 0.12);
+  --mesh-c: rgba(3, 105, 161, 0.1);
+  --header-bg: rgba(10, 14, 18, 0.66);
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* ---------- Reusable primitives ---------- */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.text-muted { color: var(--fg-muted); }
+.text-faint { color: var(--fg-faint); }
+
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-line);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.hairline { border-color: var(--line); }
+
+.text-gradient {
+  background: linear-gradient(100deg, var(--color-accent-500), var(--color-teal-flow) 55%, var(--color-accent-400));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.mesh-bg {
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  filter: blur(70px);
+  background:
+    radial-gradient(38% 34% at 22% 28%, var(--mesh-a), transparent 70%),
+    radial-gradient(34% 38% at 78% 22%, var(--mesh-b), transparent 70%),
+    radial-gradient(42% 42% at 60% 80%, var(--mesh-c), transparent 72%);
+  animation: var(--animate-mesh);
+}
+
+.card-hover {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.5s, box-shadow 0.5s;
+}
+.card-hover:hover {
+  transform: translateY(-5px);
+  border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+  box-shadow: 0 24px 60px -32px color-mix(in oklab, var(--accent) 38%, transparent);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: 9999px;
+  padding: 0.85rem 1.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #06231d;
+  background: linear-gradient(115deg, var(--color-accent-400), var(--color-teal-flow));
+  box-shadow: 0 12px 34px -14px rgba(16, 185, 129, 0.55);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s, filter 0.35s;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: 0 18px 44px -14px rgba(16, 185, 129, 0.65);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: 9999px;
+  padding: 0.85rem 1.75rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--fg);
+  border: 1px solid var(--line);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  transition: border-color 0.35s, background 0.35s, transform 0.35s;
+}
+.btn-ghost:hover {
+  border-color: color-mix(in oklab, var(--accent) 55%, transparent);
+  transform: translateY(-2px);
+}
+
+/* ---------- Scroll reveal (activated by .reveal-ready on <html>) ---------- */
+.reveal-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0s);
+}
+.reveal-ready [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal-ready [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .mesh-bg { animation: none; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Article typography ---------- */
+.prose-medical {
+  font-size: 1.06rem;
+  line-height: 1.85;
+  color: var(--fg-muted);
+}
+.prose-medical h2 {
+  font-family: var(--font-display);
+  color: var(--fg);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 2.6rem 0 1rem;
+  scroll-margin-top: 7rem;
+}
+.prose-medical h3 {
+  font-family: var(--font-display);
+  color: var(--fg);
+  font-size: 1.22rem;
+  font-weight: 600;
+  margin: 2rem 0 0.8rem;
+  scroll-margin-top: 7rem;
+}
+.prose-medical p { margin: 1.1rem 0; }
+.prose-medical strong { color: var(--fg); font-weight: 600; }
+.prose-medical a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in oklab, var(--accent) 40%, transparent);
+}
+.prose-medical ul, .prose-medical ol { margin: 1.1rem 0; padding-left: 1.4rem; }
+.prose-medical ul { list-style: disc; }
+.prose-medical ol { list-style: decimal; }
+.prose-medical li { margin: 0.45rem 0; padding-left: 0.2rem; }
+.prose-medical li::marker { color: var(--accent); }
+.prose-medical blockquote {
+  border-left: 2px solid var(--accent);
+  padding: 0.2rem 0 0.2rem 1.3rem;
+  margin: 1.6rem 0;
+  color: var(--fg);
+  font-style: italic;
+}
