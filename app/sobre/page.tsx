@@ -4,6 +4,7 @@ import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CtaSection } from "@/components/ui/CtaSection";
+import { Parallax } from "@/components/ui/Parallax";
 import { JsonLd, breadcrumbSchema, medicalWebPageSchema } from "@/lib/schema";
 import { site } from "@/lib/site-config";
 
@@ -200,8 +201,50 @@ export default function SobrePage() {
         </div>
       </section>
 
+      {/* Faixa editorial — retrato em preto e branco */}
+      <section className="relative mt-32 overflow-hidden">
+        <div className="relative h-[62vh] min-h-[420px] w-full sm:h-[78vh]">
+          <Parallax speed={0.22} className="absolute inset-0">
+            <Image
+              src="/images/dr-jose-victor-perfil-pb.jpg"
+              alt="Retrato em preto e branco do Dr. José Victor de perfil"
+              fill
+              sizes="100vw"
+              className="scale-[1.15] object-cover object-[center_22%]"
+            />
+          </Parallax>
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to right, var(--bg) 2%, color-mix(in oklab, var(--bg) 55%, transparent) 45%, transparent 78%), linear-gradient(to top, var(--bg) 3%, transparent 40%)",
+            }}
+          />
+          <div className="absolute inset-0 flex items-center">
+            <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
+              <Reveal as="p" className="eyebrow mb-5">
+                Método
+              </Reveal>
+              <Reveal
+                as="blockquote"
+                delay={80}
+                className="font-display max-w-2xl text-2xl font-semibold leading-snug tracking-tight sm:text-3xl lg:text-4xl"
+              >
+                “Diagnóstico bom começa com{" "}
+                <span className="text-gradient">anamnese bem feita</span> — não com
+                pressa.”
+              </Reveal>
+              <Reveal as="p" delay={160} className="mt-5 max-w-xl leading-relaxed text-muted">
+                Cada consulta é conduzida com o tempo que a investigação exige, unindo
+                escuta atenta, exame criterioso e leitura crítica da literatura.
+              </Reveal>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Linha do tempo */}
-      <section className="relative mt-32 overflow-hidden py-24">
+      <section className="relative mt-24 overflow-hidden py-24">
         <div className="mesh-bg opacity-60" />
         <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
           <SectionHeading
@@ -258,6 +301,39 @@ export default function SobrePage() {
             Currículo Lattes completo ↗
           </a>
         </Reveal>
+      </section>
+
+      {/* Fechamento humano */}
+      <section className="mx-auto mt-32 max-w-7xl px-5 sm:px-8">
+        <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
+          <div>
+            <SectionHeading
+              eyebrow="Antes de tudo, gente"
+              title={
+                <>
+                  Ciência de ponta, <span className="text-gradient">relação humana</span>
+                </>
+              }
+              lede="Tecnologia, dados e evidência existem para servir a um propósito simples: você se sentir ouvido, entender o que está acontecendo com a sua saúde e saber exatamente qual é o próximo passo."
+            />
+          </div>
+          <Reveal delay={120} className="relative mx-auto w-full max-w-md">
+            <div className="glass overflow-hidden rounded-[1.8rem] p-2">
+              <div className="overflow-hidden rounded-[1.4rem]">
+                <Parallax speed={0.12}>
+                  <Image
+                    src="/images/dr-jose-victor-perfil-sorriso.jpg"
+                    alt="Dr. José Victor sorrindo, de perfil, em traje social"
+                    width={700}
+                    height={1050}
+                    sizes="(max-width: 1024px) 90vw, 420px"
+                    className="scale-[1.1] rounded-[1.4rem] object-cover"
+                  />
+                </Parallax>
+              </div>
+            </div>
+          </Reveal>
+        </div>
       </section>
 
       <CtaSection
