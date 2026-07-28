@@ -5,6 +5,7 @@
 @theme {
   --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-tech), ui-monospace, "SFMono-Regular", monospace;
 
   --color-accent-400: #34d399;
   --color-accent-500: #10b981;
@@ -33,40 +34,46 @@
 
 /* ---------- Semantic theme tokens (dual dark/light) ---------- */
 :root {
-  --bg: #f8faf9;
+  --bg: #f7f9f8;
   --bg-elevated: #ffffff;
-  --fg: #0f172a;
-  --fg-muted: #47566b;
-  --fg-faint: #64748b;
-  --line: rgba(15, 23, 42, 0.1);
-  --glass-bg: rgba(255, 255, 255, 0.6);
-  --glass-line: rgba(15, 23, 42, 0.08);
-  --accent: #059669;
-  --accent-soft: rgba(5, 150, 105, 0.1);
+  --fg: #0d1626;
+  --fg-muted: #3c4a5c; /* AA sobre --bg (>7:1) */
+  --fg-faint: #566374;
+  --line: rgba(13, 22, 38, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-line: rgba(13, 22, 38, 0.1);
+  --accent: #047857;
+  --accent-strong: #065f46;
+  --accent-soft: rgba(5, 150, 105, 0.12);
   --gold-soft: rgba(160, 128, 70, 0.9);
-  --mesh-a: rgba(16, 185, 129, 0.16);
-  --mesh-b: rgba(45, 212, 191, 0.14);
-  --mesh-c: rgba(14, 116, 144, 0.1);
-  --header-bg: rgba(248, 250, 249, 0.72);
+  --mesh-a: rgba(16, 185, 129, 0.12);
+  --mesh-b: rgba(45, 212, 191, 0.1);
+  --mesh-c: rgba(14, 116, 144, 0.08);
+  --header-bg: rgba(247, 249, 248, 0.8);
+  --grad-a: #047857;
+  --grad-b: #0f766e;
   color-scheme: light;
 }
 
 .dark {
   --bg: #0a0e12;
   --bg-elevated: #0e141b;
-  --fg: #edf2f4;
-  --fg-muted: #9fb0bf;
-  --fg-faint: #6b7c8c;
-  --line: rgba(237, 242, 244, 0.1);
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-line: rgba(255, 255, 255, 0.09);
+  --fg: #f1f5f7;
+  --fg-muted: #c4d0da; /* AA sobre --bg (>7:1) — legibilidade prioritária */
+  --fg-faint: #8b9aa8;
+  --line: rgba(241, 245, 247, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.045);
+  --glass-line: rgba(255, 255, 255, 0.1);
   --accent: #2dd4bf;
-  --accent-soft: rgba(45, 212, 191, 0.1);
+  --accent-strong: #5eead4;
+  --accent-soft: rgba(45, 212, 191, 0.12);
   --gold-soft: rgba(201, 169, 106, 0.9);
-  --mesh-a: rgba(16, 185, 129, 0.13);
-  --mesh-b: rgba(13, 148, 136, 0.12);
-  --mesh-c: rgba(3, 105, 161, 0.1);
-  --header-bg: rgba(10, 14, 18, 0.66);
+  --mesh-a: rgba(16, 185, 129, 0.1);
+  --mesh-b: rgba(13, 148, 136, 0.09);
+  --mesh-c: rgba(3, 105, 161, 0.08);
+  --header-bg: rgba(10, 14, 18, 0.72);
+  --grad-a: #5eead4;
+  --grad-b: #34d399;
   color-scheme: dark;
 }
 
@@ -107,22 +114,63 @@ body {
 .hairline { border-color: var(--line); }
 
 .text-gradient {
-  background: linear-gradient(100deg, var(--color-accent-500), var(--color-teal-flow) 55%, var(--color-accent-400));
+  background: linear-gradient(100deg, var(--grad-a), var(--grad-b) 60%, var(--grad-a));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+.font-mono-tech {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum" 1, "ss01" 1;
+}
+
+/* eyebrow tecnológica com detalhe HUD */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.eyebrow::before {
+  content: "";
+  width: 1.4rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
 }
 
 .mesh-bg {
   position: absolute;
   inset: -20%;
   pointer-events: none;
-  filter: blur(70px);
+  filter: blur(80px);
+  opacity: 0.8;
   background:
     radial-gradient(38% 34% at 22% 28%, var(--mesh-a), transparent 70%),
     radial-gradient(34% 38% at 78% 22%, var(--mesh-b), transparent 70%),
     radial-gradient(42% 42% at 60% 80%, var(--mesh-c), transparent 72%);
   animation: var(--animate-mesh);
+}
+
+/* Scrim: garante contraste do texto sobre cenas 3D / mesh.
+   Colocar como filho posicionado atrás do conteúdo do hero. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to right, var(--bg) 0%, color-mix(in oklab, var(--bg) 82%, transparent) 42%, transparent 72%),
+    linear-gradient(to top, var(--bg) 4%, transparent 46%);
+}
+@media (max-width: 1023px) {
+  .scrim {
+    background: linear-gradient(to top, var(--bg) 10%, color-mix(in oklab, var(--bg) 70%, transparent) 60%, color-mix(in oklab, var(--bg) 40%, transparent));
+  }
 }
 
 .card-hover {

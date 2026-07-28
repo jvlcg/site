@@ -29,6 +29,25 @@ const pillars = [
   },
 ];
 
+const conditions = [
+  {
+    title: "Dor crônica",
+    text: "Dores persistentes (musculoesqueléticas, neuropáticas) em que a abordagem convencional não trouxe controle adequado — campo em que desenvolvo pesquisa científica.",
+  },
+  {
+    title: "Insônia e distúrbios do sono",
+    text: "Avaliação da higiene do sono e das causas do quadro antes de qualquer conduta, com acompanhamento de resposta e segurança.",
+  },
+  {
+    title: "Ansiedade",
+    text: "Sempre em avaliação conjunta com a saúde mental global, de forma integrada e nunca como substituto do acompanhamento psiquiátrico/psicológico quando indicado.",
+  },
+  {
+    title: "Manejo em contexto de acompanhamento",
+    text: "Sintomas associados a condições neurológicas e outras, conforme evidência e regulamentação, com metas objetivas e reavaliação constante.",
+  },
+];
+
 const forWhom = [
   "Pessoas com condições crônicas em que abordagens convencionais não trouxeram controle adequado, mediante avaliação de elegibilidade",
   "Pacientes que buscam segunda opinião sobre tratamento com canabinoides já em uso",
@@ -85,6 +104,11 @@ const faq: FaqItem[] = [
     answer:
       "Não. A atuação é exclusivamente médica: avaliação, prescrição quando há indicação e acompanhamento. A escolha do produto segue critérios técnicos (composição, certificados de análise, registro sanitário), sem vínculo comercial com fabricantes — conforme determina o Código de Ética Médica.",
   },
+  {
+    question: "O que é o laudo médico para cultivo domiciliar?",
+    answer:
+      "Quando há indicação clínica bem estabelecida e acompanhamento em curso, o médico pode emitir um relatório/laudo fundamentado que atesta a necessidade terapêutica do paciente. Esse documento é técnico e serve para subsidiar uma eventual ação judicial (habeas corpus preventivo) conduzida pelo advogado do paciente. O papel do médico é estritamente clínico — a decisão jurídica cabe ao Poder Judiciário e a condução do processo, ao advogado.",
+  },
 ];
 
 export default function EndocanabinoidePage() {
@@ -94,7 +118,7 @@ export default function EndocanabinoidePage() {
         <div className="mesh-bg" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
-            <Reveal as="p" className="mb-5 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
+            <Reveal as="p" className="eyebrow mb-5">
               Medicina Endocanabinoide
             </Reveal>
             <Reveal
@@ -123,6 +147,22 @@ export default function EndocanabinoidePage() {
             <Reveal key={p.title} delay={i * 90} className="glass card-hover rounded-3xl p-8">
               <h2 className="font-display text-lg font-semibold tracking-tight">{p.title}</h2>
               <p className="mt-3 text-[0.95rem] leading-relaxed text-muted">{p.text}</p>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto mt-28 max-w-7xl px-5 sm:px-8">
+        <SectionHeading
+          eyebrow="Condições frequentemente abordadas"
+          title="Quando o tema costuma surgir na consulta"
+          lede="A avaliação é sempre individual. A presença de uma condição nesta lista não significa indicação automática — significa que é um dos motivos pelos quais pacientes procuram avaliação."
+        />
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {conditions.map((c, i) => (
+            <Reveal key={c.title} delay={(i % 4) * 70} className="glass card-hover rounded-3xl p-7">
+              <h3 className="font-display text-lg font-semibold tracking-tight">{c.title}</h3>
+              <p className="mt-3 text-[0.92rem] leading-relaxed text-muted">{c.text}</p>
             </Reveal>
           ))}
         </div>
@@ -175,6 +215,62 @@ export default function EndocanabinoidePage() {
               ))}
             </ol>
           </div>
+        </div>
+      </section>
+
+      {/* Laudo para cultivo domiciliar */}
+      <section className="mx-auto mt-28 max-w-7xl px-5 sm:px-8">
+        <div className="glass overflow-hidden rounded-[2rem] p-8 sm:p-12">
+          <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+            <div>
+              <p className="eyebrow mb-4">Documentação médica</p>
+              <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
+                Laudo médico para cultivo domiciliar
+              </h2>
+              <div className="mt-5 space-y-4 leading-relaxed text-muted">
+                <p>
+                  Para pacientes com indicação clínica bem estabelecida e em
+                  acompanhamento, é possível emitir um{" "}
+                  <strong className="text-[var(--fg)]">
+                    relatório/laudo médico fundamentado
+                  </strong>{" "}
+                  que atesta a necessidade terapêutica. Esse documento pode subsidiar
+                  uma ação judicial (habeas corpus preventivo) que autorize o cultivo
+                  domiciliar para uso próprio.
+                </p>
+                <p>
+                  O papel do médico é{" "}
+                  <strong className="text-[var(--fg)]">estritamente clínico</strong>:
+                  avaliar, indicar quando pertinente, acompanhar e documentar com
+                  rigor técnico. A condução do processo judicial cabe ao advogado do
+                  paciente, e a decisão, ao Poder Judiciário.
+                </p>
+              </div>
+            </div>
+            <ul className="space-y-4">
+              {[
+                "Avaliação clínica e confirmação de indicação terapêutica",
+                "Acompanhamento documentado da resposta ao tratamento",
+                "Emissão de laudo/relatório técnico fundamentado",
+                "Orientação sobre o encaminhamento jurídico (conduzido por advogado)",
+              ].map((item, i) => (
+                <Reveal as="li" key={i} delay={i * 70} className="flex items-start gap-4">
+                  <span
+                    aria-hidden="true"
+                    className="font-mono-tech mt-0.5 shrink-0 text-sm font-semibold text-[var(--accent)]"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="leading-relaxed text-muted">{item}</span>
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+          <p className="mt-8 border-t hairline pt-6 text-xs leading-relaxed text-faint">
+            Nenhum laudo é emitido sem avaliação clínica e indicação médica. Não há
+            garantia de resultado no âmbito judicial — a decisão é sempre do Poder
+            Judiciário.
+          </p>
         </div>
       </section>
 

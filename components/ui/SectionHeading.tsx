@@ -11,7 +11,7 @@ export function SectionHeading({ eyebrow, title, lede, align = "left" }: Props) 
   return (
     <div className={`max-w-3xl ${align === "center" ? "mx-auto text-center" : ""}`}>
       {eyebrow && (
-        <Reveal as="p" className="mb-4 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
+        <Reveal as="p" className={`eyebrow mb-4 ${align === "center" ? "justify-center" : ""}`}>
           {eyebrow}
         </Reveal>
       )}

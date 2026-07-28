@@ -29,7 +29,7 @@ export function CtaSection({
           </Reveal>
           <Reveal delay={200} className="mt-9 flex flex-wrap items-center justify-center gap-4">
             <a
-              href={whatsappLink(message)}
+              href={whatsappLink("particular", message)}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary"

@@ -15,11 +15,14 @@ export function PageHero({ eyebrow, title, lede, scene = "none", children }: Pro
     <section className="relative overflow-hidden pt-40 pb-20 sm:pt-48 sm:pb-24">
       <div className="mesh-bg" />
       {scene !== "none" && (
-        <ThreeScene kind={scene} className="absolute inset-0 opacity-70" />
+        <>
+          <ThreeScene kind={scene} className="absolute inset-0 opacity-60" />
+          <div className="scrim" />
+        </>
       )}
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
         <div className="max-w-3xl">
-          <Reveal as="p" className="mb-5 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
+          <Reveal as="p" className="eyebrow mb-5">
             {eyebrow}
           </Reveal>
           <Reveal

@@ -21,13 +21,24 @@ export function Footer() {
               telemedicina para todo o Brasil.
             </p>
             <a
-              href={whatsappLink()}
+              href={whatsappLink("particular")}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-ghost mt-6 text-sm"
             >
-              Agendar pelo WhatsApp
+              Agendar consulta particular
             </a>
+            <p className="mt-3 text-xs text-faint">
+              Atende por convênio?{" "}
+              <a
+                href={whatsappLink("planos")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 transition-colors hover:text-[var(--accent)]"
+              >
+                Fale com a secretaria
+              </a>
+            </p>
           </div>
 
           <nav aria-label="Mapa do site" className="text-sm">
@@ -86,12 +97,20 @@ export function Footer() {
             </address>
             <p className="mt-5 space-x-3 text-xs text-faint">
               <a
+                href={site.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-4 hover:text-[var(--accent)]"
+              >
+                Instagram {site.instagramHandle}
+              </a>
+              <a
                 href={site.sameAs[0]}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-4 hover:text-[var(--accent)]"
               >
-                Currículo Lattes
+                Lattes
               </a>
               <a
                 href={site.sameAs[1]}

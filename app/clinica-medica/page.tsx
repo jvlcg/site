@@ -31,6 +31,10 @@ const services = [
     text: "Hipertensão, diabetes, distúrbios metabólicos e outras condições acompanhadas com metas objetivas e revisão periódica.",
   },
   {
+    title: "Emagrecimento e saúde metabólica",
+    text: "Acompanhamento clínico do emagrecimento com base em avaliação metabólica, hábitos e evidência — sem fórmulas milagrosas nem promessas de resultado.",
+  },
+  {
     title: "Prevenção baseada em risco",
     text: "Estratégia preventiva construída sobre dados: estratificação de risco cardiovascular, metabólico e oncológico.",
   },
@@ -81,7 +85,7 @@ export default function ClinicaMedicaPage() {
             <span className="text-gradient">como um todo</span>
           </>
         }
-        lede="Consultas com tempo de escuta real, prevenção guiada por risco individual e acompanhamento contínuo — a base que organiza todo o resto do seu cuidado."
+        lede="Consultas com tempo de escuta real, prevenção guiada por risco individual e acompanhamento contínuo — de adolescentes (a partir de 14 anos) a idosos. A base que organiza todo o resto do seu cuidado."
         scene="wave"
       />
 

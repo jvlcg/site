@@ -31,12 +31,21 @@ npm run build && npm run start
 
 | Variável | Descrição |
 | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | URL pública definitiva (canonical, Schema, sitemap, OG). |
-| `NEXT_PUBLIC_WHATSAPP` | WhatsApp do consultório em formato internacional, sem `+` (ex.: `5562999998888`). É o CTA principal do site. |
+| `NEXT_PUBLIC_SITE_URL` | URL pública definitiva (canonical, Schema, sitemap, OG). Domínio pensado: `drjosevictor.med.br`. |
+| `NEXT_PUBLIC_WHATSAPP` | WhatsApp **particular** (Dr. José Victor) — CTA principal de todo o site. Formato internacional sem `+`. |
+| `NEXT_PUBLIC_WHATSAPP_PLANOS` | WhatsApp de **planos de saúde** (secretária) — opção secundária/discreta (rodapé e Contato). |
 
-> **Importante:** o número de WhatsApp está com um placeholder (`5562000000000`).
-> Configure `NEXT_PUBLIC_WHATSAPP` antes de publicar, senão os botões de agendamento
-> não funcionarão.
+Os números reais já estão embutidos como padrão em `lib/site-config.ts`
+(particular `5562999758034`, planos `5562999961365`); as variáveis de ambiente
+apenas permitem sobrescrevê-los sem tocar no código.
+
+## Prova social (Google)
+
+O bloco "Avaliações no Google" (`components/ui/GoogleRating.tsx`) leva ao perfil real
+do consultório — conteúdo de terceiro, compatível com o CFM. A **nota numérica e o
+total de avaliações não são exibidos** para não veicular número não confirmado. Para
+mostrar a nota agregada (e adicionar `aggregateRating` ao Schema), informe a média e a
+quantidade reais e atualize `lib/site-config.ts` + `lib/schema.tsx`.
 
 ## Publicando um novo artigo
 
@@ -74,12 +83,11 @@ Schema `MedicalScholarlyArticle` + `FAQPage`.
 2. Configure `NEXT_PUBLIC_SITE_URL` e `NEXT_PUBLIC_WHATSAPP` nas *Environment Variables*.
 3. Faça o deploy.
 
-### Sugestões de domínio
+### Domínio
 
-- `josevictorgomes.med.br` — o `.med.br` é restrito a médicos com CRM, um forte sinal
-  de confiança para pacientes e buscadores (recomendado)
-- `drjosevictorgomes.com.br`
-- `drjosevictor.com.br`
+Domínio pensado: **`drjosevictor.med.br`** — o `.med.br` é restrito a médicos com CRM,
+um forte sinal de confiança para pacientes e buscadores. Basta apontá-lo na Vercel e
+definir `NEXT_PUBLIC_SITE_URL`.
 
 ### Pós-deploy (recomendado)
 

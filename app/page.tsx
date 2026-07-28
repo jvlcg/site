@@ -5,6 +5,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { CtaSection } from "@/components/ui/CtaSection";
+import { GoogleRating } from "@/components/ui/GoogleRating";
 import { getAllArticles } from "@/lib/articles";
 import { site, whatsappLink } from "@/lib/site-config";
 import { JsonLd, breadcrumbSchema } from "@/lib/schema";
@@ -88,6 +89,7 @@ export default function HomePage() {
       <section className="relative flex min-h-[100svh] items-center overflow-hidden pt-28 pb-16">
         <div className="mesh-bg" />
         <ThreeScene kind="particles" className="absolute inset-0" />
+        <div className="scrim" />
         <div
           className="pointer-events-none absolute inset-x-0 bottom-0 h-40"
           style={{ background: "linear-gradient(to top, var(--bg), transparent)" }}
@@ -95,7 +97,7 @@ export default function HomePage() {
 
         <div className="relative mx-auto grid w-full max-w-7xl items-center gap-14 px-5 sm:px-8 lg:grid-cols-[1.15fr_0.85fr]">
           <div>
-            <Reveal as="p" className="mb-6 inline-flex items-center gap-2 rounded-full border hairline px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-muted">
+            <Reveal as="p" className="font-mono-tech mb-6 inline-flex items-center gap-2 rounded-full border hairline px-4 py-2 text-[0.72rem] uppercase tracking-[0.16em] text-muted">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
               Goiânia-GO · Presencial e Telemedicina
             </Reveal>
@@ -261,7 +263,7 @@ export default function HomePage() {
                   <dt className="order-2 mt-2 block text-[0.82rem] leading-snug text-muted">
                     {c.label}
                   </dt>
-                  <dd className="font-display order-1 block text-2xl font-semibold text-[var(--accent)]">
+                  <dd className="font-mono-tech order-1 block text-2xl font-semibold text-[var(--accent)]">
                     {c.value}
                   </dd>
                 </Reveal>
@@ -274,6 +276,11 @@ export default function HomePage() {
             </Reveal>
           </div>
         </div>
+      </section>
+
+      {/* ---------- PROVA SOCIAL ---------- */}
+      <section className="mx-auto mt-24 max-w-4xl px-5 sm:px-8">
+        <GoogleRating />
       </section>
 
       {/* ---------- ARTIGOS ---------- */}

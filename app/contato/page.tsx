@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
+import { GoogleRating } from "@/components/ui/GoogleRating";
 import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 import { site, whatsappLink } from "@/lib/site-config";
 
@@ -76,20 +77,33 @@ export default function ContatoPage() {
             <h2 className="font-display text-lg font-semibold tracking-tight">Canais</h2>
             <ul className="mt-4 space-y-3 leading-relaxed text-muted">
               <li>
-                <span className="block text-xs uppercase tracking-[0.16em] text-faint">
-                  WhatsApp (agendamento)
+                <span className="font-mono-tech block text-xs uppercase tracking-[0.16em] text-faint">
+                  WhatsApp · Particular
                 </span>
                 <a
-                  href={whatsappLink()}
+                  href={whatsappLink("particular")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-medium text-[var(--fg)] transition-colors hover:text-[var(--accent)]"
                 >
-                  Iniciar conversa
+                  Agendar com o Dr. José Victor
                 </a>
               </li>
               <li>
-                <span className="block text-xs uppercase tracking-[0.16em] text-faint">
+                <span className="font-mono-tech block text-xs uppercase tracking-[0.16em] text-faint">
+                  Instagram
+                </span>
+                <a
+                  href={site.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-[var(--fg)] transition-colors hover:text-[var(--accent)]"
+                >
+                  {site.instagramHandle}
+                </a>
+              </li>
+              <li>
+                <span className="font-mono-tech block text-xs uppercase tracking-[0.16em] text-faint">
                   E-mail
                 </span>
                 <a
@@ -99,15 +113,24 @@ export default function ContatoPage() {
                   {site.email}
                 </a>
               </li>
-              <li>
-                <span className="block text-xs uppercase tracking-[0.16em] text-faint">
-                  Registro profissional
+              <li className="border-t hairline pt-3">
+                <span className="font-mono-tech block text-xs uppercase tracking-[0.16em] text-faint">
+                  Planos de saúde
                 </span>
-                <span className="font-medium text-[var(--fg)]">{site.crm}</span>
+                <a
+                  href={whatsappLink("planos")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted underline underline-offset-2 transition-colors hover:text-[var(--accent)]"
+                >
+                  Atendimento por convênio — falar com a secretaria
+                </a>
               </li>
             </ul>
           </Reveal>
         </div>
+
+        <GoogleRating className="mt-6" />
 
         <Reveal delay={120} className="glass mt-6 overflow-hidden rounded-3xl">
           <iframe

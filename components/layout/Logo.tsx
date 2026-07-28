@@ -1,64 +1,52 @@
+"use client";
+
+import { useId } from "react";
 import { site } from "@/lib/site-config";
 
 /**
- * Logomarca "Sinapse JV": monograma em traço fino sobre malha de nós —
- * referência abstrata ao sistema endocanabinoide como rede reguladora.
+ * Marca "Dr.JV" — silhueta de perfil do Dr. José Victor (vetorizada da foto
+ * em contraluz) dentro de um anel fino. O anel usa currentColor (adapta ao
+ * tema); a silhueta usa o gradiente esmeralda->teal da identidade.
  */
-export function LogoMark({ className = "h-9 w-9" }: { className?: string }) {
+const SILHOUETTE =
+  "M 341 94.847 C 334.125 97.528, 326.475 100.675, 324 101.839 C 321.014 103.244, 317.481 103.965, 313.500 103.982 C 309.730 103.999, 304.898 104.928, 300.500 106.482 C 292.838 109.189, 289.676 109.071, 282.286 105.802 C 278.750 104.238, 277.120 104.069, 272.926 104.832 C 269.743 105.410, 266.475 105.394, 264.173 104.789 C 251.751 101.523, 251.379 101.508, 240.390 103.791 C 227.261 106.518, 220.545 110.924, 202.344 128.747 C 188.475 142.328, 186 147.218, 186 161.030 C 186 166.275, 185.308 169.578, 183 175.341 C 181.350 179.462, 179.997 183.883, 179.994 185.167 C 179.975 193.292, 174.318 200.794, 157.605 214.857 C 147.025 223.759, 134.902 239.122, 129.163 250.900 C 124.583 260.301, 124.583 260.301, 124.955 269.900 C 125.720 289.607, 125.936 288.584, 117.160 306.835 C 112.134 317.289, 108.145 327.227, 106.457 333.500 C 104.977 339, 103.076 345.975, 102.232 349 C 101.094 353.081, 100.658 360.177, 100.544 376.500 C 100.355 403.432, 100.705 402.523, 83.999 419.500 C 72.059 431.635, 63.991 442.126, 45.433 469.649 C 23.421 502.297, 26.042 516.852, 55.243 524.120 C 75.177 529.081, 82.037 542.416, 73.959 560.500 C 70.583 568.060, 70.924 573.156, 75.397 581.932 C 79.628 590.234, 79.674 591.811, 75.972 601.500 C 72.867 609.627, 73.558 612.380, 82.080 625.847 C 91.410 640.591, 91.404 640.528, 84.673 657.543 C 73.661 685.379, 75.619 701.173, 91.955 716.298 C 105.125 728.491, 140.637 738.219, 189.443 743.005 C 212.727 745.288, 226.032 752.721, 233.183 767.440 L 235.399 772 416.199 772 C 515.640 772, 596.996 771.888, 596.990 771.750 C 596.985 771.612, 595.852 765.425, 594.472 758 C 593.092 750.575, 591.516 737.975, 590.970 730 C 589.151 703.432, 588.206 697.134, 585.228 691.731 C 582.455 686.701, 581.212 685.725, 572.709 681.898 C 566.311 679.018, 565.115 676.331, 563.836 661.970 C 562.599 648.071, 562.915 646.220, 567.381 641.225 C 571.832 636.247, 572.498 634.820, 574.980 624.952 C 576.545 618.731, 578.311 614.736, 581.668 609.820 C 585.112 604.777, 586.339 601.958, 586.674 598.320 C 587.498 589.372, 589.833 585, 593.787 585 C 600.561 585, 604.158 578.526, 600.380 573.132 C 599.165 571.397, 598.925 569.655, 599.418 566.160 C 599.780 563.597, 600.438 558.066, 600.879 553.869 C 602.515 538.323, 613.864 522.862, 624.605 521.543 C 634.717 520.302, 644 512.420, 644 505.077 C 644 499.735, 649.375 484.910, 653.643 478.482 C 658.829 470.672, 658.243 467.037, 651.500 465.174 C 640.015 462, 639.720 459.152, 648.208 433.362 C 653.761 416.491, 654.413 413.655, 654.389 406.500 C 654.345 393.785, 652.415 376.853, 650.515 372.506 C 648.147 367.089, 648.292 360.307, 650.885 355.226 C 653.862 349.389, 653.558 347.110, 648.984 340.979 C 644.121 334.461, 643.370 331.712, 642.507 317.286 C 641.730 304.302, 642.763 302.229, 651.128 299.976 C 660.708 297.397, 664.226 294.160, 661.991 289.982 C 660.757 287.677, 655.385 285, 651.992 285 C 641.720 285, 618.106 255.315, 615.080 238.598 C 613.723 231.099, 610.561 225.724, 603.834 219.480 C 596.333 212.517, 595.207 210.923, 591.525 202.061 C 584.832 185.949, 573.830 173.150, 562.124 167.855 C 558.618 166.269, 553.392 162.840, 550.512 160.235 C 547.632 157.631, 540.601 152.839, 534.888 149.587 C 529.175 146.335, 521.522 141.499, 517.882 138.841 C 514.243 136.182, 508.843 132.923, 505.882 131.599 C 502.922 130.274, 497.378 126.685, 493.562 123.624 C 489.394 120.279, 484.360 117.292, 480.952 116.141 C 477.832 115.088, 472.916 112.600, 470.028 110.613 C 466.693 108.319, 463.614 107, 461.592 107 C 459.841 107, 451.904 105.626, 443.954 103.947 C 436.004 102.268, 426.350 100.252, 422.500 99.467 C 418.650 98.682, 411.675 96.687, 407 95.033 C 397.205 91.569, 393.308 91.339, 384.430 93.705 C 378.120 95.386, 377.924 95.377, 370.266 93.023 C 357.638 89.142, 355.246 89.291, 341 94.847";
+
+// transform que enquadra a silhueta no disco de 100x100 (pescoço vaza na base)
+const TF = "translate(12.9,12.6) scale(0.108)";
+
+export function LogoMark({ className = "h-9 w-9", mono = false }: { className?: string; mono?: boolean }) {
+  const uid = useId().replace(/:/g, "");
+  const gid = "g" + uid;
+  const cid = "c" + uid;
   return (
-    <svg
-      viewBox="0 0 64 64"
-      fill="none"
-      className={className}
-      aria-hidden="true"
-    >
+    <svg viewBox="0 0 100 100" className={className} role="img" aria-label={site.shortName}>
       <defs>
-        <linearGradient id="jv-grad" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#34d399" />
           <stop offset="100%" stopColor="#2dd4bf" />
         </linearGradient>
+        <clipPath id={cid}>
+          <circle cx="50" cy="50" r="45" />
+        </clipPath>
       </defs>
-      {/* malha de fundo */}
-      <g stroke="currentColor" strokeOpacity="0.28" strokeWidth="1">
-        <path d="M24 16 38 16" />
-        <path d="M24 40 44 46" />
-        <path d="M12 16 24 40" />
-        <path d="M52 16 38 16" />
+      <circle cx="50" cy="50" r="46.3" fill="none" stroke="currentColor" strokeOpacity="0.28" strokeWidth="1.3" />
+      <g clipPath={"url(#" + cid + ")"}>
+        <g transform={TF}>
+          <path d={SILHOUETTE} fill={mono ? "currentColor" : "url(#" + gid + ")"} />
+        </g>
       </g>
-      {/* J */}
-      <g stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-        <path d="M12 16 H24" />
-        <path d="M24 16 V38 Q24 46 15.5 46" />
-      </g>
-      {/* V */}
-      <g stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M38 16 44 46 52 16" />
-      </g>
-      {/* nós da rede */}
-      <g fill="currentColor">
-        <circle cx="12" cy="16" r="2.2" />
-        <circle cx="24" cy="16" r="2.2" />
-        <circle cx="38" cy="16" r="2.2" />
-        <circle cx="52" cy="16" r="2.2" />
-        <circle cx="15.5" cy="46" r="2.2" />
-      </g>
-      {/* nó-sinapse em destaque */}
-      <circle cx="44" cy="46" r="4.4" fill="url(#jv-grad)" />
-      <circle cx="44" cy="46" r="7.5" fill="none" stroke="url(#jv-grad)" strokeOpacity="0.4" strokeWidth="1" />
     </svg>
   );
 }
 
 export function LogoLockup({ compact = false }: { compact?: boolean }) {
   return (
-    <span className="flex items-center gap-3">
-      <LogoMark className="h-9 w-9 shrink-0 text-[var(--fg)]" />
+    <span className="flex items-center gap-2.5">
+      <LogoMark className="h-10 w-10 shrink-0 text-[var(--fg)]" />
       <span className={`flex-col leading-tight ${compact ? "hidden sm:flex" : "flex"}`}>
-        <span className="font-display text-[0.94rem] font-semibold tracking-tight">
-          Dr. José Victor
-        </span>
-        <span className="text-[0.66rem] uppercase tracking-[0.16em] text-faint">
-          Lisboa Cardoso Gomes · {site.crm}
+        <span className="font-display text-[1.02rem] font-semibold tracking-tight">Dr.JV</span>
+        <span className="text-[0.6rem] uppercase tracking-[0.18em] text-faint">
+          José Victor · {site.crm}
         </span>
       </span>
     </span>
