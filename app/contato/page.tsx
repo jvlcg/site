@@ -23,6 +23,10 @@ export default function ContatoPage() {
           </>
         }
         lede="O agendamento é feito diretamente pelo WhatsApp — resposta humana, sem robôs de triagem intermináveis."
+        breadcrumbs={[
+          { name: "Início", path: "/" },
+          { name: "Contato", path: "/contato" },
+        ]}
       >
         <a
           href={whatsappLink()}

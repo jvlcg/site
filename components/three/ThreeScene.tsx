@@ -6,8 +6,9 @@ import { useEffect, useRef, useState } from "react";
 const ParticlesCanvas = dynamic(() => import("./ParticlesCanvas"), { ssr: false });
 const NetworkCanvas = dynamic(() => import("./NetworkCanvas"), { ssr: false });
 const WaveCanvas = dynamic(() => import("./WaveCanvas"), { ssr: false });
+const NeuralCanvas = dynamic(() => import("./NeuralCanvas"), { ssr: false });
 
-type SceneKind = "particles" | "network" | "wave";
+type SceneKind = "particles" | "network" | "wave" | "neural";
 
 /**
  * Monta a cena WebGL apenas quando: (1) o usuário não prefere movimento
@@ -49,6 +50,7 @@ export function ThreeScene({ kind, className = "" }: { kind: SceneKind; classNam
       {ready && kind === "particles" && <ParticlesCanvas />}
       {ready && kind === "network" && <NetworkCanvas />}
       {ready && kind === "wave" && <WaveCanvas />}
+      {ready && kind === "neural" && <NeuralCanvas />}
     </div>
   );
 }

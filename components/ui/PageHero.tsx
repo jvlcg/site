@@ -1,18 +1,22 @@
+import Link from "next/link";
 import { Reveal } from "./Reveal";
 import { ThreeScene } from "@/components/three/ThreeScene";
+
+type Crumb = { name: string; path: string };
 
 type Props = {
   eyebrow: string;
   title: React.ReactNode;
   lede: string;
   scene?: "particles" | "network" | "wave" | "none";
+  breadcrumbs?: Crumb[];
   children?: React.ReactNode;
 };
 
 /** Hero padrão das páginas internas, com cena 3D opcional ao fundo. */
-export function PageHero({ eyebrow, title, lede, scene = "none", children }: Props) {
+export function PageHero({ eyebrow, title, lede, scene = "none", breadcrumbs, children }: Props) {
   return (
-    <section className="relative overflow-hidden pt-40 pb-20 sm:pt-48 sm:pb-24">
+    <section className="relative overflow-hidden pt-32 pb-20 sm:pt-36 sm:pb-24">
       <div className="mesh-bg" />
       {scene !== "none" && (
         <>
@@ -21,6 +25,33 @@ export function PageHero({ eyebrow, title, lede, scene = "none", children }: Pro
         </>
       )}
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
+        {breadcrumbs && breadcrumbs.length > 0 && (
+          <nav aria-label="Trilha de navegação" className="mb-8">
+            <ol className="font-mono-tech flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.7rem] uppercase tracking-[0.14em] text-faint">
+              {breadcrumbs.map((item, i) => {
+                const last = i === breadcrumbs.length - 1;
+                return (
+                  <li key={item.path} className="flex items-center gap-2">
+                    {last ? (
+                      <span aria-current="page" className="text-[var(--accent)]">
+                        {item.name}
+                      </span>
+                    ) : (
+                      <>
+                        <Link href={item.path} className="transition-colors hover:text-[var(--fg)]">
+                          {item.name}
+                        </Link>
+                        <span aria-hidden="true" className="opacity-50">
+                          /
+                        </span>
+                      </>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          </nav>
+        )}
         <div className="max-w-3xl">
           <Reveal as="p" className="eyebrow mb-5">
             {eyebrow}

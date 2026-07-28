@@ -6,6 +6,11 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { CtaSection } from "@/components/ui/CtaSection";
 import { GoogleRating } from "@/components/ui/GoogleRating";
+import { Counter } from "@/components/ui/Counter";
+import { MagneticButton } from "@/components/ui/MagneticButton";
+import { Parallax } from "@/components/ui/Parallax";
+import { EcgDivider } from "@/components/ui/EcgDivider";
+import { BentoTech } from "@/components/sections/BentoTech";
 import { getAllArticles } from "@/lib/articles";
 import { site, whatsappLink } from "@/lib/site-config";
 import { JsonLd, breadcrumbSchema } from "@/lib/schema";
@@ -88,7 +93,7 @@ export default function HomePage() {
       {/* ---------- HERO ---------- */}
       <section className="relative flex min-h-[100svh] items-center overflow-hidden pt-28 pb-16">
         <div className="mesh-bg" />
-        <ThreeScene kind="particles" className="absolute inset-0" />
+        <ThreeScene kind="neural" className="absolute inset-0" />
         <div className="scrim" />
         <div
           className="pointer-events-none absolute inset-x-0 bottom-0 h-40"
@@ -117,15 +122,17 @@ export default function HomePage() {
               estiver.
             </Reveal>
             <Reveal delay={260} className="mt-10 flex flex-wrap items-center gap-4">
-              <a
-                href={whatsappLink()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary"
-              >
-                Agendar consulta
-                <span aria-hidden="true">→</span>
-              </a>
+              <MagneticButton>
+                <a
+                  href={whatsappLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary"
+                >
+                  Agendar consulta
+                  <span aria-hidden="true">→</span>
+                </a>
+              </MagneticButton>
               <Link href="/sobre" className="btn-ghost">
                 Conhecer o Dr. José Victor
               </Link>
@@ -181,7 +188,7 @@ export default function HomePage() {
               <TiltCard className="h-full">
                 <Link
                   href={area.href}
-                  className="glass card-hover group flex h-full flex-col rounded-3xl p-8"
+                  className="holo glass card-hover group flex h-full flex-col rounded-3xl p-8"
                 >
                   <span className="glass flex h-14 w-14 items-center justify-center rounded-2xl text-[var(--accent)]">
                     {area.icon}
@@ -204,6 +211,9 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* ---------- TECNOLOGIA (BENTO) ---------- */}
+      <BentoTech />
 
       {/* ---------- JORNADA DO PACIENTE ---------- */}
       <section className="relative mt-32 overflow-hidden py-24">
@@ -233,18 +243,24 @@ export default function HomePage() {
         </div>
       </section>
 
+      <EcgDivider />
+
       {/* ---------- AUTORIDADE ---------- */}
       <section className="mx-auto mt-8 max-w-7xl px-5 sm:px-8">
         <div className="grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr]">
           <Reveal className="relative order-2 mx-auto w-full max-w-sm lg:order-1">
             <div className="glass overflow-hidden rounded-[1.8rem] p-2">
+              <div className="overflow-hidden rounded-[1.4rem]">
+              <Parallax speed={0.16}>
               <Image
                 src="/images/dr-jose-victor-jaleco.jpg"
                 alt="Dr. José Victor de jaleco médico com o nome bordado"
                 width={600}
                 height={900}
-                className="rounded-[1.4rem] object-cover"
+                className="scale-[1.12] rounded-[1.4rem] object-cover"
               />
+              </Parallax>
+              </div>
             </div>
           </Reveal>
           <div className="order-1 lg:order-2">
@@ -264,7 +280,7 @@ export default function HomePage() {
                     {c.label}
                   </dt>
                   <dd className="font-mono-tech order-1 block text-2xl font-semibold text-[var(--accent)]">
-                    {c.value}
+                    <Counter value={c.value} />
                   </dd>
                 </Reveal>
               ))}

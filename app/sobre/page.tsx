@@ -116,6 +116,10 @@ export default function SobrePage() {
           </>
         }
         lede="Médico pela PUC Goiás (Magna Cum Laude), pesquisador com publicações em dor, intervenção guiada por imagem e trauma. Clínica médica, medicina endocanabinoide e medicina esportiva — em Goiânia e por telemedicina."
+        breadcrumbs={[
+          { name: "Início", path: "/" },
+          { name: "Sobre", path: "/sobre" },
+        ]}
       />
 
       {/* Bio + foto */}

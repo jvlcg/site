@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { whatsappLink } from "@/lib/site-config";
 import { Reveal } from "./Reveal";
+import { MagneticButton } from "./MagneticButton";
 
 type Props = {
   title?: string;
@@ -28,15 +29,17 @@ export function CtaSection({
             {lede}
           </Reveal>
           <Reveal delay={200} className="mt-9 flex flex-wrap items-center justify-center gap-4">
-            <a
-              href={whatsappLink("particular", message)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary"
-            >
-              Agendar pelo WhatsApp
-              <span aria-hidden="true">→</span>
-            </a>
+            <MagneticButton>
+              <a
+                href={whatsappLink("particular", message)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary"
+              >
+                Agendar pelo WhatsApp
+                <span aria-hidden="true">→</span>
+              </a>
+            </MagneticButton>
             <Link href="/contato" className="btn-ghost">
               Informações de contato
             </Link>

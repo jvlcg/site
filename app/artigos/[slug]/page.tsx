@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { Reveal } from "@/components/ui/Reveal";
+import { ReadingProgress } from "@/components/ui/ReadingProgress";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
 import { CtaSection } from "@/components/ui/CtaSection";
 import { getAllArticles, getArticle } from "@/lib/articles";
@@ -29,7 +30,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: article.title,
       description: article.description,
       publishedTime: article.date,
+      modifiedTime: article.updated ?? article.date,
       authors: [site.name],
+      section: article.category,
+      tags: article.tags,
+      images: [
+        {
+          url: `/og/artigos/${slug}.png`,
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.description,
+      images: [`/og/artigos/${slug}.png`],
     },
   };
 }
@@ -45,10 +63,26 @@ export default async function ArtigoPage({ params }: Props) {
 
   return (
     <>
-      <article className="relative overflow-hidden pt-40 sm:pt-48">
+      <ReadingProgress />
+      <article className="relative overflow-hidden pt-32 sm:pt-36">
         <div className="mesh-bg opacity-50" />
         <div className="relative mx-auto max-w-3xl px-5 sm:px-8">
-          <Reveal as="p" className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
+          <nav aria-label="Trilha de navegação" className="mb-7">
+            <ol className="font-mono-tech flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.68rem] uppercase tracking-[0.14em] text-faint">
+              <li className="flex items-center gap-2">
+                <Link href="/" className="transition-colors hover:text-[var(--fg)]">Início</Link>
+                <span aria-hidden="true" className="opacity-50">/</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Link href="/artigos" className="transition-colors hover:text-[var(--fg)]">Artigos</Link>
+                <span aria-hidden="true" className="opacity-50">/</span>
+              </li>
+              <li>
+                <span aria-current="page" className="text-[var(--accent)]">{article.category}</span>
+              </li>
+            </ol>
+          </nav>
+          <Reveal as="p" className="eyebrow">
             {article.category}
           </Reveal>
           <Reveal

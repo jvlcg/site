@@ -2,6 +2,18 @@ import { site } from "./site-config";
 
 /** JSON-LD builders — Schema.org para motores de busca e LLMs. */
 
+/** Telefone principal (WhatsApp particular) em E.164. */
+const telephone = `+${site.whatsapp.particular}`;
+
+const postalAddress = {
+  "@type": "PostalAddress",
+  streetAddress: `${site.address.clinic}, ${site.address.street}`,
+  addressLocality: site.address.city,
+  addressRegion: site.address.stateName,
+  postalCode: site.address.zip,
+  addressCountry: site.address.country,
+};
+
 export function physicianSchema() {
   return {
     "@context": "https://schema.org",
@@ -14,7 +26,9 @@ export function physicianSchema() {
     url: site.url,
     image: `${site.url}/images/dr-jose-victor-jaleco.jpg`,
     email: site.email,
-    medicalSpecialty: ["Clínica Médica"],
+    telephone,
+    priceRange: "$$$",
+    medicalSpecialty: ["Clínica Médica", "Medicina Esportiva"],
     knowsAbout: [
       "Medicina endocanabinoide",
       "Sistema endocanabinoide",
@@ -22,6 +36,9 @@ export function physicianSchema() {
       "Check-up e medicina preventiva",
       "Medicina esportiva",
       "Dor crônica",
+      "Insônia",
+      "Ansiedade",
+      "Emagrecimento",
       "Telemedicina",
     ],
     alumniOf: {
@@ -29,14 +46,9 @@ export function physicianSchema() {
       name: "Pontifícia Universidade Católica de Goiás",
       sameAs: "https://www.pucgoias.edu.br/",
     },
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: `${site.address.clinic}, ${site.address.street}`,
-      addressLocality: site.address.city,
-      addressRegion: site.address.state,
-      postalCode: site.address.zip,
-      addressCountry: site.address.country,
-    },
+    worksFor: { "@id": `${site.url}/#clinic` },
+    address: postalAddress,
+    areaServed: site.areaServed.map((name) => ({ "@type": "AdministrativeArea", name })),
     availableService: [
       {
         "@type": "MedicalProcedure",
@@ -50,6 +62,65 @@ export function physicianSchema() {
       },
     ],
     sameAs: [...site.sameAs],
+  };
+}
+
+/** MedicalClinic + LocalBusiness — pilar do SEO local (Google Maps/Business). */
+export function medicalClinicSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": ["MedicalClinic", "LocalBusiness"],
+    "@id": `${site.url}/#clinic`,
+    name: `${site.shortName} — ${site.address.clinic}`,
+    description: site.description,
+    url: site.url,
+    image: `${site.url}/images/dr-jose-victor-jaleco.jpg`,
+    telephone,
+    email: site.email,
+    priceRange: "$$$",
+    currenciesAccepted: "BRL",
+    address: postalAddress,
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: site.geo.lat,
+      longitude: site.geo.lng,
+    },
+    hasMap: site.address.mapsUrl,
+    areaServed: site.areaServed.map((name) => ({ "@type": "AdministrativeArea", name })),
+    medicalSpecialty: ["Clínica Médica", "Medicina Esportiva"],
+    availableService: [
+      { "@type": "MedicalProcedure", name: "Medicina endocanabinoide" },
+      { "@type": "MedicalProcedure", name: "Clínica médica e check-up" },
+      { "@type": "MedicalProcedure", name: "Medicina esportiva" },
+      { "@type": "MedicalProcedure", name: "Telemedicina" },
+    ],
+    openingHoursSpecification: site.openingHours.map((h) => ({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: h.days,
+      opens: h.opens,
+      closes: h.closes,
+    })),
+    physician: { "@id": `${site.url}/#physician` },
+    sameAs: [...site.sameAs, site.googleReviewsUrl],
+  };
+}
+
+/** Service por página de atuação (rich result de serviço). */
+export function serviceSchema(opts: {
+  name: string;
+  description: string;
+  path: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "MedicalProcedure",
+    name: opts.name,
+    description: opts.description,
+    url: `${site.url}${opts.path}`,
+    procedureType: "https://schema.org/NoninvasiveProcedure",
+    provider: { "@id": `${site.url}/#physician` },
+    availableService: { "@id": `${site.url}/#clinic` },
+    areaServed: site.areaServed.map((name) => ({ "@type": "AdministrativeArea", name })),
   };
 }
 
@@ -104,6 +175,11 @@ export function medicalWebPageSchema(opts: {
     inLanguage: "pt-BR",
     reviewedBy: { "@id": `${site.url}/#physician` },
     lastReviewed: new Date().toISOString().split("T")[0],
+    isPartOf: { "@id": `${site.url}/#website` },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", "[data-speakable]"],
+    },
   };
 }
 

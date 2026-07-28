@@ -4,7 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FaqAccordion, type FaqItem } from "@/components/ui/FaqAccordion";
 import { CtaSection } from "@/components/ui/CtaSection";
-import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema } from "@/lib/schema";
+import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema, serviceSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: "Medicina Esportiva e Performance em Goiânia",
@@ -74,6 +74,10 @@ export default function MedicinaEsportivaPage() {
         }
         lede="Saúde de quem se move: avaliação criteriosa, manejo de dor com base científica e planejamento de retorno ao esporte com critérios objetivos."
         scene="wave"
+        breadcrumbs={[
+          { name: "Início", path: "/" },
+          { name: "Medicina Esportiva", path: "/medicina-esportiva" },
+        ]}
       />
 
       <section className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -136,6 +140,12 @@ export default function MedicinaEsportivaPage() {
           medicalWebPageSchema({
             title: "Medicina Esportiva e Performance",
             description: metadata.description as string,
+            path: "/medicina-esportiva",
+          }),
+          serviceSchema({
+            name: "Medicina Esportiva e Performance",
+            description:
+              "Avaliação clínica de quem treina, manejo de dor, prevenção de lesões e retorno seguro ao esporte.",
             path: "/medicina-esportiva",
           }),
           faqSchema(faq),

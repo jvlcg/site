@@ -31,10 +31,19 @@ export const site = {
     street: "Rua 94, Setor Sul",
     city: "Goiânia",
     state: "GO",
+    stateName: "Goiás",
     zip: "74080-100",
     country: "BR",
     mapsUrl: "https://maps.google.com/?q=Cl%C3%ADnica+Fisiogyn+Rua+94+Setor+Sul+Goi%C3%A2nia",
   },
+  /** Coordenadas aproximadas do Setor Sul, Goiânia (ajustar ao ponto exato do consultório). */
+  geo: { lat: -16.6947, lng: -49.2559 },
+  /** Abrangência para SEO local + telemedicina nacional. */
+  areaServed: ["Goiânia", "Aparecida de Goiânia", "Goiás", "Brasil"],
+  /** Horários — placeholder editável (o usuário optou por não exibir publicamente). */
+  openingHours: [
+    { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "08:00", closes: "18:00" },
+  ],
   sameAs: [
     "http://lattes.cnpq.br/5293466472803267",
     "https://orcid.org/0000-0003-2242-2469",

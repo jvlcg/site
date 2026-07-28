@@ -4,7 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FaqAccordion, type FaqItem } from "@/components/ui/FaqAccordion";
 import { CtaSection } from "@/components/ui/CtaSection";
-import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema } from "@/lib/schema";
+import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema, serviceSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: "Clínica Médica e Check-up em Goiânia — médico particular",
@@ -87,6 +87,10 @@ export default function ClinicaMedicaPage() {
         }
         lede="Consultas com tempo de escuta real, prevenção guiada por risco individual e acompanhamento contínuo — de adolescentes (a partir de 14 anos) a idosos. A base que organiza todo o resto do seu cuidado."
         scene="wave"
+        breadcrumbs={[
+          { name: "Início", path: "/" },
+          { name: "Clínica Médica", path: "/clinica-medica" },
+        ]}
       />
 
       <section className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -149,6 +153,12 @@ export default function ClinicaMedicaPage() {
           medicalWebPageSchema({
             title: "Clínica Médica e Check-up",
             description: metadata.description as string,
+            path: "/clinica-medica",
+          }),
+          serviceSchema({
+            name: "Clínica Médica e Check-up",
+            description:
+              "Consultas de clínica médica, check-up estratégico e acompanhamento longitudinal em Goiânia e por telemedicina.",
             path: "/clinica-medica",
           }),
           faqSchema(faq),

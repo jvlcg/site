@@ -25,6 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(a.updated ?? a.date),
     changeFrequency: "yearly" as const,
     priority: 0.6,
+    images: [`${site.url}/artigos/${a.slug}/opengraph-image`],
   }));
 
   return [...staticRoutes, ...articleRoutes];

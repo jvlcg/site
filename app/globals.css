@@ -173,6 +173,45 @@ body {
   }
 }
 
+/* Borda holográfica em gradiente (para cards/tiles "tech") */
+.holo {
+  position: relative;
+  isolation: isolate;
+}
+.holo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(130deg, color-mix(in oklab, var(--accent) 55%, transparent), transparent 40%, transparent 60%, color-mix(in oklab, var(--color-teal-flow) 45%, transparent));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.5;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+.holo:hover::before { opacity: 1; }
+
+/* Divisor ECG animado */
+@keyframes ecg-dash {
+  to { stroke-dashoffset: -1000; }
+}
+.ecg-line {
+  stroke-dasharray: 6 10;
+  animation: ecg-dash 14s linear infinite;
+}
+.ecg-pulse {
+  stroke-dasharray: 220;
+  stroke-dashoffset: 220;
+  animation: ecg-sweep 3.4s cubic-bezier(0.7, 0, 0.3, 1) infinite;
+}
+@keyframes ecg-sweep {
+  0% { stroke-dashoffset: 220; }
+  55%, 100% { stroke-dashoffset: -220; }
+}
+
 .card-hover {
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.5s, box-shadow 0.5s;
 }
@@ -218,6 +257,15 @@ body {
 .btn-ghost:hover {
   border-color: color-mix(in oklab, var(--accent) 55%, transparent);
   transform: translateY(-2px);
+}
+
+/* ---------- Route transition (template.tsx) ---------- */
+@keyframes route-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.route-enter {
+  animation: route-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* ---------- Scroll reveal (activated by .reveal-ready on <html>) ---------- */

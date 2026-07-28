@@ -25,6 +25,10 @@ export default function ArtigosPage() {
           </>
         }
         lede="Conteúdo escrito com o mesmo rigor das publicações científicas: referências claras, linguagem acessível e zero promessas vazias."
+        breadcrumbs={[
+          { name: "Início", path: "/" },
+          { name: "Artigos", path: "/artigos" },
+        ]}
       />
 
       <section className="mx-auto max-w-7xl px-5 sm:px-8">

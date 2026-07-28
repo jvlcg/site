@@ -5,7 +5,9 @@ import { MotionProvider } from "@/components/motion/MotionProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
-import { JsonLd, physicianSchema, websiteSchema } from "@/lib/schema";
+import { GyroPrompt } from "@/components/three/GyroPrompt";
+import { CursorGlow } from "@/components/ui/CursorGlow";
+import { JsonLd, physicianSchema, websiteSchema, medicalClinicSchema } from "@/lib/schema";
 import { site } from "@/lib/site-config";
 import "./globals.css";
 
@@ -63,6 +65,12 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
+  other: {
+    "geo.region": "BR-GO",
+    "geo.placename": "Goiânia",
+    "geo.position": `${site.geo.lat};${site.geo.lng}`,
+    ICBM: `${site.geo.lat}, ${site.geo.lng}`,
+  },
 };
 
 export const viewport: Viewport = {
@@ -78,13 +86,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
         <ThemeProvider>
           <MotionProvider>
+            <CursorGlow />
             <Header />
             <main id="conteudo">{children}</main>
             <Footer />
             <WhatsAppFab />
+            <GyroPrompt />
           </MotionProvider>
         </ThemeProvider>
-        <JsonLd data={[physicianSchema(), websiteSchema()]} />
+        <JsonLd data={[physicianSchema(), medicalClinicSchema(), websiteSchema()]} />
       </body>
     </html>
   );

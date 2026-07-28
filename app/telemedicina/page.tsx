@@ -78,6 +78,10 @@ export default function TelemedicinaPage() {
         }
         lede="Consulta por vídeo com a mesma profundidade do atendimento presencial: tempo de escuta, análise criteriosa e documentos digitais válidos em todo o Brasil."
         scene="particles"
+        breadcrumbs={[
+          { name: "Início", path: "/" },
+          { name: "Telemedicina", path: "/telemedicina" },
+        ]}
       />
 
       <section className="mx-auto max-w-7xl px-5 sm:px-8">

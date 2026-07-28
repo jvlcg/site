@@ -5,7 +5,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FaqAccordion, type FaqItem } from "@/components/ui/FaqAccordion";
 import { CtaSection } from "@/components/ui/CtaSection";
 import { ThreeScene } from "@/components/three/ThreeScene";
-import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema } from "@/lib/schema";
+import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema, serviceSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: "Medicina Endocanabinoide em Goiânia e por telemedicina",
@@ -114,9 +114,20 @@ const faq: FaqItem[] = [
 export default function EndocanabinoidePage() {
   return (
     <>
-      <section className="relative overflow-hidden pt-40 pb-16 sm:pt-48">
+      <section className="relative overflow-hidden pt-32 pb-16 sm:pt-36">
         <div className="mesh-bg" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[1.05fr_0.95fr]">
+        <nav aria-label="Trilha de navegação" className="relative mx-auto max-w-7xl px-5 sm:px-8">
+          <ol className="font-mono-tech flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.7rem] uppercase tracking-[0.14em] text-faint">
+            <li className="flex items-center gap-2">
+              <a href="/" className="transition-colors hover:text-[var(--fg)]">Início</a>
+              <span aria-hidden="true" className="opacity-50">/</span>
+            </li>
+            <li>
+              <span aria-current="page" className="text-[var(--accent)]">Medicina Endocanabinoide</span>
+            </li>
+          </ol>
+        </nav>
+        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-5 pt-8 sm:px-8 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
             <Reveal as="p" className="eyebrow mb-5">
               Medicina Endocanabinoide
@@ -135,8 +146,8 @@ export default function EndocanabinoidePage() {
               boa medicina exige.
             </Reveal>
           </div>
-          <div className="relative hidden h-[420px] lg:block">
-            <ThreeScene kind="network" className="absolute inset-0" />
+          <div className="relative hidden h-[440px] lg:block">
+            <ThreeScene kind="neural" className="absolute inset-0" />
           </div>
         </div>
       </section>
@@ -303,6 +314,12 @@ export default function EndocanabinoidePage() {
           medicalWebPageSchema({
             title: "Medicina Endocanabinoide",
             description: metadata.description as string,
+            path: "/medicina-endocanabinoide",
+          }),
+          serviceSchema({
+            name: "Medicina Endocanabinoide",
+            description:
+              "Avaliação médica do sistema endocanabinoide, indicação individualizada e prescrição dentro das normas da Anvisa e do CFM.",
             path: "/medicina-endocanabinoide",
           }),
           faqSchema(faq),
