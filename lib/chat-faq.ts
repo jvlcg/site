@@ -188,7 +188,6 @@ Se você já está em acompanhamento com outros médicos, é útil levar exames 
   },
   {
     categoria: "Tratamentos",
-    soPagina: true,
     q: "O que devo levar na primeira consulta?",
     a: `Leve o que você tiver em mãos:
 
@@ -235,7 +234,6 @@ O que sustenta a prática é a formação continuada e a produção científica:
   },
   {
     categoria: "Consultório",
-    soPagina: true,
     q: "Atende crianças?",
     a: `O atendimento é a partir de **14 anos**, contemplando adolescentes, adultos e idosos.
 
@@ -243,7 +241,6 @@ Para crianças menores de 14 anos, o ideal é procurar um pediatra, que tem form
   },
   {
     categoria: "Agendamento",
-    soPagina: true,
     q: "Como funciona o retorno?",
     a: `As consultas de retorno são programadas conforme a necessidade do seu caso — em geral para reavaliar resultados de exames, medir a resposta ao plano terapêutico e ajustar condutas.
 
@@ -252,10 +249,210 @@ O acompanhamento é parte central do método: acompanhar ao longo do tempo permi
 O agendamento do retorno é feito pelo mesmo canal, no WhatsApp.`,
     cta: true,
   },
+
+  // ---------------- Agendamento (cauda longa) ----------------
+  {
+    categoria: "Agendamento",
+    q: "Posso remarcar ou cancelar a consulta?",
+    a: `Sim. Avise pelo WhatsApp com a maior antecedência possível e a consulta é remarcada para outro horário.
+
+O aviso antecipado permite oferecer o horário a outro paciente que esteja esperando — por isso ele importa.`,
+    cta: true,
+  },
+  {
+    categoria: "Agendamento",
+    soPagina: true,
+    q: "Quem responde o WhatsApp?",
+    a: `No canal de atendimento particular, quem responde é a equipe direta do consultório — não é robô, nem central de atendimento terceirizada.
+
+Existe um segundo canal, conduzido pela secretaria, para atendimento por convênio. Os dois estão na página de Contato.
+
+Nenhum dos canais faz avaliação clínica por mensagem: a orientação sobre o seu caso acontece na consulta.`,
+    cta: true,
+  },
+  {
+    categoria: "Agendamento",
+    soPagina: true,
+    q: "Emitem recibo e nota fiscal?",
+    a: `Sim. É emitido recibo do atendimento particular, com os dados necessários para você solicitar reembolso ao seu plano de saúde ou lançar na declaração de imposto de renda.
+
+As regras e o percentual de reembolso são definidos pelo seu plano — vale conferir com a operadora antes.`,
+  },
+  {
+    categoria: "Agendamento",
+    q: "Atendem em caráter de urgência?",
+    a: `Não. O consultório trabalha com agendamento e **não é um serviço de urgência ou emergência**.
+
+Se você tem sintomas graves ou de início súbito — dor no peito, falta de ar, perda de força ou fala, desmaio, sangramento importante, febre alta com prostração —, procure um pronto-socorro ou ligue **192 (SAMU)** imediatamente.
+
+Para apoio emocional em situação de crise, o **CVV atende no 188**, 24 horas, gratuitamente.`,
+  },
+
+  // ---------------- Consultório (cauda longa) ----------------
+  {
+    categoria: "Consultório",
+    q: "Tem estacionamento no local?",
+    a: `A clínica fica no Setor Sul, região central de Goiânia, com estacionamento nas proximidades e vagas na via.
+
+Como é uma área movimentada em horário comercial, vale reservar alguns minutos a mais na sua chegada.`,
+  },
+  {
+    categoria: "Consultório",
+    soPagina: true,
+    q: "Posso levar um acompanhante?",
+    a: `Sim. Você pode vir acompanhado, e em alguns casos isso ajuda bastante — sobretudo quando há histórico longo, muitos medicamentos em uso ou quando o paciente é idoso.
+
+Para adolescentes a partir de 14 anos, a presença de um responsável é recomendada.`,
+  },
+  {
+    categoria: "Consultório",
+    soPagina: true,
+    q: "O local é acessível para cadeirantes?",
+    a: `A clínica fica em um edifício com acesso por elevador. Para necessidades específicas de acessibilidade ou mobilidade, avise no agendamento pelo WhatsApp — assim a recepção pode se organizar para te receber melhor.`,
+    cta: true,
+  },
+
+  // ---------------- Telemedicina (cauda longa) ----------------
+  {
+    categoria: "Telemedicina",
+    q: "A receita da teleconsulta vale na farmácia?",
+    a: `Sim. As prescrições são emitidas com **assinatura digital certificada no padrão ICP-Brasil**, que tem a mesma validade legal da receita em papel assinada à mão.
+
+A farmácia valida o documento pelo código de verificação que acompanha o arquivo. Isso vale em todo o território nacional.
+
+Você recebe o arquivo digital e pode apresentá-lo pelo celular ou impresso.`,
+    cta: true,
+  },
+  {
+    categoria: "Telemedicina",
+    q: "Preciso instalar algum aplicativo?",
+    a: `Não. A consulta acontece por um link de videochamada que abre no próprio navegador do celular ou do computador.
+
+O que você precisa: câmera, microfone, conexão estável e um lugar reservado, onde possa conversar com privacidade.
+
+Se a conexão falhar durante a consulta, o atendimento é retomado — isso é combinado no momento.`,
+    cta: true,
+  },
+  {
+    categoria: "Telemedicina",
+    q: "Telemedicina serve para o meu caso?",
+    a: `Para muitas situações sim: acompanhamento de condições crônicas já em seguimento, revisão de exames, ajuste de medicação, orientação sobre sono, ansiedade e hábitos, e boa parte das consultas de retorno.
+
+Em outras, o exame físico é indispensável — e nesse caso você será orientado com honestidade a buscar avaliação presencial. **A teleconsulta não é usada para substituir um exame necessário.**
+
+Na dúvida, descreva brevemente o seu caso no agendamento: a orientação sobre a modalidade mais adequada vem antes de você confirmar.`,
+    cta: true,
+  },
+  {
+    categoria: "Telemedicina",
+    soPagina: true,
+    q: "A consulta online é sigilosa?",
+    a: `Sim. O sigilo médico se aplica integralmente à teleconsulta, exatamente como na consulta presencial — é um dever ético previsto no Código de Ética Médica.
+
+As consultas **não são gravadas**. Os registros do prontuário seguem as mesmas regras de guarda e confidencialidade do atendimento presencial.
+
+Vale você também escolher um ambiente reservado durante a chamada.`,
+  },
+
+  // ---------------- Tratamentos (cauda longa) ----------------
+  {
+    categoria: "Tratamentos",
+    soPagina: true,
+    q: "Quanto tempo leva para ver resultado?",
+    a: `Depende inteiramente da condição, do ponto de partida e da resposta individual — e é justamente por isso que **nenhum prazo é prometido aqui**.
+
+O que existe é método: metas definidas junto com você no início, reavaliações programadas e ajuste de conduta quando o resultado não vem.
+
+Desconfie de qualquer promessa de resultado em prazo fixo, na medicina em geral.`,
+  },
+  {
+    categoria: "Tratamentos",
+    q: "Vou precisar tomar remédio para sempre?",
+    a: `Nem sempre. Algumas condições exigem tratamento contínuo; outras melhoram com mudanças de hábito, sono, alimentação e atividade física, permitindo reduzir ou suspender medicações com segurança.
+
+Essa decisão é sempre clínica e individual, tomada com base em reavaliação — nunca por conta própria. Suspender medicação sem orientação pode ser perigoso.
+
+O objetivo do acompanhamento é usar o mínimo necessário pelo tempo necessário.`,
+    cta: true,
+  },
+  {
+    categoria: "Tratamentos",
+    soPagina: true,
+    q: "Posso continuar com meu outro médico?",
+    a: `Sim, e isso costuma ser desejável. O acompanhamento aqui não substitui nem exclui outros profissionais — cardiologista, endocrinologista, psiquiatra, fisioterapeuta ou qualquer outro que já faça parte do seu cuidado.
+
+Quando útil, é possível emitir relatório para comunicação entre os profissionais. Medicina boa é feita em rede, não em disputa.`,
+    cta: true,
+  },
+  {
+    categoria: "Tratamentos",
+    q: "Existe cura pela medicina endocanabinoide?",
+    a: `Não é assim que a coisa funciona, e é importante ser direto: **não há promessa de cura**.
+
+O que a literatura descreve, para condições específicas, é possibilidade de melhora de sintomas — com evidência que varia muito de uma condição para outra, sendo mais consistente em algumas e ainda preliminar em outras.
+
+Por isso a avaliação é caso a caso: se a evidência não sustentar a indicação para a sua situação, você vai ouvir isso com clareza, e não uma proposta de tratamento.`,
+    cta: true,
+  },
+  {
+    categoria: "Tratamentos",
+    q: "Faz acompanhamento de emagrecimento?",
+    a: `Sim, como parte da clínica médica — com investigação antes de conduta.
+
+Isso significa avaliar o que está por trás: função da tireoide, resistência à insulina, sono, uso de medicações que favorecem ganho de peso, padrão alimentar e nível de atividade física.
+
+O acompanhamento é clínico e longitudinal, integrado a outros profissionais quando indicado. **Não há fórmula, protocolo fechado nem promessa de perda de peso em prazo determinado.**`,
+    cta: true,
+  },
+  {
+    categoria: "Tratamentos",
+    soPagina: true,
+    q: "Preciso parar meus medicamentos antes da consulta?",
+    a: `**Não.** Não interrompa nenhuma medicação por conta própria antes da consulta — algumas suspensões abruptas trazem risco real.
+
+Leve a lista completa do que você usa, incluindo doses, suplementos e fitoterápicos. Qualquer ajuste é decidido na avaliação, com você.`,
+    cta: true,
+  },
+
+  // ---------------- Sobre (cauda longa) ----------------
+  {
+    categoria: "Sobre",
+    q: "Como confiro o registro no CRM?",
+    a: `Você pode e deve conferir. O Conselho Federal de Medicina mantém uma consulta pública gratuita em **portal.cfm.org.br**, onde qualquer pessoa verifica a situação de um médico pelo nome ou número de registro.
+
+O registro é **${site.crm}**. A produção científica pode ser conferida de forma independente no Currículo Lattes (CNPq) e no ORCID, ambos linkados no rodapé do site.
+
+Verificar credenciais é um direito seu — e um bom hábito com qualquer profissional de saúde.`,
+  },
+  {
+    categoria: "Sobre",
+    soPagina: true,
+    q: "Onde vejo as avaliações de outros pacientes?",
+    a: `As avaliações ficam no perfil do Google, fora deste site — elas são escritas por pacientes, publicadas em plataforma independente, e não passam por edição do consultório.
+
+Você encontra o link na página inicial e na página de Contato.
+
+Publicar depoimentos de pacientes dentro do próprio site é vedado pelas normas de publicidade médica no Brasil, o que é uma proteção para você: a avaliação em plataforma de terceiros é mais difícil de manipular.`,
+  },
+  {
+    categoria: "Sobre",
+    q: "O site dá diagnóstico ou orientação médica?",
+    a: `Não, e isso é proposital. Todo o conteúdo aqui — incluindo este FAQ, o blog e o assistente virtual — é **educativo** e não substitui uma consulta.
+
+Diagnóstico exige história clínica, exame físico quando indicado e interpretação de exames no contexto da sua vida. Nada disso pode ser feito por um texto ou por um chat.
+
+Use o conteúdo para entender melhor, formular boas perguntas e decidir procurar avaliação — não para se autodiagnosticar ou se automedicar.`,
+  },
 ];
 
 /** Todas as perguntas (chat + exclusivas da página). */
 export const FAQ_COMPLETO: FaqEntry[] = [...FAQ, ...FAQ_EXTRA];
+
+/**
+ * Perguntas clicáveis do chat — `soPagina` é o único interruptor.
+ * Respostas longas demais para o balão do chat ficam só na página.
+ */
+export const FAQ_CHAT: FaqEntry[] = FAQ_COMPLETO.filter((f) => !f.soPagina);
 
 export const CATEGORIAS = [
   "Agendamento",

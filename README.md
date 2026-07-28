@@ -58,6 +58,34 @@ oferece agendamento. O rodapé do chat traz o aviso de que é um assistente auto
 
 Para ajustar o que o assistente sabe ou como responde, edite `lib/knowledge.ts`.
 
+### Como ativar a IA (passo a passo)
+
+1. Acesse **console.anthropic.com** e crie uma conta (ou entre na sua).
+2. Em **Billing**, adicione créditos. O modelo padrão é o Haiku, o mais barato da
+   linha — o custo de um chat de site institucional é de centavos por conversa.
+3. Vá em **API Keys → Create Key**, dê um nome (ex.: `site-drjvlcg`) e **copie a
+   chave**. Ela só aparece uma vez.
+4. Na Vercel, abra o projeto → **Settings → Environment Variables** e crie:
+   - Nome: `ANTHROPIC_API_KEY`
+   - Valor: a chave copiada
+   - Ambientes: marque *Production*, *Preview* e *Development*
+5. Vá em **Deployments** e clique em **Redeploy** no último deploy. Variáveis de
+   ambiente só entram em vigor em um novo deploy.
+
+**Nunca** cole a chave em um arquivo do repositório — ela ficaria pública no
+GitHub. O lugar dela é só o painel da Vercel.
+
+### Como conferir se a IA ligou
+
+Abra no navegador: **`https://drjvlcg.com.br/api/chat`**
+
+- `{"ia":true,...}` → IA ativa e respondendo.
+- `{"ia":false,"motivo":"..."}` → o campo `motivo` diz o que falta (chave ausente,
+  chave inválida, sem créditos). A rota nunca mostra a chave.
+
+Se a IA estiver fora, o chat **não quebra**: ele volta sozinho para o modo reserva
+por palavras-chave, e o visitante continua atendido normalmente.
+
 ## FAQ — uma fonte, três destinos
 
 As perguntas frequentes vivem em **`lib/chat-faq.ts`** e alimentam três lugares ao
@@ -99,6 +127,25 @@ Editar `lib/publications.ts`. Os dados atuais foram extraídos do **Currículo L
 (atualizado em 31/01/2026)**: 6 artigos em periódicos, 1 livro organizado, 1 capítulo,
 7 trabalhos completos em anais e 13 apresentações em congressos. As estatísticas da
 home e da página vêm dessas contagens.
+
+## Marca (logo)
+
+O perfil de cabeça é um **traçado geométrico próprio**, não o contorno bruto da
+foto. O contorno da foto trazia ombros e detalhes de cabelo (87 curvas) e virava
+um borrão abaixo de 40px — além de ficar descentralizado, porque o centro da
+massa caía bem abaixo do centro do círculo.
+
+**Trocar de variante:** edite `LOGO_VARIANT` em `components/layout/Logo.tsx`.
+São seis: `retrato` (ativa), `folga`, `livre`, `contorno`, `disco`, `sinapses`.
+
+Depois de trocar, rode `node scripts/gen-brand.mjs` para regerar `public/brand/`
+e os ícones do PWA a partir da **mesma geometria** do componente — é o que
+impede o site e o favicon de divergirem. O `app/icon.svg` é o favicon e precisa
+ser ajustado à mão se a variante mudar (ele é estático por exigência do Next).
+
+`public/brand/` traz, de cada variante: SVG vetorial (escuro, claro e mono para
+carimbo/impressão em uma cor) e PNG 512/192 — prontos para redes sociais,
+papelaria e WhatsApp Business.
 
 ## Banco de fotos (`public/images/`)
 

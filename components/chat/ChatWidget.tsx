@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { LogoMark } from "@/components/layout/Logo";
 import { site, whatsappLink } from "@/lib/site-config";
-import { FAQ, CATEGORIAS, type FaqEntry } from "@/lib/chat-faq";
+import { FAQ_CHAT, CATEGORIAS, type FaqEntry } from "@/lib/chat-faq";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -55,6 +55,10 @@ export function ChatWidget() {
   }, []);
 
   useEffect(() => {
+    // Só acompanha a conversa depois que ela começa. Na abertura o painel fica
+    // no topo, senão a lista de perguntas empurra a saudação e as abas de
+    // categoria para fora da área visível.
+    if (msgs.length <= 1 && !loading) return;
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
   }, [msgs, loading]);
 
@@ -252,7 +256,7 @@ export function ChatWidget() {
 
                 {/* perguntas da categoria */}
                 <div className="space-y-2">
-                  {FAQ.filter((f) => f.categoria === cat).map((f) => (
+                  {FAQ_CHAT.filter((f) => f.categoria === cat).map((f) => (
                     <button
                       key={f.q}
                       type="button"

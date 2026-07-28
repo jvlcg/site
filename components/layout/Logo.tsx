@@ -4,23 +4,97 @@ import { useId } from "react";
 import { site } from "@/lib/site-config";
 
 /**
- * Marca "Dr.JV" — cabeça de perfil (vetorizada de foto profissional em
- * contraluz) centralizada em um anel, com o monograma "JV" recortado em
- * espaço negativo na região do crânio: a ideia/pensamento do médico.
- * O anel usa currentColor (adapta ao tema); a cabeça usa o gradiente da marca.
+ * Marca "Dr.JV" — perfil de cabeça com o monograma "JV" no crânio: a ideia que
+ * o médico está pensando.
+ *
+ * O perfil é um traçado geométrico próprio (não o contorno bruto da foto, que
+ * carregava ombros e detalhes de cabelo — virava um borrão abaixo de 40px).
+ * Crânio, testa, nariz, lábios, queixo e pescoço são desenhados como curvas
+ * limpas, de modo que a silhueta continua legível a 32px no favicon.
+ *
+ * Para trocar de variante, mude `LOGO_VARIANT` abaixo — todo o site, o favicon
+ * e as imagens de compartilhamento acompanham.
  */
+
+export type LogoVariant =
+  | "retrato" // cabeça e pescoço recortados pelo anel
+  | "folga" // cabeça inteira dentro do anel, com respiro
+  | "livre" // sem anel
+  | "contorno" // silhueta em linha, JV sólido
+  | "disco" // disco cheio, cabeça e JV em negativo
+  | "sinapses"; // contorno + rede de sinapses
+
+export const LOGO_VARIANT: LogoVariant = "retrato";
+
+/** Perfil virado para a direita. bbox x 25.4–81, y 9–92. */
 const HEAD =
-  "M 257.730 69.606 C 249.800 72.044, 244 78.421, 244 84.703 C 244 87.478, 243.325 91.662, 242.500 94 C 241.675 96.338, 241 99.784, 241 101.658 C 241 109.316, 235.035 116.518, 226.694 118.930 C 224.387 119.597, 220.537 121.524, 218.138 123.214 C 214.088 126.065, 213.462 126.214, 209.406 125.286 C 201.321 123.436, 200.624 124.940, 197.417 151.163 C 195.725 164.998, 195.719 166.168, 197.312 171.898 C 201.398 186.595, 195.661 199.584, 177.669 216.363 C 145.234 246.615, 119.868 304.139, 130.110 324.216 C 133.075 330.027, 132.303 334.203, 125.561 348.851 C 113.821 374.357, 110.393 396.593, 115.511 414.041 C 122.353 437.366, 120.472 444.331, 102.211 463.281 C 94.763 471.010, 87.501 479.806, 82.962 486.596 C 75.563 497.663, 63.378 514.863, 57.216 522.939 C 52.066 529.687, 44.323 545.869, 42.982 552.684 C 39.844 568.635, 48.851 579.250, 69.561 584.010 C 90.271 588.769, 93.858 599.855, 83.632 627.500 C 79.318 639.160, 80.442 646.012, 88.372 656.401 C 92.531 661.849, 92.995 665.653, 90.075 670.382 C 84.040 680.160, 85.252 688.679, 93.778 696.409 C 113.085 713.914, 113.959 716.325, 106.538 731.581 C 96.333 752.557, 95.508 767.125, 103.610 783.267 C 112.807 801.592, 127.104 809.499, 167.269 818.473 C 195.295 824.735, 198.936 825.186, 228 825.998 C 262.052 826.948, 263.542 827.308, 272.992 836.849 C 279.585 843.505, 292.763 862.314, 297.096 871.250 L 299.399 876 507.981 876 L 716.564 876 718.450 865.384 C 721.771 846.691, 720.274 840.028, 710.849 831.554 C 701.700 823.329, 695.847 820.658, 688.296 821.264 C 678.461 822.054, 675.724 817.591, 674.435 798.669 C 674.092 793.626, 673.384 787.925, 672.863 786 C 672.341 784.075, 671.073 778.225, 670.045 773 C 667.070 757.886, 664.752 752.831, 657.532 745.708 C 646.708 735.031, 645.713 716.775, 655.251 703.875 C 657.233 701.194, 659.316 692.856, 661.043 680.691 C 662.205 672.502, 663.765 669.223, 669.933 662 C 676.212 654.647, 676.145 654.793, 677.034 646.694 C 677.898 638.815, 678.867 637.579, 685.500 635.888 C 694.083 633.700, 696.188 629.158, 692.404 620.991 C 687.271 609.911, 688.773 593.742, 696.365 578.349 C 704.516 561.823, 708.496 558.056, 717 558.820 C 721.079 559.186, 724.870 557.244, 730.895 551.701 C 738.253 544.932, 739.889 542.235, 739.955 536.765 C 740.028 530.704, 744.759 515.870, 748.013 511.500 C 759.176 496.506, 760.674 492.825, 756.976 489.478 C 755.037 487.724, 754.644 487.718, 747.726 489.336 C 734.037 492.537, 732.949 491.266, 733.629 472.863 C 734.270 455.514, 734.160 455.896, 740.468 449.035 C 749.896 438.779, 752.275 426.017, 746.998 413.996 C 743.789 406.684, 743.768 406.531, 745.021 399.887 C 746.220 393.534, 746.145 392.710, 743.644 384.689 C 740.473 374.518, 740.386 372.124, 743 367 C 745.876 361.362, 745.530 359.487, 740.640 354.207 C 734.587 347.673, 734.005 346.200, 733.965 337.316 C 733.942 332.434, 733.393 328.562, 732.500 327 C 728.677 320.312, 732.619 313.240, 743.126 307.937 C 755.441 301.720, 753.236 289.923, 740.037 291.416 C 726.581 292.939, 711.094 277.727, 712.610 264.476 C 713.131 259.919, 712.850 258.994, 709.274 253.500 C 704.140 245.612, 702.886 241.884, 704.029 237.900 C 705.311 233.428, 704.759 232.720, 688.505 218.005 C 671.853 202.929, 671.287 202.252, 662.979 187.500 C 654.637 172.686, 643.709 162.727, 628.500 156.077 C 625.750 154.875, 621.475 152.206, 619 150.147 C 611.124 143.593, 598.549 135.201, 593.950 133.429 C 591.502 132.486, 586.312 129.313, 582.416 126.378 C 578.519 123.443, 570.194 118.061, 563.916 114.418 C 557.637 110.775, 549.875 105.650, 546.666 103.029 C 543.457 100.409, 539.093 97.691, 536.968 96.990 C 534.844 96.288, 531.243 93.978, 528.966 91.855 C 523.406 86.670, 521.153 86.268, 513.692 89.127 C 505.586 92.234, 488.455 92.194, 476.419 89.042 C 472.132 87.919, 467.640 87, 466.438 87 C 465.237 87, 459.058 85.425, 452.708 83.500 C 438.945 79.328, 436.752 79.237, 428.960 82.517 C 422.268 85.334, 421.109 85.234, 411 80.965 C 393.737 73.677, 390.604 73.567, 383.500 80 C 377.380 85.543, 377.926 85.334, 369.300 85.430 C 363.577 85.495, 362.806 85.780, 359.300 89.132 C 353.378 94.792, 351.921 95.269, 344.941 93.827 C 340.241 92.856, 338.515 92.844, 337.196 93.773 C 327.904 100.320, 327.420 100.435, 318.814 98.131 C 306.135 94.738, 302.435 90.928, 304.913 83.820 C 306.474 79.343, 304.744 77.639, 300.014 78.996 C 296.979 79.866, 296.279 79.684, 293.891 77.395 C 290.892 74.522, 270.976 67.951, 265.629 68.070 C 263.908 68.108, 260.353 68.799, 257.730 69.606";
-const HEAD_TF = "translate(9.95,15.6) scale(0.1)";
+  "M 48 9 C 62 9, 72.6 18, 74.6 31 C 75.7 38, 75.3 42.6, 74.3 46 C 73.5 48.6, 72.7 49.6, 73.5 51.6 C 75.7 55.6, 81 60, 80.8 62.3 C 80.6 64.3, 77 64.7, 74 64.9 C 72.6 65.1, 72 65.7, 72.2 66.7 C 72.4 67.7, 74.6 68.1, 74.6 69.5 C 74.6 71.1, 72.6 71.5, 72 72.7 C 71.4 74.3, 74.2 75.3, 74.6 77.9 C 74.9 80.4, 71 83.6, 64.5 85.6 C 61 86.7, 59.5 88.6, 59 92 L 36.5 92 C 36 84.5, 33.5 81, 30.5 77 C 27 71.6, 25.4 62, 25.4 52 C 25.4 26, 34 9, 48 9 Z";
+
+/** Monograma JV geométrico — independente de fonte (favicon, SVG de download). */
 const JV_J = "M 51.08 29 L 51.08 49.16 Q 51.08 57 43.24 55.43";
 const JV_V = "M 57.24 29 L 63.4 57 L 69.56 29";
-const JV_W = 5.4;
 
-export function LogoMark({ className = "h-9 w-9", mono = false }: { className?: string; mono?: boolean }) {
+/**
+ * Transforms pré-calculados: a cabeça é posicionada por escala + centro, e o JV
+ * é derivado do centro do crânio *depois* da transformação da cabeça, para que
+ * o monograma acompanhe a silhueta em qualquer variante.
+ */
+const TF: Record<LogoVariant, { head: string; jv: string; jvW: number }> = {
+  retrato: { head: "translate(3.184 8.56) scale(0.88)", jv: "translate(2.016 6.788) scale(0.8087)", jvW: 5.4 },
+  folga: { head: "translate(10.632 12.63) scale(0.74)", jv: "translate(9.65 11.14) scale(0.68)", jvW: 5.4 },
+  livre: { head: "translate(-3.2 -0.5) scale(1)", jv: "translate(-4.527 -2.514) scale(0.9189)", jvW: 5.4 },
+  contorno: { head: "translate(9.568 11.62) scale(0.76)", jv: "translate(8.559 10.85) scale(0.6984)", jvW: 5.2 },
+  disco: { head: "translate(4.248 9.57) scale(0.86)", jv: "translate(3.107 7.838) scale(0.7903)", jvW: 5.4 },
+  sinapses: { head: "translate(9.568 11.62) scale(0.76)", jv: "translate(11.729 14.026) scale(0.6422)", jvW: 5 },
+};
+
+/** Nós/arestas da variante "sinapses", já no espaço do viewBox. */
+const SYN_NODES: [number, number][] = [
+  [37.7, 34.4],
+  [55.2, 32.1],
+  [33.9, 47.3],
+  [52.9, 51.1],
+  [43.8, 59.5],
+];
+const SYN_EDGES: [number, number][] = [
+  [0, 1],
+  [0, 2],
+  [1, 3],
+  [2, 4],
+  [3, 4],
+  [0, 3],
+];
+
+export function LogoMark({
+  className = "h-9 w-9",
+  mono = false,
+  variant = LOGO_VARIANT,
+}: {
+  className?: string;
+  mono?: boolean;
+  variant?: LogoVariant;
+}) {
   const uid = useId().replace(/:/g, "");
-  const gid = "g" + uid;
-  const cid = "c" + uid;
-  const mid = "m" + uid;
+  const gid = `g${uid}`;
+  const mid = `m${uid}`;
+  const cid = `c${uid}`;
+  const tf = TF[variant];
+  const paint = mono ? "currentColor" : `url(#${gid})`;
+
+  const jvStrokes = (stroke: string) => (
+    <g
+      transform={tf.jv}
+      fill="none"
+      stroke={stroke}
+      strokeWidth={tf.jvW}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d={JV_J} />
+      <path d={JV_V} />
+    </g>
+  );
+
   return (
     <svg viewBox="0 0 100 100" className={className} role="img" aria-label={site.shortName}>
       <defs>
@@ -28,23 +102,98 @@ export function LogoMark({ className = "h-9 w-9", mono = false }: { className?: 
           <stop offset="0%" stopColor="#34d399" />
           <stop offset="100%" stopColor="#2dd4bf" />
         </linearGradient>
-        <clipPath id={cid}>
-          <circle cx="50" cy="50" r="45" />
-        </clipPath>
-        <mask id={mid}>
-          <rect width="100" height="100" fill="white" />
-          <g fill="none" stroke="black" strokeWidth={JV_W} strokeLinecap="round" strokeLinejoin="round">
-            <path d={JV_J} />
-            <path d={JV_V} />
-          </g>
-        </mask>
+
+        {/* JV recortado em espaço negativo na silhueta preenchida */}
+        {(variant === "retrato" || variant === "folga" || variant === "livre") && (
+          <mask id={mid}>
+            <rect width="100" height="100" fill="white" />
+            {jvStrokes("black")}
+          </mask>
+        )}
+        {/* disco: cabeça e JV vazados do círculo */}
+        {variant === "disco" && (
+          <mask id={mid}>
+            <rect width="100" height="100" fill="white" />
+            <path d={HEAD} fill="black" transform={tf.head} />
+            {jvStrokes("white")}
+          </mask>
+        )}
+        {variant === "retrato" && (
+          <clipPath id={cid}>
+            <circle cx="50" cy="50" r="45" />
+          </clipPath>
+        )}
       </defs>
-      <circle cx="50" cy="50" r="46.3" fill="none" stroke="currentColor" strokeOpacity="0.28" strokeWidth="1.3" />
-      <g clipPath={"url(#" + cid + ")"} mask={"url(#" + mid + ")"}>
-        <g transform={HEAD_TF}>
-          <path d={HEAD} fill={mono ? "currentColor" : "url(#" + gid + ")"} />
+
+      {/* anel */}
+      {variant !== "livre" && variant !== "disco" && (
+        <circle
+          cx="50"
+          cy="50"
+          r="46.3"
+          fill="none"
+          stroke="currentColor"
+          strokeOpacity={variant === "contorno" || variant === "sinapses" ? 0.24 : 0.3}
+          strokeWidth="1.3"
+        />
+      )}
+
+      {variant === "retrato" && (
+        <g clipPath={`url(#${cid})`} mask={`url(#${mid})`}>
+          <path d={HEAD} fill={paint} transform={tf.head} />
         </g>
-      </g>
+      )}
+
+      {(variant === "folga" || variant === "livre") && (
+        <g mask={`url(#${mid})`}>
+          <path d={HEAD} fill={paint} transform={tf.head} />
+        </g>
+      )}
+
+      {variant === "disco" && <circle cx="50" cy="50" r="46" fill={paint} mask={`url(#${mid})`} />}
+
+      {variant === "contorno" && (
+        <>
+          <path
+            d={HEAD}
+            fill="none"
+            stroke={paint}
+            strokeWidth={3.4 / 0.76}
+            strokeLinejoin="round"
+            transform={tf.head}
+          />
+          {jvStrokes("currentColor")}
+        </>
+      )}
+
+      {variant === "sinapses" && (
+        <>
+          <path
+            d={HEAD}
+            fill="none"
+            stroke="currentColor"
+            strokeOpacity="0.5"
+            strokeWidth={2.8 / 0.76}
+            strokeLinejoin="round"
+            transform={tf.head}
+          />
+          <g stroke={paint} strokeWidth="0.9" opacity="0.7">
+            {SYN_EDGES.map(([a, b], i) => (
+              <line
+                key={i}
+                x1={SYN_NODES[a][0]}
+                y1={SYN_NODES[a][1]}
+                x2={SYN_NODES[b][0]}
+                y2={SYN_NODES[b][1]}
+              />
+            ))}
+          </g>
+          {SYN_NODES.map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="1.9" fill={paint} />
+          ))}
+          {jvStrokes("currentColor")}
+        </>
+      )}
     </svg>
   );
 }
