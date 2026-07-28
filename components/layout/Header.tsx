@@ -16,6 +16,7 @@ const headerLinks = [
   { href: "/consultorio", label: "Consultório" },
   { href: "/blog", label: "Blog" },
   { href: "/artigos", label: "Artigos" },
+  { href: "/perguntas-frequentes", label: "FAQ" },
   { href: "/contato", label: "Contato" },
 ];
 

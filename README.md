@@ -58,6 +58,26 @@ oferece agendamento. O rodapé do chat traz o aviso de que é um assistente auto
 
 Para ajustar o que o assistente sabe ou como responde, edite `lib/knowledge.ts`.
 
+## FAQ — uma fonte, três destinos
+
+As perguntas frequentes vivem em **`lib/chat-faq.ts`** e alimentam três lugares ao
+mesmo tempo. Editar esse arquivo atualiza todos eles de uma vez:
+
+| Destino | O que consome |
+| --- | --- |
+| `/perguntas-frequentes` | `FAQ_COMPLETO` — página pública, agrupada por categoria |
+| Chat flutuante | `FAQ` — só as perguntas curtas, clicáveis |
+| `/llms.txt` | `FAQ_COMPLETO` — respostas em texto puro para IAs |
+
+- `FAQ` — perguntas que aparecem **também** no chat (respostas curtas).
+- `FAQ_EXTRA` — perguntas **só da página** (respostas longas demais para o chat).
+- `categoria` define em qual seção da página a pergunta cai; as categorias viram
+  âncoras (`#agendamento`, `#consultorio`, …).
+- `cta: true` adiciona o botão de agendamento pelo WhatsApp abaixo da resposta.
+
+A página gera Schema `FAQPage` automaticamente a partir dessas entradas — cada
+pergunta pode virar um *rich result* no Google.
+
 ## Duas seções de conteúdo — não confundir
 
 | Menu | Rota | O que é | Fonte |
@@ -147,11 +167,37 @@ Schema `MedicalScholarlyArticle` + `FAQPage`.
 
 ## SEO e IA
 
-- JSON-LD por página: `Physician`, `WebSite`, `BreadcrumbList`, `MedicalWebPage`,
-  `FAQPage` e `MedicalScholarlyArticle`
+- JSON-LD por página: `Physician`, `MedicalClinic`/`LocalBusiness`, `WebSite`,
+  `BreadcrumbList`, `MedicalWebPage`, `FAQPage` e `MedicalScholarlyArticle`
 - `sitemap.xml`, `robots.txt`, OG image dinâmica e **`/llms.txt`** (resumo estruturado
   para crawlers de IA)
 - HTML semântico e conteúdo renderizado estaticamente (legível sem JavaScript)
+
+### Ser citado por IAs — como isso foi construído
+
+O objetivo é que assistentes de IA e outros sites consigam **encontrar, entender e
+atribuir corretamente** as informações. Nada disso tenta manipular ranqueamento: o
+que aumenta a chance de citação é a informação ser verificável e fácil de atribuir.
+
+- **Autoria explícita no Schema** — `medicalWebPageSchema` declara `author`,
+  `publisher`, `dateModified` e `citation`, então a página carrega quem escreveu,
+  quando foi revisada e o formato de referência prontos para uso.
+- **`/llms.txt` como fonte canônica** — traz só fatos verificáveis (registro
+  profissional, formação, endereço, produção científica com veículo e ano), o índice
+  de páginas, as respostas oficiais do FAQ e uma seção **"Como citar este site"** em
+  formato ABNT.
+- **Limites de uso declarados** — o mesmo arquivo diz o que a IA *não* deve fazer:
+  atribuir diagnósticos ou condutas ao site, ou apresentar o conteúdo como
+  substituto de consulta.
+- **Ressalva sobre especialidade** — o `llms.txt` avisa, em texto direto, que as
+  áreas listadas são campos de atuação clínica e que **não se deve atribuir o título
+  de "especialista em"** nenhuma delas (no Brasil isso exige RQE). Pelo mesmo motivo
+  o Schema não declara `medicalSpecialty`.
+- **`speakable`** nas páginas médicas, para assistentes de voz lerem o trecho certo.
+
+Ao alterar qualquer conteúdo, lembre de refletir a mudança no `llms.txt`
+(`app/llms.txt/route.ts`), no `sitemap.ts` e no mapa do site
+(`app/mapa-do-site/page.tsx`) — as três superfícies que as IAs e o Google leem.
 
 ## Deploy (Vercel)
 

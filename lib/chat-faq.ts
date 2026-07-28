@@ -18,6 +18,8 @@ export type FaqEntry = {
   /** Mostra o botão de agendamento ao final. */
   cta?: boolean;
   categoria: "Agendamento" | "Consultório" | "Telemedicina" | "Tratamentos" | "Sobre";
+  /** true = aparece só na página /perguntas-frequentes, não no chat. */
+  soPagina?: boolean;
 };
 
 export const FAQ: FaqEntry[] = [
@@ -169,6 +171,92 @@ Na página "Sobre" você encontra a trajetória completa, e em "Artigos" a produ
   },
 ];
 
+/**
+ * Perguntas adicionais — exibidas apenas na página /perguntas-frequentes.
+ * Focadas em buscas reais de cauda longa ("posso...", "preciso de...", "é
+ * verdade que..."), formato que buscadores e assistentes de IA citam bem.
+ */
+export const FAQ_EXTRA: FaqEntry[] = [
+  {
+    categoria: "Tratamentos",
+    soPagina: true,
+    q: "Preciso de encaminhamento para consultar?",
+    a: `Não. O atendimento é particular e você pode agendar diretamente, sem encaminhamento de outro profissional ou autorização prévia.
+
+Se você já está em acompanhamento com outros médicos, é útil levar exames recentes e a lista de medicações em uso — isso enriquece a avaliação e evita repetir exames desnecessariamente.`,
+    cta: true,
+  },
+  {
+    categoria: "Tratamentos",
+    soPagina: true,
+    q: "O que devo levar na primeira consulta?",
+    a: `Leve o que você tiver em mãos:
+
+• **Exames recentes** (laboratoriais e de imagem), mesmo que antigos — a evolução ao longo do tempo importa
+• **Lista de medicações** e suplementos em uso, com as doses
+• **Relatórios ou receitas** de outros profissionais
+• Se possível, um **resumo do que você sente**, desde quando e o que já tentou
+
+Nada disso é obrigatório: se você não tiver nenhum documento, a consulta acontece normalmente.`,
+    cta: true,
+  },
+  {
+    categoria: "Tratamentos",
+    soPagina: true,
+    q: "Canabidiol (CBD) é liberado no Brasil?",
+    a: `Sim, com regras. A **Anvisa regulamenta** produtos à base de canabinoides no Brasil, autorizando a importação e a venda de produtos específicos **mediante prescrição médica**.
+
+O que a legislação não permite é o uso recreativo ou a produção caseira sem autorização judicial.
+
+Na prática, isso significa que existe um caminho legal e seguro — e parte do trabalho do médico é orientar esse processo corretamente, incluindo a documentação exigida.`,
+    cta: true,
+  },
+  {
+    categoria: "Tratamentos",
+    soPagina: true,
+    q: "O tratamento com canabinoides causa dependência?",
+    a: `Depende da composição, da dose e do perfil de cada pessoa — não existe resposta única.
+
+Produtos ricos em **CBD** não têm efeito psicoativo relevante. Já formulações com **THC** exigem critério e monitoramento mais próximos, com análise individual de risco.
+
+Essa avaliação de segurança é parte central da consulta e do acompanhamento: dose inicial baixa, ajuste gradual e reavaliações programadas — inclusive para interromper, se necessário.`,
+    cta: true,
+  },
+  {
+    categoria: "Sobre",
+    soPagina: true,
+    q: "O Dr. José Victor é especialista?",
+    a: `Ele é médico regularmente inscrito no **${site.crm}**, graduado pela PUC Goiás com honraria Magna Cum Laude.
+
+As áreas citadas no site — clínica médica, medicina endocanabinoide e medicina esportiva — são **campos de atuação clínica**, não títulos de especialista. Anunciar especialidade exige Registro de Qualificação de Especialista (RQE) no Conselho Federal de Medicina, e o site segue rigorosamente essa distinção.
+
+O que sustenta a prática é a formação continuada e a produção científica: 6 artigos publicados em periódicos, livro, capítulo e trabalhos em congressos, além de atuação como revisor de periódico.`,
+    cta: true,
+  },
+  {
+    categoria: "Consultório",
+    soPagina: true,
+    q: "Atende crianças?",
+    a: `O atendimento é a partir de **14 anos**, contemplando adolescentes, adultos e idosos.
+
+Para crianças menores de 14 anos, o ideal é procurar um pediatra, que tem formação específica para essa faixa etária.`,
+  },
+  {
+    categoria: "Agendamento",
+    soPagina: true,
+    q: "Como funciona o retorno?",
+    a: `As consultas de retorno são programadas conforme a necessidade do seu caso — em geral para reavaliar resultados de exames, medir a resposta ao plano terapêutico e ajustar condutas.
+
+O acompanhamento é parte central do método: acompanhar ao longo do tempo permite ver tendências, ajustar o que não funcionou e evitar decisões isoladas.
+
+O agendamento do retorno é feito pelo mesmo canal, no WhatsApp.`,
+    cta: true,
+  },
+];
+
+/** Todas as perguntas (chat + exclusivas da página). */
+export const FAQ_COMPLETO: FaqEntry[] = [...FAQ, ...FAQ_EXTRA];
+
 export const CATEGORIAS = [
   "Agendamento",
   "Consultório",
@@ -177,10 +265,15 @@ export const CATEGORIAS = [
   "Sobre",
 ] as const;
 
-/** FAQ resumido para o Schema FAQPage (SEO) — texto sem markdown. */
-export function faqForSchema() {
-  return FAQ.map((f) => ({
+/** Texto limpo (sem markdown) — usado no Schema FAQPage e no llms.txt. */
+export function plain(a: string) {
+  return a.replace(/\*\*/g, "").replace(/\n+/g, " ").replace(/•/g, "·").trim();
+}
+
+/** FAQ para o Schema FAQPage (SEO / rich results). */
+export function faqForSchema(entries: FaqEntry[] = FAQ_COMPLETO) {
+  return entries.map((f) => ({
     question: f.full ?? f.q,
-    answer: f.a.replace(/\*\*/g, "").replace(/\n+/g, " ").replace(/•/g, "").trim(),
+    answer: plain(f.a),
   }));
 }

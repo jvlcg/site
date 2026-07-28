@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/blog",
     "/artigos",
     "/contato",
+    "/perguntas-frequentes",
     "/mapa-do-site",
     "/politica-de-privacidade",
   ].map((path) => ({

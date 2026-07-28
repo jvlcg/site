@@ -175,10 +175,16 @@ export function medicalWebPageSchema(opts: {
     name: opts.title,
     description: opts.description,
     url: `${site.url}${opts.path}`,
-    inLanguage: "pt-BR",
     reviewedBy: { "@id": `${site.url}/#physician` },
     lastReviewed: new Date().toISOString().split("T")[0],
     isPartOf: { "@id": `${site.url}/#website` },
+    /** Autoria e data explícitas ajudam sistemas de IA a citar com atribuição. */
+    author: { "@id": `${site.url}/#physician` },
+    publisher: { "@id": `${site.url}/#physician` },
+    dateModified: new Date().toISOString().split("T")[0],
+    inLanguage: "pt-BR",
+    citation: `${site.name} (${site.crm}). ${opts.title}. ${site.url}${opts.path}`,
+    license: `${site.url}/politica-de-privacidade`,
     speakable: {
       "@type": "SpeakableSpecification",
       cssSelector: ["h1", "[data-speakable]"],
