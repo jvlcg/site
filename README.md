@@ -39,6 +39,36 @@ Os números reais já estão embutidos como padrão em `lib/site-config.ts`
 (particular `5562999758034`, planos `5562999961365`); as variáveis de ambiente
 apenas permitem sobrescrevê-los sem tocar no código.
 
+## Assistente virtual (chat)
+
+Widget flutuante em todas as páginas (`components/chat/ChatWidget.tsx`), funcional em
+desktop e mobile. Responde dúvidas sobre o consultório e conduz ao agendamento pelo
+WhatsApp.
+
+**Dois modos:**
+- **Com `ANTHROPIC_API_KEY`** — respostas geradas por IA, restritas à base de
+  conhecimento em `lib/knowledge.ts` (conteúdo do site + dados do consultório).
+- **Sem a chave** — modo reserva por palavras-chave (`lib/chat-fallback.ts`). Nunca
+  fica fora do ar.
+
+**Regras de segurança (em ambos os modos):** não dá diagnóstico, não interpreta
+sintomas ou exames, não sugere tratamento nem dose, não promete resultado, não inventa
+preços/horários. Em relatos de emergência, orienta 192 (SAMU) e 188 (CVV) e **não**
+oferece agendamento. O rodapé do chat traz o aviso de que é um assistente automático.
+
+Para ajustar o que o assistente sabe ou como responde, edite `lib/knowledge.ts`.
+
+## Blog — como publicar (menu "Blog" → `/artigos`)
+
+O item **Blog** no menu leva a `/artigos`. Para publicar, crie um arquivo `.mdx` em
+`content/artigos/` (modelo na seção "Publicando um novo artigo"). O artigo entra
+sozinho na listagem, no menu do blog, no sitemap, no `llms.txt`, no mapa do site e
+ganha os dados estruturados de artigo.
+
+> **Atenção:** os artigos do blog são **conteúdo educativo** assinado pelo médico —
+> não se confundem com as **publicações científicas** listadas em `/sobre`. Revise e
+> aprove cada texto antes de publicar, já que ele sai com sua assinatura e CRM.
+
 ## Banco de fotos (`public/images/`)
 
 | Arquivo | Onde é usada |

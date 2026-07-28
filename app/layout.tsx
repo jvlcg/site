@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
 import { GyroPrompt } from "@/components/three/GyroPrompt";
 import { CursorGlow } from "@/components/ui/CursorGlow";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 import { JsonLd, physicianSchema, websiteSchema, medicalClinicSchema } from "@/lib/schema";
 import { site } from "@/lib/site-config";
 import "./globals.css";
@@ -91,6 +92,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main id="conteudo">{children}</main>
             <Footer />
             <WhatsAppFab />
+            <ChatWidget />
             <GyroPrompt />
           </MotionProvider>
         </ThemeProvider>

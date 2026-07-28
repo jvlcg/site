@@ -143,6 +143,9 @@ export function Footer() {
             </p>
           </div>
           <div className="flex shrink-0 flex-col gap-2 md:items-end">
+            <Link href="/mapa-do-site" className="hover:text-[var(--accent)]">
+              Mapa do site
+            </Link>
             <Link href="/politica-de-privacidade" className="hover:text-[var(--accent)]">
               Política de Privacidade
             </Link>
