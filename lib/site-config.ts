@@ -30,16 +30,20 @@ export const site = {
     "Olá! Gostaria de informações sobre atendimento por plano de saúde com o Dr. José Victor.",
   address: {
     clinic: "Clínica Fisiogyn",
-    street: "Rua 94, Setor Sul",
+    street: "Rua 94, nº 408, Setor Sul",
+    streetShort: "Rua 94, 408",
+    neighborhood: "Setor Sul",
     city: "Goiânia",
     state: "GO",
     stateName: "Goiás",
     zip: "74080-100",
     country: "BR",
-    mapsUrl: "https://maps.google.com/?q=Cl%C3%ADnica+Fisiogyn+Rua+94+Setor+Sul+Goi%C3%A2nia",
+    /** Link de rota para o ponto exato (confirmado via Google Places). */
+    mapsUrl:
+      "https://www.google.com/maps/dir/?api=1&destination=-16.6829899,-49.2529214&destination_place_id=ChIJl84fCu3xXpMR_l6BFBpBuhc",
   },
-  /** Coordenadas aproximadas do Setor Sul, Goiânia (ajustar ao ponto exato do consultório). */
-  geo: { lat: -16.6947, lng: -49.2559 },
+  /** Coordenadas exatas do consultório (Google Places, confirmadas). */
+  geo: { lat: -16.6829899, lng: -49.2529214 },
   /** Abrangência para SEO local + telemedicina nacional. */
   areaServed: ["Goiânia", "Aparecida de Goiânia", "Goiás", "Brasil"],
   /** Horários — placeholder editável (o usuário optou por não exibir publicamente). */
@@ -72,6 +76,7 @@ export const navLinks = [
   { href: "/clinica-medica", label: "Clínica Médica" },
   { href: "/medicina-esportiva", label: "Medicina Esportiva" },
   { href: "/telemedicina", label: "Telemedicina" },
+  { href: "/consultorio", label: "Consultório em Goiânia" },
   { href: "/artigos", label: "Artigos" },
   { href: "/contato", label: "Contato" },
 ] as const;

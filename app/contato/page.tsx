@@ -138,9 +138,9 @@ export default function ContatoPage() {
 
         <Reveal delay={120} className="glass mt-6 overflow-hidden rounded-3xl">
           <iframe
-            title="Mapa — Clínica Fisiogyn, Setor Sul, Goiânia"
-            src="https://www.google.com/maps?q=Cl%C3%ADnica+Fisiogyn,+Rua+94,+Setor+Sul,+Goi%C3%A2nia+-+GO&output=embed"
-            className="h-[380px] w-full border-0 grayscale-[0.4] contrast-[1.05]"
+            title={`Mapa da localização do consultório na ${site.address.clinic}, ${site.address.street}, ${site.address.city}`}
+            src={`https://www.google.com/maps?q=${site.geo.lat},${site.geo.lng}&z=17&output=embed`}
+            className="h-[380px] w-full border-0"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           />

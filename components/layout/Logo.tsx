@@ -55,7 +55,7 @@ export function LogoLockup({ compact = false }: { compact?: boolean }) {
       <LogoMark className="h-10 w-10 shrink-0 text-[var(--fg)]" />
       <span className={`flex-col leading-tight ${compact ? "hidden sm:flex" : "flex"}`}>
         <span className="font-display text-[1.02rem] font-semibold tracking-tight">Dr.JV</span>
-        <span className="text-[0.6rem] uppercase tracking-[0.18em] text-faint">
+        <span className="whitespace-nowrap text-[0.6rem] uppercase tracking-[0.14em] text-faint">
           José Victor · {site.crm}
         </span>
       </span>

@@ -26,6 +26,7 @@ Agendamento: exclusivamente pelo WhatsApp do consultório. Contato: ${site.email
 
 ## Institucional
 - [Sobre o médico](${site.url}/sobre): formação, trajetória de pesquisa e publicações científicas.
+- [Consultório em Goiânia](${site.url}/consultorio): fotos da estrutura, localização no mapa e como chegar (${site.address.clinic}, ${site.address.street}).
 - [Contato](${site.url}/contato): endereço do consultório e canais de agendamento.
 
 ## Artigos

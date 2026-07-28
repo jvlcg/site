@@ -131,6 +131,12 @@ export function Footer() {
               Católica de Goiás.
             </p>
             <p>
+              As áreas citadas neste site (clínica médica, medicina endocanabinoide e
+              medicina esportiva) referem-se a <strong>campos de atuação clínica</strong>,
+              não a títulos de especialista. Atendimento realizado por médico devidamente
+              inscrito no Conselho Regional de Medicina do Estado de Goiás.
+            </p>
+            <p>
               As informações deste site têm caráter educativo e não substituem a consulta
               médica. Nenhum conteúdo constitui promessa de resultado. Publicidade em
               conformidade com a Resolução CFM nº 2.336/2023.

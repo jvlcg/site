@@ -11,6 +11,7 @@ import { MagneticButton } from "@/components/ui/MagneticButton";
 import { Parallax } from "@/components/ui/Parallax";
 import { EcgDivider } from "@/components/ui/EcgDivider";
 import { BentoTech } from "@/components/sections/BentoTech";
+import { clinicPhotos, doctorPhotos } from "@/lib/gallery";
 import { getAllArticles } from "@/lib/articles";
 import { site, whatsappLink } from "@/lib/site-config";
 import { JsonLd, breadcrumbSchema } from "@/lib/schema";
@@ -293,6 +294,57 @@ export default function HomePage() {
               </Link>
             </Reveal>
           </div>
+        </div>
+      </section>
+
+      {/* ---------- UNIDADE PRESENCIAL ---------- */}
+      <section className="mx-auto mt-32 max-w-7xl px-5 sm:px-8">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+          <div>
+            <SectionHeading
+              eyebrow="Unidade presencial · Setor Sul"
+              title={
+                <>
+                  Um consultório <span className="text-gradient">para chamar de seu</span>
+                </>
+              }
+              lede="Atendimento na Clínica Fisiogyn, na Rua 94, em Goiânia: recepção confortável, ambiente climatizado e estrutura de apoio diagnóstico no mesmo endereço. Conheça o espaço antes mesmo da primeira consulta."
+            />
+            <Reveal delay={160} className="mt-8 flex flex-wrap gap-4">
+              <MagneticButton>
+                <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                  Agendar presencial
+                  <span aria-hidden="true">→</span>
+                </a>
+              </MagneticButton>
+              <Link href="/consultorio" className="btn-ghost">
+                Ver fotos e localização
+              </Link>
+            </Reveal>
+          </div>
+
+          <Reveal delay={120} className="grid grid-cols-2 gap-4">
+            {[clinicPhotos[0], doctorPhotos[1], clinicPhotos[2], clinicPhotos[3]].map((p, i) => (
+              <Link
+                key={p.src}
+                href="/consultorio"
+                className={`holo glass group relative block overflow-hidden rounded-2xl ${
+                  i === 0 ? "col-span-2" : ""
+                }`}
+              >
+                <span className={`block overflow-hidden ${i === 0 ? "aspect-[16/9]" : "aspect-[4/5]"}`}>
+                  <Image
+                    src={p.src}
+                    alt={p.alt}
+                    width={p.width}
+                    height={p.height}
+                    sizes="(max-width: 1024px) 45vw, 300px"
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </span>
+              </Link>
+            ))}
+          </Reveal>
         </div>
       </section>
 

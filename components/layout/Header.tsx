@@ -13,6 +13,7 @@ const headerLinks = [
   { href: "/clinica-medica", label: "Clínica Médica" },
   { href: "/medicina-esportiva", label: "Esportiva" },
   { href: "/telemedicina", label: "Telemedicina" },
+  { href: "/consultorio", label: "Consultório" },
   { href: "/artigos", label: "Artigos" },
   { href: "/contato", label: "Contato" },
 ];
@@ -52,14 +53,14 @@ export function Header() {
           <LogoLockup compact />
         </Link>
 
-        <nav aria-label="Navegação principal" className="hidden items-center gap-1 lg:flex">
+        <nav aria-label="Navegação principal" className="hidden items-center gap-0.5 xl:flex">
           {headerLinks.map((link) => {
             const active = pathname === link.href || pathname.startsWith(link.href + "/");
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`whitespace-nowrap rounded-full px-3 py-2 text-[0.84rem] transition-colors ${
+                className={`whitespace-nowrap rounded-full px-2.5 py-2 text-[0.82rem] transition-colors ${
                   active ? "text-[var(--accent)]" : "text-muted hover:text-[var(--fg)]"
                 }`}
               >
@@ -75,7 +76,7 @@ export function Header() {
             href={whatsappLink()}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary hidden !px-5 !py-2.5 text-sm md:inline-flex"
+            className="btn-primary hidden whitespace-nowrap !px-5 !py-2.5 text-sm md:inline-flex"
           >
             Agendar consulta
           </a>
@@ -84,7 +85,7 @@ export function Header() {
             aria-label={open ? "Fechar menu" : "Abrir menu"}
             aria-expanded={open}
             onClick={() => setOpen(!open)}
-            className="glass flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-full lg:hidden"
+            className="glass flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-full xl:hidden"
           >
             <span
               className={`h-[1.5px] w-4 bg-current transition-transform duration-300 ${open ? "translate-y-[3.25px] rotate-45" : ""}`}
@@ -98,7 +99,7 @@ export function Header() {
 
       {/* menu mobile */}
       <div
-        className={`fixed inset-0 top-[72px] z-40 transition-all duration-500 lg:hidden ${
+        className={`fixed inset-0 top-[72px] z-40 transition-all duration-500 xl:hidden ${
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
         style={{ background: "var(--bg)" }}

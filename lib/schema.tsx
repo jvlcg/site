@@ -28,7 +28,11 @@ export function physicianSchema() {
     email: site.email,
     telephone,
     priceRange: "$$$",
-    medicalSpecialty: ["Clínica Médica", "Medicina Esportiva"],
+    /**
+     * NÃO declaramos `medicalSpecialty`: anunciar especialidade exige Registro
+     * de Qualificação de Especialista (RQE) no CFM. As áreas abaixo são temas
+     * de atuação/conhecimento, não títulos de especialista.
+     */
     knowsAbout: [
       "Medicina endocanabinoide",
       "Sistema endocanabinoide",
@@ -87,7 +91,6 @@ export function medicalClinicSchema() {
     },
     hasMap: site.address.mapsUrl,
     areaServed: site.areaServed.map((name) => ({ "@type": "AdministrativeArea", name })),
-    medicalSpecialty: ["Clínica Médica", "Medicina Esportiva"],
     availableService: [
       { "@type": "MedicalProcedure", name: "Medicina endocanabinoide" },
       { "@type": "MedicalProcedure", name: "Clínica médica e check-up" },
