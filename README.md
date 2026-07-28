@@ -31,7 +31,7 @@ npm run build && npm run start
 
 | Variável | Descrição |
 | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | URL pública definitiva (canonical, Schema, sitemap, OG). Domínio pensado: `drjosevictor.med.br`. |
+| `NEXT_PUBLIC_SITE_URL` | URL pública definitiva (canonical, Schema, sitemap, OG). Domínio registrado: `drjvlcg.com.br`. |
 | `NEXT_PUBLIC_WHATSAPP` | WhatsApp **particular** (Dr. José Victor) — CTA principal de todo o site. Formato internacional sem `+`. |
 | `NEXT_PUBLIC_WHATSAPP_PLANOS` | WhatsApp de **planos de saúde** (secretária) — opção secundária/discreta (rodapé e Contato). |
 
@@ -85,9 +85,8 @@ Schema `MedicalScholarlyArticle` + `FAQPage`.
 
 ### Domínio
 
-Domínio pensado: **`drjosevictor.med.br`** — o `.med.br` é restrito a médicos com CRM,
-um forte sinal de confiança para pacientes e buscadores. Basta apontá-lo na Vercel e
-definir `NEXT_PUBLIC_SITE_URL`.
+Domínio registrado: **`drjvlcg.com.br`**. Basta apontá-lo na Vercel e definir
+`NEXT_PUBLIC_SITE_URL=https://drjvlcg.com.br`.
 
 ### Pós-deploy (recomendado)
 

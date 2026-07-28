@@ -1,6 +1,6 @@
 export const site = {
-  /** Domínio definitivo entra via env quando for registrado. */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://drjosevictor.med.br",
+  /** Domínio registrado do consultório. */
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://drjvlcg.com.br",
   name: "Dr. José Victor Lisboa Cardoso Gomes",
   shortName: "Dr. José Victor",
   brand: "Dr.JV",
