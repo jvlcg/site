@@ -3,22 +3,37 @@
 import { useEffect, useRef, useState } from "react";
 import { LogoMark } from "@/components/layout/Logo";
 import { site, whatsappLink } from "@/lib/site-config";
+import { FAQ, CATEGORIAS, type FaqEntry } from "@/lib/chat-faq";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-const SUGESTOES = [
-  "Como faço para agendar?",
-  "Onde fica o consultório?",
-  "Como funciona a telemedicina?",
-  "O que é medicina endocanabinoide?",
-];
-
-const SAUDACAO = `Olá! Sou o assistente virtual do consultório do ${site.shortName}. Posso tirar dúvidas sobre as áreas de atuação, o consultório em ${site.address.city}, telemedicina e agendamento.\n\nComo posso ajudar?`;
+const SAUDACAO = `Olá! Sou o assistente virtual do consultório do ${site.shortName}.\n\nEscolha uma pergunta abaixo para uma resposta detalhada — ou escreva a sua dúvida no campo de texto.`;
 
 /** Separa a marca [AGENDAR] do texto da resposta. */
 function parse(content: string) {
   const cta = /\[AGENDAR\]/i.test(content);
   return { text: content.replace(/\[AGENDAR\]/gi, "").trim(), cta };
+}
+
+/** Renderiza **negrito** e quebras de parágrafo das respostas do FAQ. */
+function RichText({ text }: { text: string }) {
+  return (
+    <>
+      {text.split("\n").map((line, i) => (
+        <span key={i} className={i > 0 ? "mt-2 block" : "block"}>
+          {line.split(/(\*\*[^*]+\*\*)/g).map((part, j) =>
+            part.startsWith("**") && part.endsWith("**") ? (
+              <strong key={j} className="font-semibold text-[var(--fg)]">
+                {part.slice(2, -2)}
+              </strong>
+            ) : (
+              <span key={j}>{part}</span>
+            )
+          )}
+        </span>
+      ))}
+    </>
+  );
 }
 
 export function ChatWidget() {
@@ -27,6 +42,8 @@ export function ChatWidget() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [unread, setUnread] = useState(false);
+  const [cat, setCat] = useState<(typeof CATEGORIAS)[number]>("Agendamento");
+  const [showFaq, setShowFaq] = useState(true);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -61,9 +78,28 @@ export function ChatWidget() {
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
+  /** Resposta instantânea do FAQ — sem chamar a API. */
+  function answerFaq(entry: FaqEntry) {
+    setShowFaq(false);
+    setMsgs((prev) => [
+      ...prev,
+      { role: "user", content: entry.full ?? entry.q },
+    ]);
+    setLoading(true);
+    // pequeno atraso dá naturalidade à conversa
+    setTimeout(() => {
+      setMsgs((prev) => [
+        ...prev,
+        { role: "assistant", content: entry.a + (entry.cta ? "\n[AGENDAR]" : "") },
+      ]);
+      setLoading(false);
+    }, 380);
+  }
+
   async function send(text: string) {
     const clean = text.trim();
     if (!clean || loading) return;
+    setShowFaq(false);
     const next: Msg[] = [...msgs, { role: "user", content: clean }];
     setMsgs(next);
     setInput("");
@@ -155,13 +191,13 @@ export function ChatWidget() {
               return (
                 <div key={i} className={mine ? "flex justify-end" : ""}>
                   <div
-                    className={`max-w-[86%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-[0.9rem] leading-relaxed ${
+                    className={`max-w-[90%] rounded-2xl px-4 py-3 text-[0.9rem] leading-relaxed ${
                       mine
-                        ? "bg-[var(--accent-soft)] text-[var(--fg)]"
+                        ? "whitespace-pre-wrap bg-[var(--accent-soft)] text-[var(--fg)]"
                         : "glass text-muted"
                     }`}
                   >
-                    {text}
+                    {mine ? text : <RichText text={text} />}
                     {cta && (
                       <a
                         href={whatsappLink()}
@@ -189,19 +225,59 @@ export function ChatWidget() {
               </div>
             )}
 
-            {msgs.length === 1 && (
-              <div className="flex flex-wrap gap-2 pt-1">
-                {SUGESTOES.map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => send(s)}
-                    className="glass rounded-full px-3 py-1.5 text-[0.78rem] text-muted transition-colors hover:text-[var(--accent)]"
-                  >
-                    {s}
-                  </button>
-                ))}
+            {/* FAQ clicável */}
+            {showFaq && !loading && (
+              <div className="pt-1">
+                <p className="font-mono-tech mb-2.5 text-[0.64rem] uppercase tracking-[0.16em] text-faint">
+                  Perguntas frequentes
+                </p>
+
+                {/* categorias */}
+                <div className="-mx-1 mb-3 flex gap-1.5 overflow-x-auto px-1 pb-1">
+                  {CATEGORIAS.map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setCat(c)}
+                      className={`shrink-0 rounded-full px-3 py-1.5 text-[0.74rem] transition-colors ${
+                        cat === c
+                          ? "bg-[var(--accent)] font-medium text-[#06231d]"
+                          : "glass text-muted hover:text-[var(--fg)]"
+                      }`}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+
+                {/* perguntas da categoria */}
+                <div className="space-y-2">
+                  {FAQ.filter((f) => f.categoria === cat).map((f) => (
+                    <button
+                      key={f.q}
+                      type="button"
+                      onClick={() => answerFaq(f)}
+                      className="glass card-hover flex w-full items-center justify-between gap-3 rounded-xl px-4 py-3 text-left text-[0.84rem] leading-snug transition-colors hover:text-[var(--accent)]"
+                    >
+                      <span>{f.q}</span>
+                      <span aria-hidden="true" className="shrink-0 text-[var(--accent)]">
+                        →
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
+            )}
+
+            {/* reabrir o FAQ depois de uma resposta */}
+            {!showFaq && !loading && (
+              <button
+                type="button"
+                onClick={() => setShowFaq(true)}
+                className="glass mx-auto flex items-center gap-2 rounded-full px-4 py-2 text-[0.78rem] text-muted transition-colors hover:text-[var(--accent)]"
+              >
+                <span aria-hidden="true">☰</span> Ver todas as perguntas
+              </button>
             )}
           </div>
 

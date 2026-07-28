@@ -13,8 +13,9 @@ import { EcgDivider } from "@/components/ui/EcgDivider";
 import { BentoTech } from "@/components/sections/BentoTech";
 import { clinicPhotos, doctorPhotos } from "@/lib/gallery";
 import { getAllArticles } from "@/lib/articles";
+import { faqForSchema } from "@/lib/chat-faq";
 import { site, whatsappLink } from "@/lib/site-config";
-import { JsonLd, breadcrumbSchema } from "@/lib/schema";
+import { JsonLd, breadcrumbSchema, faqSchema } from "@/lib/schema";
 
 const areas = [
   {
@@ -398,7 +399,12 @@ export default function HomePage() {
       )}
 
       <CtaSection />
-      <JsonLd data={breadcrumbSchema([{ name: "Início", path: "/" }])} />
+      <JsonLd
+        data={[
+          breadcrumbSchema([{ name: "Início", path: "/" }]),
+          faqSchema(faqForSchema()),
+        ]}
+      />
     </>
   );
 }
