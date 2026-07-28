@@ -8,6 +8,29 @@ extraído durante o desenvolvimento. Portanto, os dados abaixo **não foram veri
 contra a fonte** — confirme cada um e me avise o que corrigir (ou corrija direto no
 arquivo indicado).
 
+
+---
+
+## ✅ ATUALIZAÇÃO — currículo verificado (28/07/2026)
+
+O texto do PDF do Lattes **foi extraído com sucesso** numa segunda tentativa (o problema
+era o método de leitura, não o arquivo). Os dados abaixo foram **conferidos contra a
+fonte** e estão corretos no site:
+
+- Lattes iD `5293466472803267` e ORCID `0000-0003-2242-2469` ✔
+- Graduação em Medicina, PUC-GO (2025.2) ✔
+- **Magna Cum Laude** — Honraria de Prata em Mérito Acadêmico, PUC-GO (2025) ✔
+- 2º lugar no I Fórum de Extensão do Curso de Medicina da PUC-GO (2023) ✔
+- Certificação **ACLS** ✔ · Revisor de periódico ✔
+- Todas as publicações listadas existem no Lattes ✔
+
+**Correções aplicadas:** as estatísticas da home foram ajustadas de "6+ artigos / 20+
+congressos" para os números exatos — **6 artigos em periódicos** e **13 apresentações
+em congressos**. A página `/artigos` passou a listar a produção científica real.
+
+**Continua pendente de você:** confirmar o item 5 abaixo (RQE) e o item 6 (autorização
+da clínica para as fotos).
+
 ## 1. Identificadores externos — `lib/site-config.ts`
 
 | Dado | Valor publicado | Confere? |

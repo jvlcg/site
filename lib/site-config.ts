@@ -77,6 +77,7 @@ export const navLinks = [
   { href: "/medicina-esportiva", label: "Medicina Esportiva" },
   { href: "/telemedicina", label: "Telemedicina" },
   { href: "/consultorio", label: "Consultório em Goiânia" },
-  { href: "/artigos", label: "Artigos" },
+  { href: "/blog", label: "Blog" },
+  { href: "/artigos", label: "Artigos científicos" },
   { href: "/contato", label: "Contato" },
 ] as const;

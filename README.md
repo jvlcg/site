@@ -58,16 +58,27 @@ oferece agendamento. O rodapé do chat traz o aviso de que é um assistente auto
 
 Para ajustar o que o assistente sabe ou como responde, edite `lib/knowledge.ts`.
 
-## Blog — como publicar (menu "Blog" → `/artigos`)
+## Duas seções de conteúdo — não confundir
 
-O item **Blog** no menu leva a `/artigos`. Para publicar, crie um arquivo `.mdx` em
-`content/artigos/` (modelo na seção "Publicando um novo artigo"). O artigo entra
-sozinho na listagem, no menu do blog, no sitemap, no `llms.txt`, no mapa do site e
-ganha os dados estruturados de artigo.
+| Menu | Rota | O que é | Fonte |
+| --- | --- | --- | --- |
+| **Blog** | `/blog` | Textos educativos para pacientes (SEO de cauda longa) | `content/artigos/*.mdx` |
+| **Artigos** | `/artigos` | Produção científica real (periódicos, livro, congressos) | `lib/publications.ts` |
 
-> **Atenção:** os artigos do blog são **conteúdo educativo** assinado pelo médico —
-> não se confundem com as **publicações científicas** listadas em `/sobre`. Revise e
-> aprove cada texto antes de publicar, já que ele sai com sua assinatura e CRM.
+### Blog — como publicar
+
+Crie um `.mdx` em `content/artigos/` (modelo na seção "Publicando um novo artigo").
+O texto entra sozinho na listagem, no sitemap, no `llms.txt`, no mapa do site e ganha
+dados estruturados. URLs antigas `/artigos/<slug>` redirecionam para `/blog/<slug>`.
+
+> Os textos do blog saem **assinados com seu nome e CRM** — revise antes de publicar.
+
+### Artigos científicos — como atualizar
+
+Editar `lib/publications.ts`. Os dados atuais foram extraídos do **Currículo Lattes
+(atualizado em 31/01/2026)**: 6 artigos em periódicos, 1 livro organizado, 1 capítulo,
+7 trabalhos completos em anais e 13 apresentações em congressos. As estatísticas da
+home e da página vêm dessas contagens.
 
 ## Banco de fotos (`public/images/`)
 

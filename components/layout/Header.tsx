@@ -14,7 +14,8 @@ const headerLinks = [
   { href: "/medicina-esportiva", label: "Esportiva" },
   { href: "/telemedicina", label: "Telemedicina" },
   { href: "/consultorio", label: "Consultório" },
-  { href: "/artigos", label: "Blog" },
+  { href: "/blog", label: "Blog" },
+  { href: "/artigos", label: "Artigos" },
   { href: "/contato", label: "Contato" },
 ];
 

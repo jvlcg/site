@@ -81,8 +81,8 @@ const steps = [
 
 const credentials = [
   { value: "PUC-GO", label: "Graduação em Medicina · Magna Cum Laude" },
-  { value: "6+", label: "Artigos publicados em periódicos científicos" },
-  { value: "20+", label: "Trabalhos apresentados em congressos médicos" },
+  { value: "6", label: "Artigos publicados em periódicos científicos" },
+  { value: "13", label: "Trabalhos apresentados em congressos médicos" },
   { value: "ACLS", label: "Suporte Avançado de Vida — American Heart Association" },
 ];
 
@@ -361,7 +361,7 @@ export default function HomePage() {
               lede="Educação em saúde com base em evidências — sem promessas, sem atalhos."
             />
             <Reveal>
-              <Link href="/artigos" className="btn-ghost text-sm">
+              <Link href="/blog" className="btn-ghost text-sm">
                 Todos os artigos
               </Link>
             </Reveal>
@@ -370,7 +370,7 @@ export default function HomePage() {
             {articles.map((a, i) => (
               <Reveal key={a.slug} delay={i * 90}>
                 <Link
-                  href={`/artigos/${a.slug}`}
+                  href={`/blog/${a.slug}`}
                   className="glass card-hover group flex h-full flex-col rounded-3xl p-7"
                 >
                   <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">

@@ -10,7 +10,7 @@ import { getAllArticles } from "./articles";
  */
 export function buildKnowledgeBase(): string {
   const artigos = getAllArticles()
-    .map((a) => `- "${a.title}" (${a.category}): ${a.description} → ${site.url}/artigos/${a.slug}`)
+    .map((a) => `- "${a.title}" (${a.category}): ${a.description} → ${site.url}/blog/${a.slug}`)
     .join("\n");
 
   return `

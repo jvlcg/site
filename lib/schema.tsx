@@ -198,13 +198,13 @@ export function articleSchema(opts: {
     "@type": "MedicalScholarlyArticle",
     headline: opts.title,
     description: opts.description,
-    url: `${site.url}/artigos/${opts.slug}`,
+    url: `${site.url}/blog/${opts.slug}`,
     datePublished: opts.date,
     dateModified: opts.modified ?? opts.date,
     inLanguage: "pt-BR",
     author: { "@id": `${site.url}/#physician` },
     publisher: { "@id": `${site.url}/#physician` },
-    mainEntityOfPage: `${site.url}/artigos/${opts.slug}`,
+    mainEntityOfPage: `${site.url}/blog/${opts.slug}`,
   };
 }
 

@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/medicina-esportiva",
     "/telemedicina",
     "/consultorio",
+    "/blog",
     "/artigos",
     "/contato",
     "/mapa-do-site",
@@ -25,11 +26,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const articleRoutes = getAllArticles().map((a) => ({
-    url: `${site.url}/artigos/${a.slug}`,
+    url: `${site.url}/blog/${a.slug}`,
     lastModified: new Date(a.updated ?? a.date),
     changeFrequency: "yearly" as const,
     priority: 0.6,
-    images: [`${site.url}/artigos/${a.slug}/opengraph-image`],
+    images: [`${site.url}/blog/${a.slug}/opengraph-image`],
   }));
 
   return [...staticRoutes, ...articleRoutes];

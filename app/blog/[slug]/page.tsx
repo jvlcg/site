@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: article.title,
     description: article.description,
-    alternates: { canonical: `/artigos/${slug}` },
+    alternates: { canonical: `/blog/${slug}` },
     openGraph: {
       type: "article",
       title: article.title,
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       tags: article.tags,
       images: [
         {
-          url: `/og/artigos/${slug}.png`,
+          url: `/og/blog/${slug}.png`,
           width: 1200,
           height: 630,
           alt: article.title,
@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title: article.title,
       description: article.description,
-      images: [`/og/artigos/${slug}.png`],
+      images: [`/og/blog/${slug}.png`],
     },
   };
 }
@@ -74,7 +74,7 @@ export default async function ArtigoPage({ params }: Props) {
                 <span aria-hidden="true" className="opacity-50">/</span>
               </li>
               <li className="flex items-center gap-2">
-                <Link href="/artigos" className="transition-colors hover:text-[var(--fg)]">Artigos</Link>
+                <Link href="/blog" className="transition-colors hover:text-[var(--fg)]">Artigos</Link>
                 <span aria-hidden="true" className="opacity-50">/</span>
               </li>
               <li>
@@ -165,7 +165,7 @@ export default async function ArtigoPage({ params }: Props) {
             {related.map((a) => (
               <Link
                 key={a.slug}
-                href={`/artigos/${a.slug}`}
+                href={`/blog/${a.slug}`}
                 className="glass card-hover rounded-2xl p-6"
               >
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
@@ -191,8 +191,8 @@ export default async function ArtigoPage({ params }: Props) {
           }),
           breadcrumbSchema([
             { name: "Início", path: "/" },
-            { name: "Artigos", path: "/artigos" },
-            { name: article.title, path: `/artigos/${article.slug}` },
+            { name: "Blog", path: "/blog" },
+            { name: article.title, path: `/blog/${article.slug}` },
           ]),
           ...(article.faq.length > 0 ? [faqSchema(article.faq)] : []),
         ]}

@@ -29,8 +29,11 @@ Agendamento: exclusivamente pelo WhatsApp do consultório. Contato: ${site.email
 - [Consultório em Goiânia](${site.url}/consultorio): fotos da estrutura, localização no mapa e como chegar (${site.address.clinic}, ${site.address.street}).
 - [Contato](${site.url}/contato): endereço do consultório e canais de agendamento.
 
-## Artigos
-${articles.map((a) => `- [${a.title}](${site.url}/artigos/${a.slug}): ${a.description}`).join("\n")}
+## Blog (conteúdo educativo para pacientes)
+${articles.map((a) => `- [${a.title}](${site.url}/blog/${a.slug}): ${a.description}`).join("\n")}
+
+## Artigos científicos
+- [Produção científica](${site.url}/artigos): artigos em periódicos sobre dor, anestesia e intervenção guiada por imagem, livro, capítulo e trabalhos em congressos.
 
 ## Observações
 - Conteúdo educativo; não substitui consulta médica.

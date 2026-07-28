@@ -34,7 +34,8 @@ const grupos = [
   {
     titulo: "Conteúdo",
     links: [
-      { href: "/artigos", label: "Blog — todos os artigos", desc: "Educação em saúde baseada em evidências." },
+      { href: "/blog", label: "Blog — educação em saúde", desc: "Textos educativos para pacientes." },
+      { href: "/artigos", label: "Artigos científicos", desc: "Produção científica publicada em periódicos e congressos." },
     ],
   },
   {
@@ -94,7 +95,7 @@ export default function MapaDoSitePage() {
             {artigos.map((a) => (
               <li key={a.slug}>
                 <Link
-                  href={`/artigos/${a.slug}`}
+                  href={`/blog/${a.slug}`}
                   className="font-medium text-[var(--fg)] transition-colors hover:text-[var(--accent)]"
                 >
                   {a.title}
