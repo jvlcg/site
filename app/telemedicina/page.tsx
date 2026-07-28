@@ -4,6 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FaqAccordion, type FaqItem } from "@/components/ui/FaqAccordion";
 import { CtaSection } from "@/components/ui/CtaSection";
+import { PortraitSection } from "@/components/ui/PortraitSection";
 import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
@@ -128,7 +129,19 @@ export default function TelemedicinaPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-4xl px-5 sm:px-8">
+      <PortraitSection
+        eyebrow="A mesma consulta, sem a distância"
+        title={
+          <>
+            Atenção integral <span className="text-gradient">pela tela</span>
+          </>
+        }
+        lede="A teleconsulta não é uma versão reduzida do atendimento: é a mesma anamnese detalhada, a mesma análise de exames e o mesmo tempo dedicado a explicar o raciocínio clínico. Muda apenas o meio — e, quando o seu caso exigir exame físico, você será orientado a fazê-lo presencialmente."
+        image="/images/dr-terno-punho.jpg"
+        alt="Dr. José Victor em traje social, sorrindo, ajustando o punho da camisa"
+      />
+
+      <section className="mx-auto mt-32 max-w-4xl px-5 sm:px-8">
         <SectionHeading eyebrow="Perguntas frequentes" title="Dúvidas comuns" align="center" />
         <div className="mt-12">
           <FaqAccordion items={faq} />

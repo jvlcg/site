@@ -39,6 +39,26 @@ Os números reais já estão embutidos como padrão em `lib/site-config.ts`
 (particular `5562999758034`, planos `5562999961365`); as variáveis de ambiente
 apenas permitem sobrescrevê-los sem tocar no código.
 
+## Banco de fotos (`public/images/`)
+
+| Arquivo | Onde é usada |
+| --- | --- |
+| `dr-retrato-gravata.jpg` | Hero da Home |
+| `dr-jaleco-braco.jpg` | Home — seção formação e pesquisa |
+| `dr-jaleco-classico.jpg` | Clínica Médica |
+| `dr-casual-camisa.jpg` | Medicina Esportiva |
+| `dr-terno-punho.jpg` | Telemedicina |
+| `dr-poltrona-pensativo.jpg` | Medicina Endocanabinoide |
+| `dr-jose-victor-perfil-pb.jpg` | Sobre — faixa editorial |
+| `dr-jose-victor-perfil-sorriso.jpg` | Sobre — fechamento humano |
+| `dr-jose-victor-jaleco-2.jpg` | Sobre — biografia |
+| `dr-jose-victor-jaleco.jpg` | Autor dos artigos |
+
+**Reserva** (processadas e prontas, sem uso no momento): `dr-poltrona-autoridade.jpg`,
+`dr-poltrona-perfil.jpg`, `dr-terno-azul.jpg`, `dr-jaleco-classico-2.jpg`,
+`dr-jose-victor-terno.jpg`, `dr-jose-victor-perfil.jpg`. Para trocar qualquer retrato,
+basta apontar o `src` do componente para outro arquivo desta pasta.
+
 ## Avaliações do Google (ao vivo)
 
 O bloco de avaliações (`components/ui/GoogleReviews.tsx` + `lib/google-reviews.ts`) puxa

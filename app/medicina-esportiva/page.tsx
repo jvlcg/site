@@ -4,6 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FaqAccordion, type FaqItem } from "@/components/ui/FaqAccordion";
 import { CtaSection } from "@/components/ui/CtaSection";
+import { PortraitSection } from "@/components/ui/PortraitSection";
 import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema, serviceSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
@@ -119,7 +120,20 @@ export default function MedicinaEsportivaPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-4xl px-5 sm:px-8">
+      <PortraitSection
+        eyebrow="Ciência aplicada ao movimento"
+        title={
+          <>
+            Quem investiga dor <span className="text-gradient">de perto</span>
+          </>
+        }
+        lede="Minha produção científica começou justamente em dor e procedimentos guiados por imagem — o mesmo tema que aparece no consultório de quem treina. Isso significa avaliar a origem da queixa com critério, evitar exames desnecessários e definir um retorno ao esporte com marcos objetivos, não com achismo."
+        image="/images/dr-casual-camisa.jpg"
+        alt="Dr. José Victor em camisa social, sorrindo"
+        reverse
+      />
+
+      <section className="mx-auto mt-32 max-w-4xl px-5 sm:px-8">
         <SectionHeading eyebrow="Perguntas frequentes" title="Antes de agendar" align="center" />
         <div className="mt-12">
           <FaqAccordion items={faq} />

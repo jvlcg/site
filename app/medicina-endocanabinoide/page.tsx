@@ -4,6 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FaqAccordion, type FaqItem } from "@/components/ui/FaqAccordion";
 import { CtaSection } from "@/components/ui/CtaSection";
+import { PortraitSection } from "@/components/ui/PortraitSection";
 import { ThreeScene } from "@/components/three/ThreeScene";
 import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema, serviceSchema } from "@/lib/schema";
 
@@ -228,6 +229,19 @@ export default function EndocanabinoidePage() {
           </div>
         </div>
       </section>
+
+      <PortraitSection
+        eyebrow="Critério antes da conduta"
+        title={
+          <>
+            Um campo novo exige <span className="text-gradient">mais rigor</span>, não menos
+          </>
+        }
+        lede="A medicina endocanabinoide desperta entusiasmo — e é justamente por isso que precisa de critério redobrado. Aqui, cada indicação passa por revisão da literatura, análise de segurança e comparação honesta com as alternativas já estabelecidas. Se a evidência não sustenta, você vai ouvir isso com clareza."
+        image="/images/dr-poltrona-pensativo.jpg"
+        alt="Dr. José Victor sentado, em atitude reflexiva"
+        reverse
+      />
 
       {/* Laudo para cultivo domiciliar */}
       <section className="mx-auto mt-28 max-w-7xl px-5 sm:px-8">

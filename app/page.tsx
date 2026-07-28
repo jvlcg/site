@@ -148,11 +148,12 @@ export default function HomePage() {
             <div className="animate-float relative">
               <div className="glass relative overflow-hidden rounded-[1.8rem] p-2">
                 <Image
-                  src="/images/dr-jose-victor-terno.jpg"
-                  alt="Dr. José Victor Lisboa Cardoso Gomes, médico, sorrindo de braços cruzados em traje social"
-                  width={600}
-                  height={900}
+                  src="/images/dr-retrato-gravata.jpg"
+                  alt="Dr. José Victor Lisboa Cardoso Gomes, médico, em traje social ajustando a gravata"
+                  width={650}
+                  height={975}
                   priority
+                  sizes="(max-width: 1024px) 90vw, 460px"
                   className="rounded-[1.4rem] object-cover"
                 />
               </div>
@@ -253,10 +254,11 @@ export default function HomePage() {
               <div className="overflow-hidden rounded-[1.4rem]">
               <Parallax speed={0.16}>
               <Image
-                src="/images/dr-jose-victor-jaleco.jpg"
-                alt="Dr. José Victor de jaleco médico com o nome bordado"
-                width={600}
-                height={900}
+                src="/images/dr-jaleco-braco.jpg"
+                alt="Dr. José Victor sorrindo, com o jaleco médico no braço"
+                width={650}
+                height={975}
+                sizes="(max-width: 1024px) 90vw, 420px"
                 className="scale-[1.12] rounded-[1.4rem] object-cover"
               />
               </Parallax>

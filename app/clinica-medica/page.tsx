@@ -4,6 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FaqAccordion, type FaqItem } from "@/components/ui/FaqAccordion";
 import { CtaSection } from "@/components/ui/CtaSection";
+import { PortraitSection } from "@/components/ui/PortraitSection";
 import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema, serviceSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
@@ -132,7 +133,19 @@ export default function ClinicaMedicaPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-4xl px-5 sm:px-8">
+      <PortraitSection
+        eyebrow="Seu médico de referência"
+        title={
+          <>
+            Alguém que conhece <span className="text-gradient">a sua história</span>
+          </>
+        }
+        lede="Ter um clínico que acompanha você ao longo do tempo muda o cuidado: exames ganham contexto, tendências aparecem antes do problema e as decisões deixam de ser isoladas. É esse acompanhamento contínuo que organiza sua saúde — e integra os demais especialistas quando necessário."
+        image="/images/dr-jaleco-classico.jpg"
+        alt="Dr. José Victor de jaleco médico, sorrindo"
+      />
+
+      <section className="mx-auto mt-32 max-w-4xl px-5 sm:px-8">
         <SectionHeading eyebrow="Perguntas frequentes" title="Antes de agendar" align="center" />
         <div className="mt-12">
           <FaqAccordion items={faq} />
