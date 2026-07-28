@@ -13,6 +13,8 @@ export const site = {
   instagramHandle: "@dr.josevlcg",
   /** Avaliações reais no Google (link do perfil compartilhado pelo médico). */
   googleReviewsUrl: "https://share.google/D00DatArA69xbY1ho",
+  /** Place ID do perfil do Dr. José Victor no Google (público, não é segredo). */
+  googlePlaceId: "ChIJl84fCu3xXpMR_l6BFBpBuhc",
   /**
    * WhatsApp em formato internacional (sem "+"). O consultório é focado em
    * atendimento PARTICULAR (Dr. José Victor). Planos de saúde são atendidos

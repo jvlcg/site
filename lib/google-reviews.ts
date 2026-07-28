@@ -41,6 +41,7 @@ const REVALIDATE = 3600; // 1h
 
 async function resolvePlaceId(key: string): Promise<string | null> {
   if (process.env.GOOGLE_PLACE_ID) return process.env.GOOGLE_PLACE_ID;
+  if (site.googlePlaceId) return site.googlePlaceId;
   try {
     const res = await fetch(`${API}/places:searchText`, {
       method: "POST",
