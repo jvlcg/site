@@ -39,13 +39,28 @@ Os números reais já estão embutidos como padrão em `lib/site-config.ts`
 (particular `5562999758034`, planos `5562999961365`); as variáveis de ambiente
 apenas permitem sobrescrevê-los sem tocar no código.
 
-## Prova social (Google)
+## Avaliações do Google (ao vivo)
 
-O bloco "Avaliações no Google" (`components/ui/GoogleRating.tsx`) leva ao perfil real
-do consultório — conteúdo de terceiro, compatível com o CFM. A **nota numérica e o
-total de avaliações não são exibidos** para não veicular número não confirmado. Para
-mostrar a nota agregada (e adicionar `aggregateRating` ao Schema), informe a média e a
-quantidade reais e atualize `lib/site-config.ts` + `lib/schema.tsx`.
+O bloco de avaliações (`components/ui/GoogleReviews.tsx` + `lib/google-reviews.ts`) puxa
+as avaliações **reais do Google Meu Negócio** pela **Places API (New)**, no servidor, com
+cache de 1 hora (ISR). Mostra nota, total, comentários e botões "Deixar minha avaliação"
+(abre o formulário do Google) e "Ver todas no Google". A `aggregateRating` entra no Schema
+automaticamente quando os dados chegam.
+
+**Como ativar:**
+1. No [Google Cloud Console](https://console.cloud.google.com/), crie um projeto, ative a
+   **Places API (New)** e habilite o faturamento (o uso aqui cabe na cota gratuita).
+2. Gere uma **chave de API** e restrinja a "Places API (New)".
+3. Na Vercel, defina `GOOGLE_PLACES_API_KEY` (e, se quiser fixar, `GOOGLE_PLACE_ID`).
+
+Sem a chave, o site mostra o **fallback**: um botão que leva ao perfil do Google
+(`components/ui/GoogleRating.tsx`) — nada quebra.
+
+> **Por que não copiamos os comentários no código?** O Google bloqueia leitura automática
+> das avaliações, texto fixo envelhece e depoimentos "colados" como publicidade esbarram
+> nas normas do CFM. Puxar ao vivo pela API oficial (conteúdo público de terceiros) é a
+> forma correta, sempre atualizada. Pacientes avaliam **no próprio Google** — o site só
+> exibe e encaminha para o formulário oficial.
 
 ## Publicando um novo artigo
 

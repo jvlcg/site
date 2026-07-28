@@ -5,7 +5,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { CtaSection } from "@/components/ui/CtaSection";
-import { GoogleRating } from "@/components/ui/GoogleRating";
+import { GoogleReviews } from "@/components/ui/GoogleReviews";
 import { Counter } from "@/components/ui/Counter";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { Parallax } from "@/components/ui/Parallax";
@@ -295,9 +295,7 @@ export default function HomePage() {
       </section>
 
       {/* ---------- PROVA SOCIAL ---------- */}
-      <section className="mx-auto mt-24 max-w-4xl px-5 sm:px-8">
-        <GoogleRating />
-      </section>
+      <GoogleReviews className="mt-28" />
 
       {/* ---------- ARTIGOS ---------- */}
       {articles.length > 0 && (

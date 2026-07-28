@@ -11,8 +11,8 @@ export const site = {
   email: "jvlcg.work@gmail.com",
   instagram: "https://instagram.com/dr.josevlcg",
   instagramHandle: "@dr.josevlcg",
-  /** Avaliações reais no Google (link do perfil). Nota/total não confirmados → não inventar. */
-  googleReviewsUrl: "https://share.google/gQUcqa2bAMSpjK55U",
+  /** Avaliações reais no Google (link do perfil compartilhado pelo médico). */
+  googleReviewsUrl: "https://share.google/D00DatArA69xbY1ho",
   /**
    * WhatsApp em formato internacional (sem "+"). O consultório é focado em
    * atendimento PARTICULAR (Dr. José Victor). Planos de saúde são atendidos
