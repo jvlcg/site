@@ -75,6 +75,44 @@ Para ajustar o que o assistente sabe ou como responde, edite `lib/knowledge.ts`.
 **Nunca** cole a chave em um arquivo do repositório — ela ficaria pública no
 GitHub. O lugar dela é só o painel da Vercel.
 
+### Quanto custa
+
+Modelo padrão: **Claude Haiku 4.5** (`claude-haiku-4-5-20251001`), o mais barato
+da linha — US$ 1,00 por milhão de tokens de entrada e US$ 5,00 por milhão de
+saída. Para trocar, defina `ANTHROPIC_MODEL`.
+
+O que cada mensagem consome, medido na base real deste site:
+
+| Item | Tokens |
+| --- | ---: |
+| Instruções de segurança (system prompt) | ~600 |
+| Base de conhecimento (conteúdo do site) | ~1.150 |
+| Histórico da conversa (média) | ~500 |
+| Resposta gerada (teto de 400) | ~200 |
+
+Dá cerca de **US$ 0,003 por mensagem** — uma conversa de 6 mensagens sai por
+volta de **US$ 0,02**. Mil conversas por mês ficariam em torno de US$ 20.
+
+E isso é o teto: as 26 perguntas clicáveis do FAQ são respondidas na hora, do
+próprio código, **sem chamar a IA**. Só a pergunta digitada em texto livre gera
+custo.
+
+> **Nota técnica:** o `cache_control` da rota está inativo hoje. O prefixo
+> (instruções + base) soma ~1.750 tokens e o Haiku 4.5 só cacheia a partir de
+> 4.096 — abaixo disso a API ignora o marcador em silêncio, sem erro. Não é um
+> problema: nesse tamanho o cache economizaria frações de centavo. O marcador
+> fica no lugar porque passa a valer sozinho quando a base crescer.
+
+### Teto de gasto (recomendado)
+
+O jeito mais seguro de limitar o custo é **não ligar a recarga automática**. A
+API funciona com créditos pré-pagos: você compra US$ 20, e quando acabam a IA
+simplesmente para — o chat volta para o modo reserva por palavras-chave e o
+visitante continua atendido. Com a recarga automática ligada, esse limite
+natural deixa de existir.
+
+Em **Billing → Usage limits** também dá para definir um teto mensal explícito.
+
 ### Como conferir se a IA ligou
 
 O diagnóstico é protegido por senha, para não ficar exposto. Crie na Vercel a
