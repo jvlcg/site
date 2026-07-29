@@ -77,14 +77,67 @@ GitHub. O lugar dela é só o painel da Vercel.
 
 ### Como conferir se a IA ligou
 
-Abra no navegador: **`https://drjvlcg.com.br/api/chat`**
+O diagnóstico é protegido por senha, para não ficar exposto. Crie na Vercel a
+variável **`DIAG_TOKEN`** com uma senha longa qualquer (ex.: `k7Qm2xR9vL4pB8n`) e
+abra:
+
+```
+https://drjvlcg.com.br/api/chat?token=SUA_SENHA
+```
 
 - `{"ia":true,...}` → IA ativa e respondendo.
 - `{"ia":false,"motivo":"..."}` → o campo `motivo` diz o que falta (chave ausente,
   chave inválida, sem créditos). A rota nunca mostra a chave.
+- **404** → token errado ou `DIAG_TOKEN` não configurada. A rota responde 404 de
+  propósito: assim nem revela que existe um diagnóstico ali.
 
 Se a IA estiver fora, o chat **não quebra**: ele volta sozinho para o modo reserva
 por palavras-chave, e o visitante continua atendido normalmente.
+
+## Segurança
+
+O risco real de um site como este não é alguém "hackear a página" — ela é
+estática. É alguém **descobrir a URL do chat e usá-la como IA gratuita**,
+gerando custo na sua conta da Anthropic. As defesas abaixo miram nisso.
+
+### O que já está no código
+
+| Barreira | O que faz |
+| --- | --- |
+| **Mesma origem** | `/api/chat` só responde a chamadas vindas do próprio site. `curl` avulso ou script de outro domínio recebe **404**. |
+| **Limite por visitante** | 10 mensagens/minuto e 60/hora, em janela deslizante. |
+| **Teto global** | 600 chamadas/hora no total — limita o gasto mesmo sob ataque de muitos IPs. |
+| **Corpo limitado** | Payload acima de 8 KB é recusado antes de ser processado. |
+| **Diagnóstico fechado** | `GET /api/chat` exige `DIAG_TOKEN`; sem ele responde 404. |
+| **Sem cache, sem índice** | Respostas de API com `no-store` e `noindex`; `/api/` bloqueado no `robots.txt`. |
+| **Cabeçalhos** | CSP, HSTS, `X-Frame-Options: DENY`, `nosniff`, `Permissions-Policy` (câmera/microfone/localização desligados), COOP. O `X-Powered-By` foi removido. |
+
+> **Limite honesto:** o contador de requisições vive na memória da instância. Em
+> serverless cada instância tem o seu e eles reiniciam — isso segura abuso
+> casual e scripts simples, mas **não é uma tranca**. A tranca de verdade é a
+> da borda, abaixo.
+
+### O que só você pode ligar (Vercel) — recomendado
+
+Tudo isso é de graça no plano Hobby/Pro e leva poucos minutos:
+
+1. **Firewall → Rate Limiting**: crie uma regra para o caminho `/api/*`, algo como
+   20 requisições/minuto por IP, ação *Deny*. Essa contagem é feita na borda,
+   compartilhada entre todas as instâncias — é o limite que realmente vale.
+2. **Firewall → Bot Protection / Attack Challenge Mode**: liga um desafio
+   automático quando o tráfego fica anormal. Deixe pronto para acionar se algum
+   dia o site for alvo.
+3. **Deployment Protection**: mantenha os *previews* protegidos por senha, para
+   que versões de teste não fiquem públicas.
+4. **Alerta de gasto na Anthropic**: em *Billing → Usage limits*, defina um teto
+   mensal. É a rede de proteção final: mesmo que tudo acima falhe, o custo para.
+
+### Variáveis de ambiente ligadas à segurança
+
+- `DIAG_TOKEN` — senha do diagnóstico da IA (sem ela o diagnóstico fica desligado).
+- `ALLOWED_ORIGINS` — domínios extras autorizados a chamar a API, separados por
+  vírgula. Só é necessário se o site atender por mais de um domínio (ex.: o `www`).
+  O domínio principal e os previews da Vercel já funcionam sozinhos.
 
 ## FAQ — uma fonte, três destinos
 
@@ -130,22 +183,33 @@ home e da página vêm dessas contagens.
 
 ## Marca (logo)
 
-O perfil de cabeça é um **traçado geométrico próprio**, não o contorno bruto da
-foto. O contorno da foto trazia ombros e detalhes de cabelo (87 curvas) e virava
-um borrão abaixo de 40px — além de ficar descentralizado, porque o centro da
-massa caía bem abaixo do centro do círculo.
+A marca é a **silhueta real do perfil do Dr. José Victor**, vetorizada da foto em
+contraluz e enquadrada como foto de perfil: coroa perto do topo do anel e um
+pouco de pescoço saindo pela base, recortado pelo círculo.
 
-**Trocar de variante:** edite `LOGO_VARIANT` em `components/layout/Logo.tsx`.
-São seis: `retrato` (ativa), `folga`, `livre`, `contorno`, `disco`, `sinapses`.
+Dentro da cabeça ficam uma **rede de sinapses** e o monograma **"JV"** em Space
+Grotesk Bold — a mesma fonte de display do site. Os dois são vazados em espaço
+negativo, mostrando o fundo da página através da silhueta. É esse recorte que
+faz a marca funcionar nos dois temas com **um único arquivo**: no escuro o "JV"
+aparece escuro sobre o verde, no claro aparece claro sobre o verde, sempre com
+contraste — sem precisar manter duas versões de cor.
 
-Depois de trocar, rode `node scripts/gen-brand.mjs` para regerar `public/brand/`
-e os ícones do PWA a partir da **mesma geometria** do componente — é o que
-impede o site e o favicon de divergirem. O `app/icon.svg` é o favicon e precisa
-ser ajustado à mão se a variante mudar (ele é estático por exigência do Next).
+**Toda a geometria vive em `lib/brand-geometry.ts`** (caminhos, transforms, nós
+e arestas das sinapses). O componente React, o favicon e as mídias importam esse
+mesmo arquivo — o Node consegue importar o `.ts` direto, então não existe cópia
+de números para sair do lugar.
 
-`public/brand/` traz, de cada variante: SVG vetorial (escuro, claro e mono para
-carimbo/impressão em uma cor) e PNG 512/192 — prontos para redes sociais,
-papelaria e WhatsApp Business.
+Depois de mexer na geometria, rode:
+
+```bash
+node scripts/gen-brand.mjs
+```
+
+Ele regera `public/brand/`, os ícones do PWA e o `app/icon.svg` de uma vez.
+
+`public/brand/` traz: SVG vetorial (escuro, claro, mono para carimbo/impressão em
+uma cor, e sem anel) e PNG 1024/512/192 — prontos para redes sociais, papelaria
+e WhatsApp Business.
 
 ## Banco de fotos (`public/images/`)
 
