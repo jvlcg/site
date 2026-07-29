@@ -5,28 +5,24 @@ import { site } from "@/lib/site-config";
 import {
   BRAND_FROM,
   BRAND_TO,
+  HEAD_CUT_Y,
   HEAD_PATH,
   HEAD_TF,
   JV_PATH,
   JV_TF,
-  SYNAPSE_EDGES,
-  SYNAPSE_EDGE_W,
-  SYNAPSE_NODES,
-  SYNAPSE_NODE_R,
 } from "@/lib/brand-geometry";
 
 /**
- * Marca "Dr.JV".
+ * Marca "Dr.JV" (provisória).
  *
  * A silhueta é o perfil real do Dr. José Victor, vetorizado da foto em
- * contraluz e enquadrado como foto de perfil — coroa perto do topo do anel e
- * um pouco de pescoço saindo pela base, recortado pelo círculo.
+ * contraluz, cortado logo abaixo do pescoço e centralizado no anel com folga.
  *
- * A rede de sinapses e o monograma "JV" (Space Grotesk Bold, a fonte de
- * display do site) são vazados em espaço negativo: mostram o fundo da página
- * através da cabeça. É isso que faz a marca ler nos dois temas com um único
- * arquivo — no escuro o "JV" aparece escuro sobre o verde, no claro aparece
- * claro sobre o verde, sempre com contraste.
+ * O monograma "JV" (Space Grotesk Bold, a fonte de display do site) é vazado
+ * em espaço negativo: mostra o fundo da página através da cabeça. É isso que
+ * faz a marca ler nos dois temas com um único arquivo — no escuro o "JV"
+ * aparece escuro sobre o verde, no claro aparece claro sobre o verde, sempre
+ * com contraste.
  */
 export function LogoMark({
   className = "h-9 w-9",
@@ -39,6 +35,7 @@ export function LogoMark({
   const gid = `g${uid}`;
   const mid = `m${uid}`;
   const cid = `c${uid}`;
+  const kid = `k${uid}`;
 
   return (
     <svg viewBox="0 0 100 100" className={className} role="img" aria-label={site.shortName}>
@@ -47,30 +44,15 @@ export function LogoMark({
           <stop offset="0%" stopColor={BRAND_FROM} />
           <stop offset="100%" stopColor={BRAND_TO} />
         </linearGradient>
+        {/* corta o busto no espaço nativo da silhueta, antes da transformação */}
+        <clipPath id={kid}>
+          <rect x="0" y="0" width="800" height={HEAD_CUT_Y} />
+        </clipPath>
         <clipPath id={cid}>
           <circle cx="50" cy="50" r="45" />
         </clipPath>
         <mask id={mid}>
           <rect width="100" height="100" fill="white" />
-          <g
-            stroke="black"
-            strokeWidth={SYNAPSE_EDGE_W}
-            strokeLinecap="round"
-            fill="none"
-          >
-            {SYNAPSE_EDGES.map(([a, b], i) => (
-              <line
-                key={i}
-                x1={SYNAPSE_NODES[a][0]}
-                y1={SYNAPSE_NODES[a][1]}
-                x2={SYNAPSE_NODES[b][0]}
-                y2={SYNAPSE_NODES[b][1]}
-              />
-            ))}
-          </g>
-          {SYNAPSE_NODES.map(([x, y], i) => (
-            <circle key={i} cx={x} cy={y} r={SYNAPSE_NODE_R} fill="black" />
-          ))}
           <path transform={JV_TF} d={JV_PATH} fill="black" />
         </mask>
       </defs>
@@ -85,7 +67,9 @@ export function LogoMark({
         strokeWidth="1.3"
       />
       <g clipPath={`url(#${cid})`} mask={`url(#${mid})`}>
-        <path transform={HEAD_TF} d={HEAD_PATH} fill={mono ? "currentColor" : `url(#${gid})`} />
+        <g transform={HEAD_TF} clipPath={`url(#${kid})`}>
+          <path d={HEAD_PATH} fill={mono ? "currentColor" : `url(#${gid})`} />
+        </g>
       </g>
     </svg>
   );

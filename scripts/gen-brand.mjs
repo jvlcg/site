@@ -12,14 +12,11 @@ import sharp from "sharp";
 import {
   BRAND_FROM,
   BRAND_TO,
+  HEAD_CUT_Y,
   HEAD_PATH,
   HEAD_TF,
   JV_PATH,
   JV_TF,
-  SYNAPSE_EDGES,
-  SYNAPSE_EDGE_W,
-  SYNAPSE_NODES,
-  SYNAPSE_NODE_R,
 } from "../lib/brand-geometry.ts";
 
 const OUT = "public/brand";
@@ -32,18 +29,14 @@ const FUNDO_ESCURO = { r: 10, g: 14, b: 18, alpha: 1 };
  */
 export function markSvg(fg = "#EDF2F4", mono = null, anel = true) {
   const paint = mono ?? "url(#g)";
-  const arestas = SYNAPSE_EDGES.map(
-    ([a, b]) =>
-      `<line x1="${SYNAPSE_NODES[a][0]}" y1="${SYNAPSE_NODES[a][1]}" x2="${SYNAPSE_NODES[b][0]}" y2="${SYNAPSE_NODES[b][1]}"/>`
-  ).join("");
-  const nos = SYNAPSE_NODES.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="${SYNAPSE_NODE_R}" fill="black"/>`).join("");
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs>
 <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${BRAND_FROM}"/><stop offset="100%" stop-color="${BRAND_TO}"/></linearGradient>
+<clipPath id="k"><rect x="0" y="0" width="800" height="${HEAD_CUT_Y}"/></clipPath>
 <clipPath id="c"><circle cx="50" cy="50" r="45"/></clipPath>
-<mask id="m"><rect width="100" height="100" fill="white"/><g stroke="black" stroke-width="${SYNAPSE_EDGE_W}" stroke-linecap="round" fill="none">${arestas}</g>${nos}<path transform="${JV_TF}" d="${JV_PATH}" fill="black"/></mask>
+<mask id="m"><rect width="100" height="100" fill="white"/><path transform="${JV_TF}" d="${JV_PATH}" fill="black"/></mask>
 </defs>${anel ? `<circle cx="50" cy="50" r="46.3" fill="none" stroke="${fg}" stroke-opacity="0.32" stroke-width="1.3"/>` : ""}
-<g clip-path="url(#c)" mask="url(#m)"><path transform="${HEAD_TF}" d="${HEAD_PATH}" fill="${paint}"/></g></svg>`;
+<g clip-path="url(#c)" mask="url(#m)"><g transform="${HEAD_TF}" clip-path="url(#k)"><path d="${HEAD_PATH}" fill="${paint}"/></g></g></svg>`;
 }
 
 async function main() {

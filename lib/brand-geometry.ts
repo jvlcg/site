@@ -3,13 +3,15 @@
  * e o pacote de mídias. Node importa este .ts diretamente (type stripping),
  * então scripts/gen-brand.mjs usa exatamente os mesmos números que o site.
  *
- * Conceito: a silhueta real do perfil do Dr. José Victor, enquadrada como foto
- * de perfil (com um pouco de pescoço), com uma rede de sinapses e o monograma
- * "JV" recortados em espaço negativo — o pensamento dentro da cabeça.
+ * Conceito: a silhueta real do perfil do Dr. José Victor, cortada logo abaixo
+ * do pescoço e centralizada no anel, com o monograma "JV" recortado em espaço
+ * negativo.
  *
  * O recorte em negativo é o que faz a marca funcionar nos dois temas: o "JV"
  * mostra o fundo da página, então contrasta tanto no claro quanto no escuro
  * sem precisar de duas versões de cor.
+ *
+ * Marca provisória — será substituída por uma versão definitiva.
  */
 
 /** Silhueta vetorizada da foto de perfil (contraluz). Espaço nativo ~800x900. */
@@ -20,35 +22,21 @@ export const HEAD_PATH =
 export const JV_PATH =
   "M26.700 1.400Q15.900 1.400 9.550-4.500Q3.200-10.400 3.200-21L3.200-27.600L16.400-27.600L16.400-21Q16.400-16.300 19-13.650Q21.600-11 26.300-11Q30.700-11 33.150-13.600Q35.600-16.200 35.600-21L35.600-58L23.600-58L23.600-70L56.800-70L56.800-58L48.800-58L48.800-21Q48.800-10.100 42.900-4.350Q37 1.400 26.700 1.400M103.200 0L80.600 0L62.800-70L76.400-70L91.200-8.500L92.600-8.500L107.400-70L121-70";
 
-/** Cabeça: escala 0,105 com a coroa em y=12 — enquadramento de foto de perfil. */
-export const HEAD_TF = "translate(8 4.86) scale(0.105)";
+/**
+ * Corte horizontal no espaço nativo da silhueta: tudo abaixo desta linha é
+ * descartado. Fica logo abaixo do pescoço, antes de os ombros se abrirem —
+ * o traçado original vinha da foto e incluía o busto inteiro.
+ */
+export const HEAD_CUT_Y = 845;
+
+/**
+ * Cabeça já cortada, centralizada no anel com folga: ocupa de 21,4 a 78,6 na
+ * horizontal e de 19 a 81 na vertical, dentro de um recorte que vai de 5 a 95.
+ */
+export const HEAD_TF = "translate(18.041 13.567) scale(0.0799)";
 
 /** "JV" com 31 unidades de largura, centrado em (50, 50). */
 export const JV_TF = "translate(33.658 59.026) scale(0.26316)";
-
-/** Nós da rede de sinapses, já no espaço do viewBox 100x100. */
-export const SYNAPSE_NODES: readonly (readonly [number, number])[] = [
-  [30, 27],
-  [42, 20],
-  [57, 20],
-  [70, 28],
-  [24, 38],
-  [76, 37],
-];
-
-/** Arestas entre os nós (índices em SYNAPSE_NODES). */
-export const SYNAPSE_EDGES: readonly (readonly [number, number])[] = [
-  [0, 1],
-  [1, 2],
-  [2, 3],
-  [0, 4],
-  [3, 5],
-  [1, 3],
-  [0, 2],
-];
-
-export const SYNAPSE_NODE_R = 2;
-export const SYNAPSE_EDGE_W = 1.1;
 
 /** Gradiente da marca. */
 export const BRAND_FROM = "#34d399";

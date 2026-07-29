@@ -183,19 +183,22 @@ home e da página vêm dessas contagens.
 
 ## Marca (logo)
 
+> **Provisória** — será substituída por uma versão definitiva.
+
 A marca é a **silhueta real do perfil do Dr. José Victor**, vetorizada da foto em
-contraluz e enquadrada como foto de perfil: coroa perto do topo do anel e um
-pouco de pescoço saindo pela base, recortado pelo círculo.
+contraluz, cortada logo abaixo do pescoço e centralizada no anel com folga
+(ocupa de 21,4 a 78,6 na horizontal e de 19 a 81 na vertical, num recorte que
+vai de 5 a 95).
 
-Dentro da cabeça ficam uma **rede de sinapses** e o monograma **"JV"** em Space
-Grotesk Bold — a mesma fonte de display do site. Os dois são vazados em espaço
-negativo, mostrando o fundo da página através da silhueta. É esse recorte que
-faz a marca funcionar nos dois temas com **um único arquivo**: no escuro o "JV"
-aparece escuro sobre o verde, no claro aparece claro sobre o verde, sempre com
-contraste — sem precisar manter duas versões de cor.
+Dentro dela fica o monograma **"JV"** em Space Grotesk Bold — a mesma fonte de
+display do site — vazado em espaço negativo, mostrando o fundo da página através
+da silhueta. É esse recorte que faz a marca funcionar nos dois temas com **um
+único arquivo**: no escuro o "JV" aparece escuro sobre o verde, no claro aparece
+claro sobre o verde, sempre com contraste — sem precisar manter duas versões de
+cor.
 
-**Toda a geometria vive em `lib/brand-geometry.ts`** (caminhos, transforms, nós
-e arestas das sinapses). O componente React, o favicon e as mídias importam esse
+**Toda a geometria vive em `lib/brand-geometry.ts`** (caminhos, transforms e a
+linha de corte do busto). O componente React, o favicon e as mídias importam esse
 mesmo arquivo — o Node consegue importar o `.ts` direto, então não existe cópia
 de números para sair do lugar.
 
