@@ -1,0 +1,340 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-tech), ui-monospace, "SFMono-Regular", monospace;
+
+  --color-accent-400: #34d399;
+  --color-accent-500: #10b981;
+  --color-accent-600: #059669;
+  --color-teal-flow: #2dd4bf;
+  --color-gold: #c9a96a;
+
+  --color-ink-950: #0a0e12;
+  --color-ink-900: #0e141b;
+  --color-ink-800: #16202a;
+  --color-mist-50: #f8faf9;
+  --color-mist-100: #eef2f1;
+
+  --animate-float: float 9s ease-in-out infinite;
+  --animate-mesh: mesh-drift 24s ease-in-out infinite alternate;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+  @keyframes mesh-drift {
+    0% { transform: translate3d(-4%, -3%, 0) scale(1); }
+    100% { transform: translate3d(4%, 3%, 0) scale(1.12); }
+  }
+}
+
+/* ---------- Semantic theme tokens (dual dark/light) ---------- */
+:root {
+  --bg: #f7f9f8;
+  --bg-elevated: #ffffff;
+  --fg: #0d1626;
+  --fg-muted: #3c4a5c; /* AA sobre --bg (>7:1) */
+  --fg-faint: #566374;
+  --line: rgba(13, 22, 38, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-line: rgba(13, 22, 38, 0.1);
+  --accent: #047857;
+  --accent-strong: #065f46;
+  --accent-soft: rgba(5, 150, 105, 0.12);
+  --gold-soft: rgba(160, 128, 70, 0.9);
+  --mesh-a: rgba(16, 185, 129, 0.12);
+  --mesh-b: rgba(45, 212, 191, 0.1);
+  --mesh-c: rgba(14, 116, 144, 0.08);
+  --header-bg: rgba(247, 249, 248, 0.8);
+  --grad-a: #047857;
+  --grad-b: #0f766e;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0a0e12;
+  --bg-elevated: #0e141b;
+  --fg: #f1f5f7;
+  --fg-muted: #c4d0da; /* AA sobre --bg (>7:1) — legibilidade prioritária */
+  --fg-faint: #8b9aa8;
+  --line: rgba(241, 245, 247, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.045);
+  --glass-line: rgba(255, 255, 255, 0.1);
+  --accent: #2dd4bf;
+  --accent-strong: #5eead4;
+  --accent-soft: rgba(45, 212, 191, 0.12);
+  --gold-soft: rgba(201, 169, 106, 0.9);
+  --mesh-a: rgba(16, 185, 129, 0.1);
+  --mesh-b: rgba(13, 148, 136, 0.09);
+  --mesh-c: rgba(3, 105, 161, 0.08);
+  --header-bg: rgba(10, 14, 18, 0.72);
+  --grad-a: #5eead4;
+  --grad-b: #34d399;
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* ---------- Reusable primitives ---------- */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.text-muted { color: var(--fg-muted); }
+.text-faint { color: var(--fg-faint); }
+
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-line);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.hairline { border-color: var(--line); }
+
+.text-gradient {
+  background: linear-gradient(100deg, var(--grad-a), var(--grad-b) 60%, var(--grad-a));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.font-mono-tech {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum" 1, "ss01" 1;
+}
+
+/* eyebrow tecnológica com detalhe HUD */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.eyebrow::before {
+  content: "";
+  width: 1.4rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+.mesh-bg {
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  filter: blur(80px);
+  opacity: 0.8;
+  background:
+    radial-gradient(38% 34% at 22% 28%, var(--mesh-a), transparent 70%),
+    radial-gradient(34% 38% at 78% 22%, var(--mesh-b), transparent 70%),
+    radial-gradient(42% 42% at 60% 80%, var(--mesh-c), transparent 72%);
+  animation: var(--animate-mesh);
+}
+
+/* Scrim: garante contraste do texto sobre cenas 3D / mesh.
+   Colocar como filho posicionado atrás do conteúdo do hero. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to right, var(--bg) 0%, color-mix(in oklab, var(--bg) 82%, transparent) 42%, transparent 72%),
+    linear-gradient(to top, var(--bg) 4%, transparent 46%);
+}
+@media (max-width: 1023px) {
+  .scrim {
+    background: linear-gradient(to top, var(--bg) 10%, color-mix(in oklab, var(--bg) 70%, transparent) 60%, color-mix(in oklab, var(--bg) 40%, transparent));
+  }
+}
+
+/* Borda holográfica em gradiente (para cards/tiles "tech") */
+.holo {
+  position: relative;
+  isolation: isolate;
+}
+.holo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(130deg, color-mix(in oklab, var(--accent) 55%, transparent), transparent 40%, transparent 60%, color-mix(in oklab, var(--color-teal-flow) 45%, transparent));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.5;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+.holo:hover::before { opacity: 1; }
+
+/* Divisor ECG animado */
+@keyframes ecg-dash {
+  to { stroke-dashoffset: -1000; }
+}
+.ecg-line {
+  stroke-dasharray: 6 10;
+  animation: ecg-dash 14s linear infinite;
+}
+.ecg-pulse {
+  stroke-dasharray: 220;
+  stroke-dashoffset: 220;
+  animation: ecg-sweep 3.4s cubic-bezier(0.7, 0, 0.3, 1) infinite;
+}
+@keyframes ecg-sweep {
+  0% { stroke-dashoffset: 220; }
+  55%, 100% { stroke-dashoffset: -220; }
+}
+
+.card-hover {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.5s, box-shadow 0.5s;
+}
+.card-hover:hover {
+  transform: translateY(-5px);
+  border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+  box-shadow: 0 24px 60px -32px color-mix(in oklab, var(--accent) 38%, transparent);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: 9999px;
+  padding: 0.85rem 1.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #06231d;
+  background: linear-gradient(115deg, var(--color-accent-400), var(--color-teal-flow));
+  box-shadow: 0 12px 34px -14px rgba(16, 185, 129, 0.55);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s, filter 0.35s;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: 0 18px 44px -14px rgba(16, 185, 129, 0.65);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: 9999px;
+  padding: 0.85rem 1.75rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--fg);
+  border: 1px solid var(--line);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  transition: border-color 0.35s, background 0.35s, transform 0.35s;
+}
+.btn-ghost:hover {
+  border-color: color-mix(in oklab, var(--accent) 55%, transparent);
+  transform: translateY(-2px);
+}
+
+/* ---------- Route transition (template.tsx) ---------- */
+@keyframes route-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.route-enter {
+  animation: route-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ---------- Scroll reveal (activated by .reveal-ready on <html>) ---------- */
+.reveal-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0s);
+}
+.reveal-ready [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal-ready [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .mesh-bg { animation: none; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Article typography ---------- */
+.prose-medical {
+  font-size: 1.06rem;
+  line-height: 1.85;
+  color: var(--fg-muted);
+}
+.prose-medical h2 {
+  font-family: var(--font-display);
+  color: var(--fg);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 2.6rem 0 1rem;
+  scroll-margin-top: 7rem;
+}
+.prose-medical h3 {
+  font-family: var(--font-display);
+  color: var(--fg);
+  font-size: 1.22rem;
+  font-weight: 600;
+  margin: 2rem 0 0.8rem;
+  scroll-margin-top: 7rem;
+}
+.prose-medical p { margin: 1.1rem 0; }
+.prose-medical strong { color: var(--fg); font-weight: 600; }
+.prose-medical a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in oklab, var(--accent) 40%, transparent);
+}
+.prose-medical ul, .prose-medical ol { margin: 1.1rem 0; padding-left: 1.4rem; }
+.prose-medical ul { list-style: disc; }
+.prose-medical ol { list-style: decimal; }
+.prose-medical li { margin: 0.45rem 0; padding-left: 0.2rem; }
+.prose-medical li::marker { color: var(--accent); }
+.prose-medical blockquote {
+  border-left: 2px solid var(--accent);
+  padding: 0.2rem 0 0.2rem 1.3rem;
+  margin: 1.6rem 0;
+  color: var(--fg);
+  font-style: italic;
+}
