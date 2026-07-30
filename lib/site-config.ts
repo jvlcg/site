@@ -1,6 +1,13 @@
 export const site = {
-  /** Domínio registrado do consultório. */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://drjvlcg.com.br",
+  /**
+   * Domínio registrado do consultório.
+   *
+   * A barra final é removida porque todo o resto do site monta endereços como
+   * `${site.url}/caminho`. Uma barra sobrando na variável de ambiente geraria
+   * `https://dominio.com.br//caminho` no sitemap, no robots.txt e no llms.txt —
+   * apontando o Google para URLs que não existem.
+   */
+  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://drjvlcg.com.br").replace(/\/+$/, ""),
   name: "Dr. José Victor Lisboa Cardoso Gomes",
   shortName: "Dr. José Victor",
   brand: "Dr.JV",
