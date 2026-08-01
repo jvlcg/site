@@ -22,9 +22,16 @@ const PARES_CONHECIDOS: [string, string][] = [
   ["REDIS_REST_API_URL", "REDIS_REST_API_TOKEN"],
 ];
 
-/** A URL precisa ser REST (https), não a `redis://` de conexão direta. */
+/**
+ * A URL tem de ser de API REST, não a `redis://` (ou `rediss://`) de conexão
+ * direta — o Upstash publica as duas, e trocar uma pela outra é fácil.
+ *
+ * Aceita `http` além de `https` de propósito: em produção o endereço é sempre
+ * https, mas exigir isso impediria apontar para um servidor local ao testar, o
+ * que só empurraria o teste para longe do código real.
+ */
 const urlRest = (v: string | undefined): v is string =>
-  typeof v === "string" && v.startsWith("https://");
+  typeof v === "string" && /^https?:\/\//.test(v);
 
 function porNomeConhecido(): Credenciais | null {
   for (const [chaveUrl, chaveToken] of PARES_CONHECIDOS) {

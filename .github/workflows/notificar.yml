@@ -54,6 +54,11 @@ jobs:
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
           KV_REST_API_URL: ${{ secrets.KV_REST_API_URL }}
           KV_REST_API_TOKEN: ${{ secrets.KV_REST_API_TOKEN }}
+          # avisos por e-mail — sem estes, o robô manda só pelo navegador
+          AVISOS_CHAVE: ${{ secrets.AVISOS_CHAVE }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          EMAIL_REMETENTE: ${{ secrets.EMAIL_REMETENTE }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
           TITULO: ${{ inputs.titulo }}
           CORPO: ${{ inputs.corpo }}
           DESTINO: ${{ inputs.url }}

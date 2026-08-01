@@ -123,6 +123,25 @@ export default function PrivacidadePage() {
             Para corrigir ou excluir seu cadastro, basta pedir por {site.email}. A exclusão é
             definitiva e feita na mesma hora.
           </p>
+          <p>
+            No formulário há ainda uma caixa <strong>separada e opcional</strong>, que começa
+            desmarcada: receber por e-mail um aviso quando sair artigo novo ou comunicado do
+            consultório. Marcar essa caixa é um consentimento próprio, distinto do cadastro —
+            você pode se cadastrar sem recebê-los, e pode sair da lista sem perder o cadastro.
+          </p>
+          <p>
+            Quem marca entra numa <strong>lista à parte</strong>, guardada separadamente dos
+            dados do cadastro e cifrada com uma chave diferente. Nessa lista ficam apenas o
+            e-mail e o primeiro nome — nunca CPF, data de nascimento ou telefone. A separação é
+            proposital: o sistema que dispara os avisos nunca precisa ter acesso aos seus dados
+            clínicos ou de identificação.
+          </p>
+          <p>
+            <strong>Todo e-mail traz um link para sair da lista</strong>, além do botão de
+            cancelamento que o próprio Gmail e o Outlook exibem. O cancelamento é imediato e não
+            afeta seu cadastro nem seu atendimento. Esses avisos tratam apenas de conteúdo
+            publicado: <strong>nunca são propaganda e nunca falam do seu caso</strong>.
+          </p>
 
           <h2>6. Base legal e finalidade</h2>
           <p>
