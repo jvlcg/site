@@ -14,7 +14,8 @@ import {
   lerCookie,
   senhaConfere,
 } from "@/lib/area-restrita";
-import { apagarFicha, lerFichas } from "@/lib/cadastro";
+import { apagarFicha, cadastroConfigurado, lerFichas } from "@/lib/cadastro";
+import { bancoResponde, nomeDaVariavelEncontrada, redisConfigurado } from "@/lib/redis";
 
 /**
  * Área restrita: entrar, listar as fichas e apagar uma ficha.
@@ -59,11 +60,29 @@ export async function POST(req: Request) {
   return responde({ dentro: true }, 200, cookieDeSessao(criarBilhete()));
 }
 
-/** Lista as fichas já decifradas. Só com sessão válida. */
+/**
+ * Lista as fichas já decifradas, com um diagnóstico da configuração.
+ *
+ * O diagnóstico existe porque "cadastro indisponível" não diz **qual** peça
+ * falta — e falta de chave, banco ausente e banco instalado com outro nome
+ * pedem ações completamente diferentes. Fica atrás da senha de propósito: são
+ * informações sobre a infraestrutura, e mesmo assim só nomes de variáveis,
+ * nunca valores.
+ */
 export async function GET(req: Request) {
   if (!mesmaOrigem(req)) return naoEncontrado();
   if (!autenticado(req)) return responde({ erro: "nao autorizado" }, 401);
-  return responde({ fichas: await lerFichas() });
+
+  return responde({
+    fichas: await lerFichas(),
+    config: {
+      chaveDeCriptografia: cadastroConfigurado(),
+      bancoConfigurado: redisConfigurado(),
+      bancoResponde: await bancoResponde(),
+      variavelEncontrada: nomeDaVariavelEncontrada(),
+      versao: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? "local",
+    },
+  });
 }
 
 /** Apaga uma ficha — atende ao direito de exclusão previsto na LGPD. */
