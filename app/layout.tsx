@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { MotionProvider } from "@/components/motion/MotionProvider";
@@ -107,6 +108,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           passa na Content-Security-Policy sem precisar liberar terceiros.
         */}
         <Analytics />
+        {/*
+          Core Web Vitals medidos em visitantes reais — não em laboratório.
+          Vale mais aqui do que num site comum: as cenas 3D podem pesar em
+          celular modesto, e é esta medição que mostra se isso acontece de
+          verdade com quem acessa. Também é fator de ranqueamento no Google.
+        */}
+        <SpeedInsights />
       </body>
     </html>
   );
