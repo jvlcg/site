@@ -64,6 +64,27 @@ function credenciais(): Credenciais | null {
 export const redisConfigurado = () => credenciais() !== null;
 
 /**
+ * Nome da variável de ambiente que foi encontrada — só o nome, nunca o valor.
+ *
+ * Serve para o diagnóstico da área restrita: sem isso, "banco não configurado"
+ * não distingue "não instalei" de "instalei com um prefixo que o código não
+ * reconheceu", e essas duas situações pedem ações opostas.
+ */
+export function nomeDaVariavelEncontrada(): string | null {
+  const cred = credenciais();
+  if (!cred) return null;
+  for (const [nome, valor] of Object.entries(process.env)) {
+    if (valor && valor.replace(/\/+$/, "") === cred.url) return nome;
+  }
+  return "(desconhecida)";
+}
+
+/** Confere que o banco responde de verdade, e não só que existe configuração. */
+export async function bancoResponde(): Promise<boolean> {
+  return (await comandoRedis<string>("PING")) !== null;
+}
+
+/**
  * Executa um comando do Redis. Devolve `null` quando não há banco configurado
  * ou quando a chamada falha — quem chama decide o que fazer com isso, em vez de
  * o site quebrar.

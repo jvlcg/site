@@ -34,10 +34,20 @@ const dataBonita = (iso: string) => new Date(iso).toLocaleString("pt-BR", { date
 
 const nascimentoBonito = (d: string) => d.split("-").reverse().join("/");
 
+/** Diagnóstico da configuração — só chega aqui depois da senha. */
+type Config = {
+  chaveDeCriptografia: boolean;
+  bancoConfigurado: boolean;
+  bancoResponde: boolean;
+  variavelEncontrada: string | null;
+  versao: string;
+};
+
 export function PainelRestrito() {
   const [dentro, setDentro] = useState(false);
   const [senha, setSenha] = useState("");
   const [fichas, setFichas] = useState<Ficha[]>([]);
+  const [config, setConfig] = useState<Config | null>(null);
   const [erro, setErro] = useState("");
   const [ocupado, setOcupado] = useState(false);
   const [busca, setBusca] = useState("");
@@ -45,7 +55,9 @@ export function PainelRestrito() {
   const carregar = useCallback(async () => {
     const r = await fetch("/api/area-restrita", { cache: "no-store" });
     if (r.ok) {
-      setFichas((await r.json()).fichas ?? []);
+      const dados = await r.json();
+      setFichas(dados.fichas ?? []);
+      setConfig(dados.config ?? null);
       setDentro(true);
       return true;
     }
@@ -180,8 +192,52 @@ export function PainelRestrito() {
         </button>
       </div>
 
-      <p className="font-mono-tech mt-5 text-[0.72rem] uppercase tracking-[0.14em] text-faint">
-        {filtradas.length} de {fichas.length} cadastro(s)
+      {config && !(config.chaveDeCriptografia && config.bancoResponde) && (
+        <div className="mt-5 rounded-2xl border border-amber-500/40 bg-amber-500/5 p-5">
+          <p className="font-display font-semibold text-amber-400">
+            O formulário de cadastro está fora do ar
+          </p>
+          <p className="mt-1.5 text-[0.86rem] leading-relaxed text-muted">
+            Quem entrar na página de cadastro consegue preencher, mas o envio é recusado. Falta:
+          </p>
+          <ul className="mt-3 space-y-1.5 text-[0.86rem]">
+            {!config.chaveDeCriptografia && (
+              <li>
+                ❌ <strong>CADASTRO_CHAVE</strong> — criar na Vercel, em Environment Variables,
+                marcando <em>Production</em>.
+              </li>
+            )}
+            {!config.bancoConfigurado && (
+              <li>
+                ❌ <strong>Banco de dados</strong> — instalar o Redis em Storage e conectar ao
+                projeto, com <em>Production</em> marcado.
+              </li>
+            )}
+            {config.bancoConfigurado && !config.bancoResponde && (
+              <li>
+                ⚠️ <strong>O banco está configurado mas não respondeu</strong> — o token pode
+                estar errado ou o banco, pausado.
+              </li>
+            )}
+          </ul>
+          <p className="mt-3 text-[0.8rem] leading-relaxed text-faint">
+            Depois de criar, é preciso um <strong>Redeploy</strong>: variáveis novas só valem em
+            um deploy novo.
+          </p>
+        </div>
+      )}
+
+      <p className="font-mono-tech mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.72rem] uppercase tracking-[0.14em] text-faint">
+        <span>
+          {filtradas.length} de {fichas.length} cadastro(s)
+        </span>
+        {config && (
+          <span title={`variável do banco: ${config.variavelEncontrada ?? "nenhuma"}`}>
+            · chave {config.chaveDeCriptografia ? "ok" : "ausente"} · banco{" "}
+            {config.bancoResponde ? "ok" : config.bancoConfigurado ? "sem resposta" : "ausente"} ·
+            versão {config.versao}
+          </span>
+        )}
       </p>
 
       {fichas.length === 0 ? (
