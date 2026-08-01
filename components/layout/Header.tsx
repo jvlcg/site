@@ -119,6 +119,13 @@ export function Header() {
               {link.label}
             </Link>
           ))}
+          {/* alternador com rótulo: em tela de toque não há hover para revelar o ícone */}
+          <div
+            className={`transition-all duration-500 ${open ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
+            style={{ transitionDelay: open ? `${80 + headerLinks.length * 45}ms` : "0ms" }}
+          >
+            <ThemeToggle variant="row" />
+          </div>
           <a
             href={whatsappLink()}
             target="_blank"
