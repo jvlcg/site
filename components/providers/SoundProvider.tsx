@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { Soundscape } from "@/lib/soundscape";
 
 /**
- * Som do site: efeitos nos botões e música ambiente.
+ * Som da interface: o retorno sonoro de cada clique. Sem música de fundo.
  *
  * Duas decisões que valem explicar:
  *
@@ -12,12 +12,9 @@ import { Soundscape } from "@/lib/soundscape";
  *    baixado, não há questão de direitos autorais e nada precisa ser liberado
  *    na política de segurança.
  *
- * 2. **Começa desligado na primeira visita.** Navegador nenhum toca áudio
- *    antes de o visitante interagir com a página — é trava do próprio
- *    navegador, não escolha nossa. Mas quem já ligou o som uma vez tem a
- *    preferência guardada: nas próximas visitas a música entra sozinha no
- *    primeiro toque, rolagem ou tecla, que é o mais perto de "automático" que
- *    a web permite hoje.
+ * 2. **Começa desligado.** Som inesperado num site médico incomoda quem abre o
+ *    link no trabalho, na sala de espera ou de madrugada. Quem liga uma vez tem
+ *    a preferência guardada para as próximas visitas.
  */
 
 type SomCtx = {
@@ -42,45 +39,6 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   /**
-   * Música ambiente. O navegador só libera áudio depois de uma interação, então
-   * quando a preferência vem guardada esperamos o primeiro gesto do visitante —
-   * qualquer um serve: rolar, tocar na tela, apertar uma tecla.
-   */
-  useEffect(() => {
-    const motorSom = motor();
-    if (!ativo) {
-      motorSom.pararMusica();
-      return;
-    }
-
-    let vivo = true;
-    const eventos = ["pointerdown", "keydown", "wheel", "touchstart", "scroll"] as const;
-    const limpar = () => eventos.forEach((e) => window.removeEventListener(e, tentar));
-
-    async function tentar() {
-      if (!vivo) return;
-      // se o navegador ainda não liberou, saímos sem remover os ouvintes —
-      // o próximo gesto tenta de novo
-      if (!(await motorSom.destravar()) || !vivo) return;
-      motorSom.iniciarMusica();
-      limpar();
-    }
-
-    // Quando o visitante acabou de clicar no botão de som, o áudio já está
-    // liberado e a música começa aqui mesmo. Quando a preferência veio guardada
-    // de outra visita, isto falha de propósito e o primeiro gesto destrava.
-    if (!motorSom.iniciarMusica()) {
-      eventos.forEach((e) => window.addEventListener(e, tentar, { passive: true }));
-    }
-
-    return () => {
-      vivo = false;
-      limpar();
-      motorSom.pararMusica();
-    };
-  }, [ativo, motor]);
-
-  /**
    * Um único ouvinte no documento cobre todos os links e botões do site — não
    * é preciso encostar em cada componente.
    */
@@ -103,15 +61,6 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
 
     document.addEventListener("click", aoClicar);
     return () => document.removeEventListener("click", aoClicar);
-  }, [ativo, motor]);
-
-  // aba em segundo plano não deve continuar tocando (nem gastar bateria)
-  useEffect(() => {
-    if (!ativo) return;
-    const motorSom = motor();
-    const aoTrocarAba = () => (document.hidden ? motorSom.pausar() : motorSom.retomar());
-    document.addEventListener("visibilitychange", aoTrocarAba);
-    return () => document.removeEventListener("visibilitychange", aoTrocarAba);
   }, [ativo, motor]);
 
   const alternar = useCallback(() => {
