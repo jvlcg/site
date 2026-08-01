@@ -62,7 +62,7 @@ export function SoundToggle({ variant = "icon" }: { variant?: "icon" | "row" }) 
       aria-pressed={ativo}
       title={acao}
       onClick={alternar}
-      className={`glass relative hidden h-10 w-10 items-center justify-center rounded-full ring-1 transition-all hover:scale-105 sm:flex ${
+      className={`glass relative flex h-10 w-10 items-center justify-center rounded-full ring-1 transition-all hover:scale-105 ${
         ativo
           ? "text-[var(--accent)] ring-[var(--accent)]"
           : "ring-[color-mix(in_srgb,var(--fg)_20%,transparent)] hover:ring-[var(--accent)]"
