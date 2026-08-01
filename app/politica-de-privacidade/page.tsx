@@ -44,11 +44,12 @@ export default function PrivacidadePage() {
             cookies de rastreamento, publicidade ou perfilamento.</strong>
           </p>
           <p>
-            Para saber quantas pessoas visitam cada página, usamos o serviço de medição da
-            Vercel, empresa que hospeda o site. Essa medição é <strong>feita sem cookies</strong> e
-            registra apenas dados agregados: página acessada, origem do acesso, tipo de
-            dispositivo e país. Ela não identifica você, não acompanha sua navegação em
-            outros sites e não constrói perfil individual.
+            Para saber quantas pessoas visitam cada página, e para verificar se o site
+            carrega rápido em aparelhos reais, usamos os serviços de medição da Vercel,
+            empresa que hospeda o site. Essas medições são <strong>feitas sem cookies</strong> e
+            registram apenas dados agregados: página acessada, origem do acesso, tipo de
+            dispositivo, país e tempos de carregamento. Elas não identificam você, não
+            acompanham sua navegação em outros sites e não constroem perfil individual.
           </p>
           <p>
             Nenhum dado de navegação é vendido ou compartilhado para fins publicitários.
