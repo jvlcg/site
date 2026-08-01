@@ -31,6 +31,21 @@ const csp = [
   "upgrade-insecure-requests",
 ].join("; ");
 
+/**
+ * CSP da página /novidades, que embute o serviço externo Soro.
+ *
+ * A liberação é deliberadamente limitada a essa rota: as páginas com conteúdo
+ * médico continuam aceitando script apenas do próprio domínio. Um terceiro com
+ * permissão de executar script consegue ler o DOM da página em que roda — vale
+ * conceder isso onde há motivo, não no site inteiro.
+ */
+const SORO = "https://app.trysoro.com";
+const cspNovidades = csp
+  .replace("script-src 'self' 'unsafe-inline'", `script-src 'self' 'unsafe-inline' ${SORO}`)
+  .replace("connect-src 'self'", `connect-src 'self' ${SORO}`)
+  .replace("img-src 'self' data: blob:", `img-src 'self' data: blob: ${SORO} https://*.trysoro.com`)
+  .replace("frame-src ", `frame-src ${SORO} `);
+
 const seguranca = [
   { key: "Content-Security-Policy", value: csp },
   // HSTS: só aceita HTTPS neste domínio pelos próximos 2 anos
@@ -60,6 +75,12 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: "/:path*", headers: seguranca },
+      {
+        // única rota que libera script de terceiro — vem depois da regra geral
+        // para sobrescrever apenas o cabeçalho de CSP
+        source: "/novidades",
+        headers: [{ key: "Content-Security-Policy", value: cspNovidades }],
+      },
       {
         // as rotas de API nunca devem ser cacheadas nem indexadas
         source: "/api/:path*",
