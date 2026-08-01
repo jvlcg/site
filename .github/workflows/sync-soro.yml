@@ -1,0 +1,52 @@
+name: Sincronizar artigos da Soro
+
+# Copia os artigos publicados na Soro para o blog em MDX e envia para a `main`.
+# O push dispara o deploy automático na Vercel — nada precisa ser feito à mão.
+on:
+  schedule:
+    # a cada 6 horas (horário UTC)
+    - cron: "0 */6 * * *"
+  # permite rodar na hora pelo botão "Run workflow" na aba Actions
+  workflow_dispatch:
+
+# necessário para o robô conseguir gravar o commit
+permissions:
+  contents: write
+
+# se um deploy já estiver rodando, espera em vez de disputar
+concurrency:
+  group: sync-soro
+  cancel-in-progress: false
+
+jobs:
+  sincronizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Buscar artigos na Soro
+        run: node scripts/sync-soro.mjs
+
+      - name: Conferir que o site ainda compila
+        run: npm run build
+
+      - name: Publicar o que mudou
+        run: |
+          if [ -z "$(git status --porcelain content/artigos public/images/blog)" ]; then
+            echo "Nenhum artigo novo ou alterado."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/artigos public/images/blog
+          git commit -m "Sincroniza artigos da Soro
+
+          Gerado automaticamente por scripts/sync-soro.mjs."
+          git push

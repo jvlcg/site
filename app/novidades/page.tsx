@@ -15,6 +15,15 @@ export const metadata: Metadata = {
   description:
     "Atualizações e publicações recentes do consultório do Dr. José Victor Lisboa Cardoso Gomes — CRM-GO 38508, Goiânia-GO.",
   alternates: { canonical: "/novidades" },
+  /**
+   * Fora do índice de propósito: o mesmo texto é sincronizado para o blog em
+   * MDX (scripts/sync-soro.mjs), e lá ele tem Schema, imagem de
+   * compartilhamento e URL própria. Deixar os dois indexados criaria conteúdo
+   * duplicado no mesmo domínio, disputando posição um com o outro.
+   *
+   * Esta página continua servindo como leitura rápida do que saiu na Soro.
+   */
+  robots: { index: false, follow: true },
 };
 
 /**
