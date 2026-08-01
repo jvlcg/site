@@ -4,10 +4,20 @@ name: Sincronizar artigos da Soro
 # O push dispara o deploy automático na Vercel — nada precisa ser feito à mão.
 on:
   schedule:
-    # a cada 6 horas (horário UTC)
-    - cron: "0 */6 * * *"
-  # permite rodar na hora pelo botão "Run workflow" na aba Actions
+    # A cada 15 minutos. A Soro não avisa quando algo é publicado, então a única
+    # forma de saber é perguntar; consultar de hora em hora deixaria um texto
+    # recém-publicado esperando tempo demais para aparecer no blog.
+    #
+    # O agendamento do GitHub é "melhor esforço": em horários de pico ele pode
+    # atrasar alguns minutos. Na prática, um artigo entra no ar em torno de 20
+    # minutos depois de publicado na Soro.
+    - cron: "*/15 * * * *"
+  # botão "Run workflow" na aba Actions — publica na hora, sem esperar
   workflow_dispatch:
+  # gancho para automação externa: um POST em /dispatches com
+  # {"event_type":"soro-publicou"} dispara esta sincronização na mesma hora
+  repository_dispatch:
+    types: [soro-publicou]
 
 # necessário para o robô conseguir gravar o commit
 permissions:
@@ -34,19 +44,32 @@ jobs:
       - name: Buscar artigos na Soro
         run: node scripts/sync-soro.mjs
 
-      - name: Conferir que o site ainda compila
-        run: npm run build
-
-      - name: Publicar o que mudou
+      # Rodando a cada 15 minutos, a maioria das execuções não encontra nada.
+      # Conferir aqui evita compilar o site inteiro à toa 90 vezes por dia.
+      - name: Houve mudança?
+        id: mudou
         run: |
           if [ -z "$(git status --porcelain content/artigos public/images/blog)" ]; then
+            echo "sim=false" >> "$GITHUB_OUTPUT"
             echo "Nenhum artigo novo ou alterado."
-            exit 0
+          else
+            echo "sim=true" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Conferir que o site ainda compila
+        if: steps.mudou.outputs.sim == 'true'
+        run: npm run build
+
+      - name: Publicar
+        if: steps.mudou.outputs.sim == 'true'
+        run: |
+          set -euo pipefail
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add content/artigos public/images/blog
           git commit -m "Sincroniza artigos da Soro
 
           Gerado automaticamente por scripts/sync-soro.mjs."
+          # a `main` pode ter andado enquanto o build rodava
+          git pull --rebase origin main
           git push

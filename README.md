@@ -480,8 +480,9 @@ dados estruturados. URLs antigas `/artigos/<slug>` redirecionam para `/blog/<slu
 
 ### Publicando pela Soro (automático)
 
-Você pode escrever na Soro e o texto chega ao blog sozinho. A cada 6 horas uma rotina
-do GitHub (`.github/workflows/sync-soro.yml`) roda `scripts/sync-soro.mjs`, que:
+Você pode escrever na Soro e o texto chega ao blog sozinho. **A cada 15 minutos**
+uma rotina do GitHub (`.github/workflows/sync-soro.yml`) roda
+`scripts/sync-soro.mjs`, que:
 
 1. busca os artigos publicados na Soro;
 2. converte o HTML em Markdown;
@@ -491,8 +492,24 @@ do GitHub (`.github/workflows/sync-soro.yml`) roda `scripts/sync-soro.mjs`, que:
 5. confere que o site ainda compila e envia o commit para a `main`, o que dispara o
    deploy na Vercel.
 
-Para rodar na hora, sem esperar o horário: aba **Actions** do GitHub → *Sincronizar
-artigos da Soro* → **Run workflow**. Localmente, `npm run soro:sync`.
+**Quanto tempo até o texto aparecer no site:** cerca de **20 minutos** — até 15
+esperando a próxima checagem, mais ~1 minuto do robô e ~2 do deploy na Vercel. O
+agendamento do GitHub é "melhor esforço" e em horário de pico pode atrasar uns
+minutos a mais.
+
+Por que não é instantâneo: **a Soro não avisa quando algo é publicado.** Não há
+webhook no painel dela, então a única forma de saber é perguntar de tempos em
+tempos. Se um dia ela passar a oferecer webhook, já existe gancho pronto — o
+fluxo aceita `repository_dispatch` com o tipo `soro-publicou`, e basta apontar o
+webhook para lá (ou ligar um Zapier/Make gratuito no meio).
+
+**Para publicar na hora, sem esperar:** aba **Actions** do GitHub → *Sincronizar
+artigos da Soro* → **Run workflow**. Leva cerca de 3 minutos até estar no ar.
+Localmente, `npm run soro:sync`.
+
+> Rodando a cada 15 minutos, quase toda execução não encontra nada. Por isso o
+> fluxo só compila o site quando algo mudou de verdade — as execuções vazias
+> terminam em segundos.
 
 O artigo que chega por aqui já sai com os **hiperlinks internos automáticos**
 (ver seção própria) e, logo depois da sincronização, dispara a **análise de
@@ -693,11 +710,51 @@ domínio cair ora num, ora noutro.
 A propagação costuma levar de minutos a algumas horas. O certificado HTTPS a
 Vercel emite sozinha assim que o DNS resolve.
 
-> **Sobre o domínio antigo:** `drjvlcg.com.br` nunca chegou a apontar para o
-> site, então **não há nada a migrar** — nenhuma página foi indexada sob ele e
-> nenhum link externo aponta para lá. Se quiser aproveitá-lo, o caminho é
-> adicioná-lo também na Vercel como redirecionamento para o novo; se não,
-> é só deixar expirar.
+#### Redirecionar o domínio antigo (`drjvlcg.com.br`)
+
+`drjvlcg.com.br` nunca chegou a apontar para o site, então **não há nada a
+migrar em SEO** — nenhuma página foi indexada sob ele e nenhum link externo
+aponta para lá. Redirecioná-lo é opcional e serve para uma coisa só: se alguém
+já anotou aquele endereço num cartão, num prontuário ou numa conversa, ele
+continua chegando ao lugar certo em vez de ver erro.
+
+Como fazer, agora que ele está pago no registro.br até 2028:
+
+**1. Na Vercel** — Settings → **Domains** → Add: `drjvlcg.com.br`. Ao adicionar,
+escolha **Redirect to** → `drjosevictor.com`, com **307/308 (permanent)**.
+Repita para `www.drjvlcg.com.br` se quiser cobrir os dois.
+
+**2. No registro.br** — entre com a conta, abra o domínio → **DNS** → *Editar
+zona*, e crie os mesmos registros do domínio novo:
+
+| Tipo | Nome | Valor |
+| --- | --- | --- |
+| A | `@` | `76.76.21.21` |
+| CNAME | `www` | `cname.vercel-dns.com` |
+
+Confirme os valores na tela da Vercel antes de salvar.
+
+> **Atenção com o DNSSEC.** O registro.br costuma vir com DNSSEC ativado e com
+> os servidores `a.sec.dns.br` / `b.sec.dns.br`. Enquanto o domínio usar esses
+> servidores, a zona é editada no painel do próprio registro.br (é o caminho
+> acima). Se em vez disso você apontar os *nameservers* para outro provedor sem
+> desligar o DNSSEC antes, **o domínio para de resolver** — e o erro não dá
+> sintoma claro, só "site fora do ar" para parte dos usuários.
+
+**O que NÃO fazer:** o "redirecionamento de domínio" oferecido pelo próprio
+registro.br ou por painéis de hospedagem geralmente é feito com um frame ou com
+uma página intermediária. Isso confunde buscador e quebra o HTTPS. O
+redirecionamento tem que ser o da Vercel, que responde um `308` de verdade.
+
+Depois de propagar, dá para conferir assim:
+
+```bash
+curl -sI https://drjvlcg.com.br | head -3
+# esperado: HTTP/2 308 … location: https://drjosevictor.com/
+```
+
+Se preferir não usar o domínio antigo, é só deixá-lo expirar — nada no site
+depende dele.
 
 ### Pós-deploy (recomendado)
 
