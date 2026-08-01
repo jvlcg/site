@@ -212,6 +212,41 @@ dados estruturados. URLs antigas `/artigos/<slug>` redirecionam para `/blog/<slu
 
 > Os textos do blog saem **assinados com seu nome e CRM** — revise antes de publicar.
 
+### Publicando pela Soro (automático)
+
+Você pode escrever na Soro e o texto chega ao blog sozinho. A cada 6 horas uma rotina
+do GitHub (`.github/workflows/sync-soro.yml`) roda `scripts/sync-soro.mjs`, que:
+
+1. busca os artigos publicados na Soro;
+2. converte o HTML em Markdown;
+3. baixa a imagem de destaque para `public/images/blog/` — assim a página não depende
+   de servidor de terceiro e a foto sobrevive se a Soro apagar o arquivo;
+4. grava o `.mdx` em `content/artigos/`;
+5. confere que o site ainda compila e envia o commit para a `main`, o que dispara o
+   deploy na Vercel.
+
+Para rodar na hora, sem esperar o horário: aba **Actions** do GitHub → *Sincronizar
+artigos da Soro* → **Run workflow**. Localmente, `node scripts/sync-soro.mjs`.
+
+**Os artigos escritos à mão nunca são tocados.** Só arquivos com `origem: soro` no
+frontmatter podem ser sobrescritos. Se um texto da Soro tiver o mesmo nome de arquivo
+de um artigo seu, o seu é preservado e a sincronização avisa no log.
+
+**Editar um texto vindo da Soro:** edite na Soro, não no `.mdx` — a próxima
+sincronização sobrescreve o arquivo. Se quiser assumir o texto no repositório e parar
+de sincronizá-lo, apague as linhas `origem: soro` e `soroId` do frontmatter; ele passa
+a contar como escrito à mão.
+
+**Campos que ficam vazios:** `tags` e `faq` saem em branco, porque a Soro não tem esses
+campos. Vale preencher à mão nos textos importantes — o `faq` vira dados estruturados de
+perguntas e respostas no Google. Ao preencher, lembre de remover a marca `origem: soro`,
+senão a próxima sincronização apaga o que você escreveu.
+
+> A página `/novidades` mostra o mesmo conteúdo direto da Soro e está **fora do índice**
+> de propósito: o texto sincronizado em `/blog` é a versão com Schema, imagem de
+> compartilhamento e URL própria. Deixar os dois indexados criaria conteúdo duplicado no
+> mesmo domínio.
+
 ### Artigos científicos — como atualizar
 
 Editar `lib/publications.ts`. Os dados atuais foram extraídos do **Currículo Lattes
