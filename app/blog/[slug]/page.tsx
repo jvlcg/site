@@ -7,6 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { ReadingProgress } from "@/components/ui/ReadingProgress";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
 import { CtaSection } from "@/components/ui/CtaSection";
+import { Notificacoes } from "@/components/ui/Notificacoes";
 import { getAllArticles, getArticle } from "@/lib/articles";
 import { rehypeLinksInternos } from "@/lib/rehype-auto-link";
 import { JsonLd, articleSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
@@ -187,6 +188,10 @@ export default async function ArtigoPage({ params }: Props) {
           </div>
         </section>
       )}
+
+      <section className="mx-auto mt-24 max-w-3xl px-5 sm:px-8">
+        <Notificacoes compacto />
+      </section>
 
       <CtaSection />
 

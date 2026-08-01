@@ -9,7 +9,9 @@
     "lint": "next lint",
     "faq:oportunidades": "node --import ./scripts/resolver-ts.mjs scripts/faq-oportunidades.mjs",
     "soro:sync": "node scripts/sync-soro.mjs",
-    "marca": "node scripts/gen-brand.mjs"
+    "marca": "node scripts/gen-brand.mjs",
+    "notificar": "node --import ./scripts/resolver-ts.mjs scripts/enviar-notificacoes.mjs",
+    "vapid": "node -e \"console.log(require('web-push').generateVAPIDKeys())\""
   },
   "dependencies": {
     "@react-three/drei": "^10.0.0",
@@ -37,6 +39,7 @@
     "sharp": "^0.35.3",
     "tailwindcss": "^4.1.0",
     "turndown": "^7.2.4",
-    "typescript": "^5.8.0"
+    "typescript": "^5.8.0",
+    "web-push": "^3.6.7"
   }
 }

@@ -254,6 +254,105 @@ Para adicionar um assunto novo, basta acrescentar uma entrada em `DESTINOS`. Os
 termos são comparados sem acento e sem diferenciar maiúsculas, e o mais
 específico ganha ("check-up executivo" antes de "check-up").
 
+## Avisos de conteúdo novo (notificações do navegador)
+
+O visitante pode pedir para ser avisado quando sair artigo novo ou um comunicado
+do consultório. O aviso chega como notificação do sistema, mesmo com o site
+fechado.
+
+**O pedido de permissão nunca aparece sozinho.** Ele só é feito depois que a
+pessoa toca em "Quero ser avisado", num bloco que explica antes o que ela vai
+receber. Isso não é só educação: o Chrome pune site que pergunta de cara — se
+muita gente recusa, ele passa a esconder o pedido para todo mundo.
+
+| Arquivo | Papel |
+| --- | --- |
+| `components/ui/Notificacoes.tsx` | O bloco que explica e pede a permissão (blog e fim de cada artigo) |
+| `public/sw.js` | Service worker: exibe o aviso e abre a página certa no toque |
+| `app/api/notificacoes/route.ts` | Inscrição e cancelamento, com as mesmas barreiras da rota do chat |
+| `lib/assinaturas.ts` | Onde as inscrições ficam guardadas |
+| `scripts/enviar-notificacoes.mjs` | Dispara os avisos |
+| `.github/workflows/notificar.yml` | Roda o envio após a sincronização da Soro |
+
+### O que é preciso ligar (uma vez)
+
+**1. Gerar o par de chaves** — na sua máquina ou no Codespaces:
+
+```bash
+npm run vapid
+```
+
+Sai um `publicKey` e um `privateKey`. A pública pode ser pública (ela vai para o
+navegador de qualquer jeito); **a privada é secreta** e nunca deve entrar no
+repositório.
+
+**2. Criar o armazenamento** — Vercel → aba **Storage** → **Create Database** →
+**Upstash for Redis** (tem plano gratuito). Ao conectar ao projeto, a Vercel
+injeta sozinha as variáveis `KV_REST_API_URL` e `KV_REST_API_TOKEN`, que o código
+já reconhece.
+
+> Por que precisa disso: a Vercel roda funções sem disco. A lista de aparelhos
+> inscritos tem de viver fora do código, senão some a cada deploy.
+
+**3. Na Vercel** (Settings → Environment Variables), em *Production*:
+
+| Variável | Valor |
+| --- | --- |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | a chave **pública** |
+
+**4. No GitHub** (Settings → Secrets and variables → Actions):
+
+| Secret | Valor |
+| --- | --- |
+| `VAPID_PUBLIC_KEY` | a chave pública |
+| `VAPID_PRIVATE_KEY` | a chave **privada** |
+| `VAPID_SUBJECT` | `mailto:` com seu e-mail, ou a URL do site |
+| `UPSTASH_REDIS_REST_URL` | o mesmo valor de `KV_REST_API_URL` |
+| `UPSTASH_REDIS_REST_TOKEN` | o mesmo valor de `KV_REST_API_TOKEN` |
+
+**Enquanto isso não estiver configurado, o bloco simplesmente não aparece.** O
+site não mostra um botão que não funciona.
+
+### Como os avisos saem
+
+- **Artigo novo:** o fluxo roda depois de cada sincronização com a Soro e avisa
+  os artigos que ainda não foram avisados.
+- **Comunicado avulso:** aba **Actions** → *Avisar sobre conteúdo novo* → **Run
+  workflow**, preenchendo título, texto e destino.
+
+Três freios embutidos, porque notificação irrita rápido:
+
+- **Na primeira execução nada é enviado** — os artigos que já existem entram como
+  avisados, para ninguém receber seis avisos de uma vez.
+- **Teto de 3 avisos por rodada.**
+- **Aparelho que não existe mais sai da lista sozinho** (o serviço de push
+  responde 404 ou 410 quando a pessoa desinstalou ou limpou o navegador).
+
+O controle do que já foi avisado fica em `content/notificados.json`, versionado
+no repositório — assim dois deploys não repetem o mesmo aviso.
+
+### Limitação do iPhone
+
+No iPhone, notificação da web **só funciona com o site adicionado à Tela de
+Início** (Safari → botão de compartilhar → "Adicionar à Tela de Início"). É
+restrição da Apple, não do site: fora disso o recurso nem existe no Safari. O
+bloco detecta esse caso e mostra a instrução em vez de um botão que falharia.
+
+Na prática, boa parte dos pacientes no iPhone não vai completar esse passo — vale
+contar com os avisos como um canal a mais, não como o principal.
+
+### O que o site guarda
+
+Só o **endereço de entrega do aparelho** (gerado pelo Google, pela Apple ou pela
+Mozilla, conforme o navegador) e as chaves de criptografia. Sem nome, e-mail,
+telefone ou IP, e sem ligação com prontuário ou atendimento. Está declarado na
+Política de Privacidade, seção 4, com a base legal (consentimento) e a forma de
+cancelar. O conteúdo enviado é criptografado ponta a ponta: nem o serviço de push
+lê o texto do aviso.
+
+Os avisos tratam apenas de conteúdo publicado. **Nada de publicidade e nada sobre
+o atendimento de ninguém** — isso é exigência ética, não preferência de design.
+
 ## Som do site
 
 Retorno sonoro dos cliques, ligado pelo alto-falante no cabeçalho. **Não há

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
+import { Notificacoes } from "@/components/ui/Notificacoes";
 import { getAllArticles } from "@/lib/articles";
 import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 
@@ -60,6 +61,14 @@ export default function ArtigosPage() {
             </Reveal>
           ))}
         </div>
+      </section>
+
+      {/* Aviso de conteúdo novo. Fica aqui, e não no carregamento da home,
+          porque quem está no blog é justamente quem tem motivo para querer. */}
+      <section className="mx-auto mt-24 max-w-4xl px-5 sm:px-8">
+        <Reveal>
+          <Notificacoes />
+        </Reveal>
       </section>
 
       <JsonLd

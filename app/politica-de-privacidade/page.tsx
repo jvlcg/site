@@ -63,7 +63,38 @@ export default function PrivacidadePage() {
             Nenhum dado de navegação é vendido ou compartilhado para fins publicitários.
           </p>
 
-          <h2>4. Base legal e finalidade</h2>
+          <h2>4. Avisos de conteúdo novo (notificações)</h2>
+          <p>
+            Nas páginas do blog existe a opção de <strong>receber um aviso quando sair
+            conteúdo novo</strong>. Ela é sempre opcional e só é ativada se você tocar no
+            botão e autorizar no seu navegador — o site nunca pede essa permissão sozinho
+            ao abrir uma página.
+          </p>
+          <p>
+            Se você ativar, guardamos apenas o <strong>endereço de entrega gerado pelo seu
+            navegador</strong> (um identificador do aparelho, criado pelo serviço de push
+            do Google, da Apple ou da Mozilla, conforme o navegador que você usa) e as
+            chaves criptográficas que permitem entregar a mensagem. <strong>Não guardamos
+            nome, e-mail, telefone, endereço IP nem qualquer dado que identifique você
+            pessoalmente</strong>, e esse endereço não é ligado a nenhum cadastro,
+            prontuário ou atendimento.
+          </p>
+          <p>
+            Os avisos tratam <strong>exclusivamente de conteúdo publicado no site</strong> —
+            artigos novos e comunicados do consultório, como mudanças de horário.
+            <strong> Nunca enviamos publicidade, oferta, promoção nem qualquer mensagem
+            sobre o seu atendimento ou sua saúde.</strong> A base legal aqui é o seu
+            consentimento (art. 7º, I da LGPD).
+          </p>
+          <p>
+            Para cancelar, use o botão <em>“Não quero mais receber”</em> no mesmo bloco em
+            que você ativou, ou bloqueie as notificações do site nas configurações do
+            navegador. O cancelamento apaga o endereço do aparelho da nossa lista. Endereços
+            que deixam de existir — quando você troca de aparelho ou limpa o navegador — são
+            removidos automaticamente na primeira tentativa de entrega.
+          </p>
+
+          <h2>5. Base legal e finalidade</h2>
           <p>
             O tratamento de dados pessoais no contexto assistencial tem como bases legais
             a tutela da saúde (art. 11, II, “f” da LGPD) e o cumprimento de obrigação
@@ -71,7 +102,7 @@ export default function PrivacidadePage() {
             Conselho Federal de Medicina.
           </p>
 
-          <h2>5. Seus direitos</h2>
+          <h2>6. Seus direitos</h2>
           <p>
             Você pode solicitar confirmação de tratamento, acesso, correção e demais
             direitos previstos na LGPD pelo e-mail {site.email}. Solicitações que
@@ -79,14 +110,14 @@ export default function PrivacidadePage() {
             acesso a documentos de saúde.
           </p>
 
-          <h2>6. Segurança</h2>
+          <h2>7. Segurança</h2>
           <p>
             Adotamos boas práticas de segurança da informação no armazenamento de
             registros clínicos e na comunicação com pacientes, incluindo canais
             criptografados e controle de acesso.
           </p>
 
-          <h2>7. Atualizações</h2>
+          <h2>8. Atualizações</h2>
           <p>
             Esta política pode ser revisada para refletir mudanças legais ou operacionais.
             A versão vigente estará sempre disponível nesta página.

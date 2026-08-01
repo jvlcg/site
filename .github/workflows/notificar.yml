@@ -1,0 +1,79 @@
+name: Avisar sobre conteúdo novo
+
+# Dispara as notificações do navegador. Roda sozinho depois que a Soro traz
+# artigos novos, e pode ser disparado à mão para um comunicado avulso.
+on:
+  workflow_run:
+    workflows: ["Sincronizar artigos da Soro"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      titulo:
+        description: "Comunicado avulso — título (deixe vazio para só avisar artigos novos)"
+        required: false
+        type: string
+      corpo:
+        description: "Comunicado avulso — texto"
+        required: false
+        type: string
+      url:
+        description: "Comunicado avulso — para onde o aviso leva (ex.: /contato)"
+        required: false
+        default: "/"
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: notificar
+  cancel-in-progress: false
+
+jobs:
+  avisar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Enviar
+        env:
+          VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          VAPID_SUBJECT: ${{ secrets.VAPID_SUBJECT }}
+          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+          TITULO: ${{ inputs.titulo }}
+          CORPO: ${{ inputs.corpo }}
+          DESTINO: ${{ inputs.url }}
+        # o título entra por variável de ambiente, e não direto no comando:
+        # texto vindo de formulário nunca deve ser colado dentro de um shell
+        run: |
+          set -euo pipefail
+          if [ -n "${TITULO:-}" ]; then
+            node --import ./scripts/resolver-ts.mjs scripts/enviar-notificacoes.mjs \
+              --titulo "$TITULO" --corpo "${CORPO:-}" --url "${DESTINO:-/}"
+          else
+            node --import ./scripts/resolver-ts.mjs scripts/enviar-notificacoes.mjs
+          fi
+
+      - name: Registrar o que já foi avisado
+        run: |
+          set -euo pipefail
+          if [ -z "$(git status --porcelain content/notificados.json)" ]; then
+            echo "Nada a registrar."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/notificados.json
+          git commit -m "Registra os artigos já avisados
+
+          Gerado automaticamente por scripts/enviar-notificacoes.mjs."
+          git push
