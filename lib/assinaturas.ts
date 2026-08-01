@@ -1,3 +1,5 @@
+import { comandoRedis, paresDeHash, redisConfigurado } from "./redis";
+
 /**
  * Onde ficam guardadas as inscrições nas notificações.
  *
@@ -17,35 +19,7 @@
 
 const CHAVE = "notificacoes:assinaturas";
 
-/** Aceita tanto os nomes do Upstash quanto os que a Vercel injeta no KV. */
-function credenciais(): { url: string; token: string } | null {
-  const url = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
-  return url && token ? { url: url.replace(/\/+$/, ""), token } : null;
-}
-
-export const armazenamentoConfigurado = () => credenciais() !== null;
-
-async function comando<T = unknown>(...partes: (string | number)[]): Promise<T | null> {
-  const cred = credenciais();
-  if (!cred) return null;
-  try {
-    const resposta = await fetch(cred.url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${cred.token}`,
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(partes),
-      cache: "no-store",
-    });
-    if (!resposta.ok) return null;
-    const dados = (await resposta.json()) as { result?: T };
-    return dados.result ?? null;
-  } catch {
-    return null;
-  }
-}
+export const armazenamentoConfigurado = redisConfigurado;
 
 export type Assinatura = {
   endpoint: string;
@@ -72,25 +46,21 @@ export function idDaAssinatura(endpoint: string): string {
 }
 
 export async function salvarAssinatura(a: Assinatura): Promise<boolean> {
-  const r = await comando("HSET", CHAVE, idDaAssinatura(a.endpoint), JSON.stringify(a));
+  const r = await comandoRedis("HSET", CHAVE, idDaAssinatura(a.endpoint), JSON.stringify(a));
   return r !== null;
 }
 
 export async function removerAssinatura(endpoint: string): Promise<boolean> {
-  const r = await comando("HDEL", CHAVE, idDaAssinatura(endpoint));
+  const r = await comandoRedis("HDEL", CHAVE, idDaAssinatura(endpoint));
   return r !== null;
 }
 
 /** Todas as inscrições ativas. Usado só pelo script de envio. */
 export async function listarAssinaturas(): Promise<Assinatura[]> {
-  const bruto = await comando<Record<string, string> | string[]>("HGETALL", CHAVE);
+  const bruto = await comandoRedis<Record<string, string> | string[]>("HGETALL", CHAVE);
   if (!bruto) return [];
 
-  // o Upstash devolve objeto; um Redis REST cru devolve lista alternando
-  // campo e valor — aceitamos as duas formas
-  const valores = Array.isArray(bruto)
-    ? bruto.filter((_, i) => i % 2 === 1)
-    : Object.values(bruto);
+  const valores = paresDeHash(bruto).map(([, v]) => v);
 
   const lista: Assinatura[] = [];
   for (const v of valores) {
@@ -106,5 +76,5 @@ export async function listarAssinaturas(): Promise<Assinatura[]> {
 
 /** Quantos aparelhos estão inscritos. */
 export async function contarAssinaturas(): Promise<number> {
-  return (await comando<number>("HLEN", CHAVE)) ?? 0;
+  return (await comandoRedis<number>("HLEN", CHAVE)) ?? 0;
 }

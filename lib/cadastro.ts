@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { comandoRedis, paresDeHash, redisConfigurado } from "./redis";
 
 /**
  * Cadastro de pacientes — validação, criptografia e armazenamento.
@@ -178,30 +179,7 @@ export function decifrar<T>(pacote: string): T | null {
 
 // ------------------------------------------------------------ armazenamento
 
-function credenciais(): { url: string; token: string } | null {
-  const url = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
-  return url && token ? { url: url.replace(/\/+$/, ""), token } : null;
-}
-
-export const armazenamentoConfigurado = () => credenciais() !== null;
-
-async function comando<T = unknown>(...partes: (string | number)[]): Promise<T | null> {
-  const cred = credenciais();
-  if (!cred) return null;
-  try {
-    const r = await fetch(cred.url, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${cred.token}`, "content-type": "application/json" },
-      body: JSON.stringify(partes),
-      cache: "no-store",
-    });
-    if (!r.ok) return null;
-    return ((await r.json()) as { result?: T }).result ?? null;
-  } catch {
-    return null;
-  }
-}
+export const armazenamentoConfigurado = redisConfigurado;
 
 /** Grava a ficha cifrada. O campo é a data seguida de um sufixo aleatório: ordena sozinho e não colide. */
 export async function gravarFicha(ficha: Ficha): Promise<boolean> {
@@ -209,20 +187,15 @@ export async function gravarFicha(ficha: Ficha): Promise<boolean> {
   const id = `${criadoEm}#${crypto.randomBytes(4).toString("hex")}`;
   const pacote = cifrar({ ...ficha, criadoEm });
   if (!pacote) return false;
-  return (await comando("HSET", CHAVE_REDIS, id, pacote)) !== null;
+  return (await comandoRedis("HSET", CHAVE_REDIS, id, pacote)) !== null;
 }
 
 /** Todas as fichas, decifradas e da mais recente para a mais antiga. */
 export async function lerFichas(): Promise<FichaGravada[]> {
-  const bruto = await comando<Record<string, string> | string[]>("HGETALL", CHAVE_REDIS);
+  const bruto = await comandoRedis<Record<string, string> | string[]>("HGETALL", CHAVE_REDIS);
   if (!bruto) return [];
 
-  const pares: [string, string][] = Array.isArray(bruto)
-    ? bruto.reduce<[string, string][]>((acc, v, i, arr) => {
-        if (i % 2 === 0) acc.push([v, arr[i + 1]]);
-        return acc;
-      }, [])
-    : Object.entries(bruto);
+  const pares = paresDeHash(bruto);
 
   const fichas: FichaGravada[] = [];
   for (const [id, pacote] of pares) {
@@ -233,9 +206,9 @@ export async function lerFichas(): Promise<FichaGravada[]> {
 }
 
 export async function apagarFicha(id: string): Promise<boolean> {
-  return (await comando("HDEL", CHAVE_REDIS, id)) !== null;
+  return (await comandoRedis("HDEL", CHAVE_REDIS, id)) !== null;
 }
 
 export async function contarFichas(): Promise<number> {
-  return (await comando<number>("HLEN", CHAVE_REDIS)) ?? 0;
+  return (await comandoRedis<number>("HLEN", CHAVE_REDIS)) ?? 0;
 }
