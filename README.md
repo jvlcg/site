@@ -256,22 +256,9 @@ específico ganha ("check-up executivo" antes de "check-up").
 
 ## Som do site
 
-Efeitos nos botões e música ambiente, ligados pelo alto-falante no cabeçalho.
-
-**Tudo é sintetizado na hora pelo navegador** (`lib/soundscape.ts`) — não existe
-nenhum arquivo de áudio no projeto. Três motivos:
-
-- **Direitos autorais.** Trilha de banco de música exige licença comercial, e num
-  site que leva o nome e o CRM de um médico o uso indevido é risco jurídico real.
-  O que toca aqui é original por construção: são osciladores tocando notas
-  calculadas na hora, não uma gravação.
-- **Peso.** Uma faixa ambiente custaria alguns megabytes e competiria com o
-  carregamento da página. Aqui não baixa nada.
-- **Segurança.** Nenhum domínio novo precisa entrar na Content-Security-Policy.
-
-A música nunca se repete: as notas são sorteadas dentro de uma escala
-pentatônica, que não tem intervalos tensos — é por isso que soa calma em qualquer
-combinação, e é o mesmo princípio da música de espera de consultório.
+Retorno sonoro dos cliques, ligado pelo alto-falante no cabeçalho. **Não há
+música de fundo** — foi retirada a pedido; o site só emite som em resposta a uma
+ação do visitante.
 
 | Momento | Som |
 | --- | --- |
@@ -283,19 +270,24 @@ combinação, e é o mesmo princípio da música de espera de consultório.
 O agendamento é reconhecido pelo endereço do link, não por marcação no botão —
 todo botão de agendar que existir no futuro já entra com o som certo.
 
-### Sobre a música tocar sozinha
+**Tudo é sintetizado na hora pelo navegador** (`lib/soundscape.ts`) — não existe
+nenhum arquivo de áudio no projeto. Três motivos:
 
-**Nenhum navegador toca áudio quando alguém entra num site.** Chrome, Safari,
-Firefox e Edge bloqueiam som até o visitante interagir com a página. É trava do
-próprio navegador; não existe configuração que contorne isso.
+- **Direitos autorais.** Efeito de banco de som exige licença comercial, e num
+  site que leva o nome e o CRM de um médico o uso indevido é risco jurídico real.
+  O que toca aqui é original por construção: são osciladores tocando notas
+  calculadas na hora, não uma gravação.
+- **Peso.** Nada é baixado e nenhuma requisição é feita.
+- **Segurança.** Nenhum domínio novo precisa entrar na Content-Security-Policy.
 
-O que o site faz é o mais perto disso que a web permite: quem já ligou o som uma
-vez tem a preferência guardada, e nas visitas seguintes a música entra sozinha no
-**primeiro gesto** — rolar a página, tocar na tela, apertar uma tecla. Na
-primeira visita o som começa desligado, de propósito: som inesperado num site
-médico incomoda quem abre o link no trabalho, na sala de espera ou de madrugada.
+Cada som é uma nota de sino: além da fundamental, dois harmônicos discretos que
+decaem mais rápido, passando por um reverb curto. É esse conjunto que faz o
+ouvido reconhecer "sino" em vez de "bipe".
 
-O áudio também pausa quando a aba sai de foco, para não gastar bateria.
+**Começa desligado**, de propósito: som inesperado num site médico incomoda quem
+abre o link no trabalho, na sala de espera ou de madrugada. Quem liga uma vez tem
+a preferência guardada (`localStorage`) para as próximas visitas. Como todo som
+nasce de um clique, não há esbarrão com a trava de autoplay dos navegadores.
 
 ## Duas seções de conteúdo — não confundir
 

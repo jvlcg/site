@@ -10,7 +10,7 @@ import { useSom } from "@/components/providers/SoundProvider";
  */
 export function SoundToggle({ variant = "icon" }: { variant?: "icon" | "row" }) {
   const { ativo, alternar } = useSom();
-  const acao = ativo ? "Desativar som e música ambiente" : "Ativar som e música ambiente";
+  const acao = ativo ? "Desativar som dos botões" : "Ativar som dos botões";
 
   const icone = (
     <svg
