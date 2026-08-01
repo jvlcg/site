@@ -68,6 +68,16 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
+  /**
+   * Verificação de propriedade no Google Search Console pelo método "tag HTML",
+   * que dispensa mexer em DNS: basta colar o código em
+   * NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION na Vercel e refazer o deploy.
+   *
+   * Sem a variável, nenhuma tag é emitida.
+   */
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
   other: {
     "geo.region": "BR-GO",
     "geo.placename": "Goiânia",
