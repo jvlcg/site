@@ -85,6 +85,7 @@ export const navLinks = [
   { href: "/telemedicina", label: "Telemedicina" },
   { href: "/consultorio", label: "Consultório em Goiânia" },
   { href: "/blog", label: "Blog" },
+  { href: "/novidades", label: "Novidades" },
   { href: "/artigos", label: "Artigos científicos" },
   { href: "/perguntas-frequentes", label: "Perguntas frequentes" },
   { href: "/contato", label: "Contato" },

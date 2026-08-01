@@ -15,6 +15,7 @@ const headerLinks = [
   { href: "/telemedicina", label: "Telemedicina" },
   { href: "/consultorio", label: "Consultório" },
   { href: "/blog", label: "Blog" },
+  { href: "/novidades", label: "Novidades" },
   { href: "/artigos", label: "Artigos" },
   { href: "/perguntas-frequentes", label: "FAQ" },
   { href: "/contato", label: "Contato" },
