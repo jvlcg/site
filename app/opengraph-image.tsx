@@ -1,7 +1,14 @@
 import { ImageResponse } from "next/og";
 import { site } from "@/lib/site-config";
 
-export const runtime = "edge";
+/**
+ * Sem `runtime = "edge"` de propósito.
+ *
+ * O `next/og` exigia edge nas versões antigas do Next, e o edge impede que a
+ * imagem seja gerada no build: ela passa a ser desenhada a cada acesso, o que
+ * gasta invocação e faz o robô do WhatsApp ou do Google esperar. No Node ela é
+ * gerada uma vez e servida como arquivo estático.
+ */
 export const alt = site.name;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -17,8 +24,12 @@ export default function OgImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "72px",
-          background:
-            "radial-gradient(circle at 78% 18%, #0d3b34 0%, transparent 55%), radial-gradient(circle at 12% 88%, #0a2e3a 0%, transparent 55%), #0a0e12",
+          // cor de fundo e gradientes separados: no atalho `background` o
+          // desenhista de imagem tenta ler a cor sólida final como se fosse
+          // mais uma camada de imagem e recusa
+          backgroundColor: "#0a0e12",
+          backgroundImage:
+            "radial-gradient(circle at 78% 18%, #0d3b34 0%, transparent 55%), radial-gradient(circle at 12% 88%, #0a2e3a 0%, transparent 55%)",
           color: "#edf2f4",
           fontFamily: "sans-serif",
         }}
@@ -40,8 +51,10 @@ export default function OgImage() {
           >
             JV
           </div>
+          {/* texto num pedaço só: `{variável} texto` vira dois nós, e aí o
+              desenhista passa a exigir `display` explícito na caixa */}
           <div style={{ fontSize: 22, letterSpacing: 2, textTransform: "uppercase", color: "#9fb0bf" }}>
-            {site.crm} · Goiânia-GO
+            {`${site.crm} · ${site.address.city}-${site.address.state}`}
           </div>
         </div>
 
