@@ -52,6 +52,14 @@ export default function PrivacidadePage() {
             acompanham sua navegação em outros sites e não constroem perfil individual.
           </p>
           <p>
+            A página <strong>Novidades</strong> exibe conteúdo publicado por meio da
+            plataforma Soro (<code>app.trysoro.com</code>). Ao abrir essa página específica,
+            seu navegador se comunica com esse serviço, que pode registrar dados de acesso
+            conforme a política de privacidade dele. Essa é a única página do site que
+            carrega conteúdo de terceiros dessa forma — todas as demais funcionam apenas
+            com recursos do próprio domínio.
+          </p>
+          <p>
             Nenhum dado de navegação é vendido ou compartilhado para fins publicitários.
           </p>
 
