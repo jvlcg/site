@@ -307,8 +307,16 @@ já reconhece.
 | `VAPID_PUBLIC_KEY` | a chave pública |
 | `VAPID_PRIVATE_KEY` | a chave **privada** |
 | `VAPID_SUBJECT` | `mailto:` com seu e-mail, ou a URL do site |
-| `UPSTASH_REDIS_REST_URL` | o mesmo valor de `KV_REST_API_URL` |
-| `UPSTASH_REDIS_REST_TOKEN` | o mesmo valor de `KV_REST_API_TOKEN` |
+| `KV_REST_API_URL` | copie da Vercel: Storage → o banco → Quickstart → **Show secret** |
+| `KV_REST_API_TOKEN` | idem — **não** use o `READ_ONLY_TOKEN`, o robô precisa apagar inscrições mortas |
+
+> Os nomes acima são os que a Vercel cria. Se preferir, `UPSTASH_REDIS_REST_URL`
+> e `UPSTASH_REDIS_REST_TOKEN` também funcionam: o fluxo aceita os dois, para
+> ninguém ter de renomear na hora de copiar — renomear é erro fácil de cometer e
+> difícil de perceber depois.
+>
+> Ignore `KV_URL` e `REDIS_URL`: começam com `rediss://`, que é conexão direta.
+> O site fala com o banco por REST (`https://`).
 
 **Enquanto isso não estiver configurado, o bloco simplesmente não aparece.** O
 site não mostra um botão que não funciona.

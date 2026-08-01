@@ -47,8 +47,13 @@ jobs:
           VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
           VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
           VAPID_SUBJECT: ${{ secrets.VAPID_SUBJECT }}
+          # Os dois nomes de propósito: a Vercel batiza as variáveis do banco
+          # como KV_REST_API_*, e obrigar a renomear na hora de copiar para os
+          # Secrets é um erro fácil de cometer e difícil de perceber depois.
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+          KV_REST_API_URL: ${{ secrets.KV_REST_API_URL }}
+          KV_REST_API_TOKEN: ${{ secrets.KV_REST_API_TOKEN }}
           TITULO: ${{ inputs.titulo }}
           CORPO: ${{ inputs.corpo }}
           DESTINO: ${{ inputs.url }}
