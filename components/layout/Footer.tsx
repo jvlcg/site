@@ -61,6 +61,16 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              {/* fora de `navLinks` de propósito: o cadastro não entra no menu
+                  do topo, só aqui e no atalho flutuante */}
+              <li className="pt-1">
+                <Link
+                  href="/cadastro"
+                  className="font-medium text-[var(--accent)] transition-opacity hover:opacity-75"
+                >
+                  Cadastro de pacientes →
+                </Link>
+              </li>
             </ul>
           </nav>
 

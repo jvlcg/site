@@ -8,6 +8,7 @@ import { MotionProvider } from "@/components/motion/MotionProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
+import { CadastroFab } from "@/components/layout/CadastroFab";
 import { GyroPrompt } from "@/components/three/GyroPrompt";
 import { CursorGlow } from "@/components/ui/CursorGlow";
 import { ChatWidget } from "@/components/chat/ChatWidget";
@@ -106,6 +107,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <main id="conteudo">{children}</main>
               <Footer />
               <WhatsAppFab />
+              <CadastroFab />
               <ChatWidget />
               <GyroPrompt />
             </MotionProvider>

@@ -353,6 +353,81 @@ lê o texto do aviso.
 Os avisos tratam apenas de conteúdo publicado. **Nada de publicidade e nada sobre
 o atendimento de ninguém** — isso é exigência ética, não preferência de design.
 
+## Cadastro de pacientes e área restrita
+
+A página `/cadastro` recebe nome completo, e-mail, telefone, CPF, data de
+nascimento, cidade e como a pessoa conheceu o consultório. Fica **fora do menu
+do topo** de propósito: aparece no rodapé e num atalho flutuante acima do
+assistente de IA.
+
+| Arquivo | Papel |
+| --- | --- |
+| `app/cadastro/page.tsx` | A página e o que o cadastro oferece |
+| `components/ui/FormularioCadastro.tsx` | O formulário, com máscaras e validação |
+| `lib/cadastro.ts` | Validação de verdade, criptografia e gravação |
+| `app/api/cadastro/route.ts` | Recebe o envio. **Não tem GET** |
+| `app/area-restrita/page.tsx` | Onde o médico vê as fichas |
+| `lib/area-restrita.ts` | Senha, bilhete assinado e cookie |
+| `components/layout/CadastroFab.tsx` | Atalho flutuante |
+
+### Como os dados são protegidos
+
+- **Nada é gravado em texto claro.** Cada ficha é cifrada com **AES-256-GCM**
+  antes de sair do servidor. Quem abrir o banco — inclusive o provedor de
+  hospedagem — vê blocos ilegíveis. GCM também autentica: alterar um byte faz a
+  decifragem falhar em vez de devolver dado adulterado.
+- **A chave mora fora do banco**, em variável de ambiente. Sem ela, nem o site
+  lê o que gravou.
+- **A rota que recebe o cadastro não tem GET.** Ler as fichas é assunto de outra
+  rota, com senha. Manter a leitura em outro arquivo é o que impede que um erro
+  futuro nas barreiras exponha a lista inteira.
+- **Senha comparada em tempo constante**, porque comparar com `===` vaza o
+  tamanho do prefixo certo pelo tempo de resposta.
+- **O cookie não é a senha:** é um bilhete assinado com HMAC, válido por 8 h,
+  `httpOnly` (invisível para JavaScript) e `SameSite=Strict`.
+- **Cinco tentativas de senha por hora**, por IP. É o limite mais apertado do
+  site — senha única é alvo óbvio de força bruta.
+- `/area-restrita` é `noindex, nofollow` e não tem link apontando para ela.
+
+### Ligar (uma vez)
+
+Na Vercel → Settings → Environment Variables, em *Production*:
+
+| Variável | Como obter |
+| --- | --- |
+| `CADASTRO_CHAVE` | `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
+| `ADMIN_SENHA` | uma senha longa, só sua (mínimo 10 caracteres) |
+| `ADMIN_SEGREDO` | opcional; sem ele, trocar a senha derruba as sessões abertas |
+
+O armazenamento é o **mesmo Redis das notificações** — se aquele já estiver
+ligado, não há nada a fazer aqui.
+
+> **Atenção:** trocar `CADASTRO_CHAVE` torna **ilegíveis** todos os cadastros já
+> gravados. Não há recuperação: é essa a razão de a criptografia funcionar.
+
+Sem as variáveis, a página existe mas o envio responde "cadastro indisponível" —
+nada é perdido em silêncio.
+
+### Na área restrita
+
+`https://drjvlcg.com.br/area-restrita` → senha → lista das fichas, com busca,
+link direto para o WhatsApp e o e-mail de cada pessoa, **exportação em CSV**
+(abre no Excel com acentos certos) e exclusão definitiva, que atende ao direito
+de exclusão da LGPD.
+
+### O que o texto da página pode e não pode dizer
+
+O cadastro é apresentado como **organização do atendimento** — canal digital
+direto, acompanhamento entre consultas, prioridade no retorno, avisos de agenda.
+
+**Não** anuncia desconto, promoção, "condição especial" ou qualquer vantagem de
+preço. A Resolução CFM nº 2.336/2023 e o art. 58 do Código de Ética Médica vedam
+anunciar desconto ou usar vantagem econômica para captar pacientes — e trocar a
+palavra "desconto" por "condição especial" não muda a conduta, só a redação.
+Conceder uma condição a um paciente específico, dentro da relação médico-paciente,
+é outra coisa e continua sendo decisão do médico; o que não pode é virar isca
+publicitária no site.
+
 ## Som do site
 
 Retorno sonoro dos cliques, ligado pelo alto-falante no cabeçalho. **Não há
