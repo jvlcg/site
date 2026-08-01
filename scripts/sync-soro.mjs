@@ -162,7 +162,38 @@ async function main() {
     existia ? atualizados++ : novos++;
   }
 
+  await avisarOrfaos(artigos);
+
   console.log(`\n${novos} novo(s), ${atualizados} atualizado(s), ${ignorados} preservado(s)`);
+}
+
+/**
+ * Aponta artigos que vieram da Soro e não estão mais na listagem — provavelmente
+ * despublicados de lá.
+ *
+ * **Avisa, não apaga.** A listagem pode voltar incompleta por cache ou por uma
+ * falha momentânea da API, e apagar em cima disso destruiria conteúdo publicado
+ * sem chance de recuperação. Excluir um artigo é raro e reversível à mão;
+ * excluir por engano, não.
+ */
+async function avisarOrfaos(artigos) {
+  const naSoro = new Set(artigos.map((a) => a.slug).filter(Boolean));
+  const arquivos = (await readdir(DESTINO)).filter((f) => f.endsWith(".mdx"));
+
+  const orfaos = [];
+  for (const f of arquivos) {
+    const texto = await readFile(path.join(DESTINO, f), "utf8");
+    if (!/^origem:\s*soro\s*$/m.test(texto)) continue;
+    const slug = f.replace(/\.mdx$/, "");
+    if (!naSoro.has(slug)) orfaos.push(slug);
+  }
+
+  if (orfaos.length === 0) return;
+  console.log(
+    `\n  ! ${orfaos.length} artigo(s) no blog não estão mais publicados na Soro:\n` +
+      orfaos.map((s) => `      content/artigos/${s}.mdx`).join("\n") +
+      `\n    Continuam no ar. Para tirar do site, apague o arquivo e faça o commit.`
+  );
 }
 
 main().catch((e) => {

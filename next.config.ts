@@ -40,10 +40,20 @@ const csp = [
  * conceder isso onde há motivo, não no site inteiro.
  */
 const SORO = "https://app.trysoro.com";
+/**
+ * As imagens de capa da Soro não ficam no domínio dela: ela guarda os arquivos
+ * no Supabase e o embed aponta o `<img>` direto para lá. Sem liberar esse
+ * domínio, o texto aparece e as capas ficam quebradas — e o navegador só avisa
+ * no console, então é o tipo de falha que passa despercebida.
+ */
+const SORO_IMAGENS = "https://*.supabase.co";
 const cspNovidades = csp
   .replace("script-src 'self' 'unsafe-inline'", `script-src 'self' 'unsafe-inline' ${SORO}`)
   .replace("connect-src 'self'", `connect-src 'self' ${SORO}`)
-  .replace("img-src 'self' data: blob:", `img-src 'self' data: blob: ${SORO} https://*.trysoro.com`)
+  .replace(
+    "img-src 'self' data: blob:",
+    `img-src 'self' data: blob: ${SORO} https://*.trysoro.com ${SORO_IMAGENS}`
+  )
   .replace("frame-src ", `frame-src ${SORO} `);
 
 const seguranca = [
