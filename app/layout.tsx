@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { SoundProvider } from "@/components/providers/SoundProvider";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -98,15 +99,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR" suppressHydrationWarning>
       <body className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
         <ThemeProvider>
-          <MotionProvider>
-            <CursorGlow />
-            <Header />
-            <main id="conteudo">{children}</main>
-            <Footer />
-            <WhatsAppFab />
-            <ChatWidget />
-            <GyroPrompt />
-          </MotionProvider>
+          <SoundProvider>
+            <MotionProvider>
+              <CursorGlow />
+              <Header />
+              <main id="conteudo">{children}</main>
+              <Footer />
+              <WhatsAppFab />
+              <ChatWidget />
+              <GyroPrompt />
+            </MotionProvider>
+          </SoundProvider>
         </ThemeProvider>
         <JsonLd data={[physicianSchema(), medicalClinicSchema(), websiteSchema()]} />
         {/*

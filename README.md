@@ -34,6 +34,7 @@ npm run build && npm run start
 | `NEXT_PUBLIC_SITE_URL` | URL pública definitiva (canonical, Schema, sitemap, OG). Domínio registrado: `drjvlcg.com.br`. |
 | `NEXT_PUBLIC_WHATSAPP` | WhatsApp **particular** (Dr. José Victor) — CTA principal de todo o site. Formato internacional sem `+`. |
 | `NEXT_PUBLIC_WHATSAPP_PLANOS` | WhatsApp de **planos de saúde** (secretária) — opção secundária/discreta (rodapé e Contato). |
+| `NEXT_PUBLIC_MUSICA_FUNDO` | Caminho de um arquivo de áudio licenciado em `public/` (ex.: `/audio/ambiente.mp3`). Vazio = sem música, só os sons de clique. |
 
 Os números reais já estão embutidos como padrão em `lib/site-config.ts`
 (particular `5562999758034`, planos `5562999961365`); as variáveis de ambiente

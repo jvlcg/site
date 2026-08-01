@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LogoLockup } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
+import { SoundToggle } from "./SoundToggle";
 import { whatsappLink } from "@/lib/site-config";
 
 const headerLinks = [
@@ -15,7 +16,6 @@ const headerLinks = [
   { href: "/telemedicina", label: "Telemedicina" },
   { href: "/consultorio", label: "Consultório" },
   { href: "/blog", label: "Blog" },
-  { href: "/novidades", label: "Novidades" },
   { href: "/artigos", label: "Artigos" },
   { href: "/perguntas-frequentes", label: "FAQ" },
   { href: "/contato", label: "Contato" },
@@ -74,6 +74,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <SoundToggle />
           <ThemeToggle />
           <a
             href={whatsappLink()}
@@ -126,6 +127,7 @@ export function Header() {
             style={{ transitionDelay: open ? `${80 + headerLinks.length * 45}ms` : "0ms" }}
           >
             <ThemeToggle variant="row" />
+            <SoundToggle variant="row" />
           </div>
           <a
             href={whatsappLink()}

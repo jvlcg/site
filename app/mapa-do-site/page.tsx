@@ -30,7 +30,6 @@ const grupos = [
       { href: "/sobre", label: "Sobre o médico", desc: "Formação, trajetória de pesquisa e publicações científicas." },
       { href: "/contato", label: "Contato e agendamento", desc: "Canais de atendimento, endereço e mapa." },
       { href: "/perguntas-frequentes", label: "Perguntas frequentes", desc: "Respostas sobre consultas, valores, convênios e telemedicina." },
-      { href: "/novidades", label: "Novidades", desc: "Atualizações e avisos recentes do consultório." },
     ],
   },
   {
