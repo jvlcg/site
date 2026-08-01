@@ -7,7 +7,7 @@ export const site = {
    * `https://dominio.com.br//caminho` no sitemap, no robots.txt e no llms.txt —
    * apontando o Google para URLs que não existem.
    */
-  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://drjvlcg.com.br").replace(/\/+$/, ""),
+  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://drjosevictor.com").replace(/\/+$/, ""),
   name: "Dr. José Victor Lisboa Cardoso Gomes",
   shortName: "Dr. José Victor",
   brand: "Dr.JV",

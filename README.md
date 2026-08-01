@@ -31,7 +31,7 @@ npm run build && npm run start
 
 | Variável | Descrição |
 | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | URL pública definitiva (canonical, Schema, sitemap, OG). Domínio registrado: `drjvlcg.com.br`. |
+| `NEXT_PUBLIC_SITE_URL` | URL pública definitiva (canonical, Schema, sitemap, OG). Domínio registrado: `drjosevictor.com` (GoDaddy). |
 | `NEXT_PUBLIC_WHATSAPP` | WhatsApp **particular** (Dr. José Victor) — CTA principal de todo o site. Formato internacional sem `+`. |
 | `NEXT_PUBLIC_WHATSAPP_PLANOS` | WhatsApp de **planos de saúde** (secretária) — opção secundária/discreta (rodapé e Contato). |
 
@@ -63,7 +63,7 @@ Para ajustar o que o assistente sabe ou como responde, edite `lib/knowledge.ts`.
 1. Acesse **console.anthropic.com** e crie uma conta (ou entre na sua).
 2. Em **Billing**, adicione créditos. O modelo padrão é o Haiku, o mais barato da
    linha — o custo de um chat de site institucional é de centavos por conversa.
-3. Vá em **API Keys → Create Key**, dê um nome (ex.: `site-drjvlcg`) e **copie a
+3. Vá em **API Keys → Create Key**, dê um nome (ex.: `site-drjosevictor`) e **copie a
    chave**. Ela só aparece uma vez.
 4. Na Vercel, abra o projeto → **Settings → Environment Variables** e crie:
    - Nome: `ANTHROPIC_API_KEY`
@@ -120,7 +120,7 @@ variável **`DIAG_TOKEN`** com uma senha longa qualquer (ex.: `k7Qm2xR9vL4pB8n`)
 abra:
 
 ```
-https://drjvlcg.com.br/api/chat?token=SUA_SENHA
+https://drjosevictor.com/api/chat?token=SUA_SENHA
 ```
 
 - `{"ia":true,...}` → IA ativa e respondendo.
@@ -410,7 +410,7 @@ nada é perdido em silêncio.
 
 ### Na área restrita
 
-`https://drjvlcg.com.br/area-restrita` → senha → lista das fichas, com busca,
+`https://drjosevictor.com/area-restrita` → senha → lista das fichas, com busca,
 link direto para o WhatsApp e o e-mail de cada pessoa, **exportação em CSV**
 (abre no Excel com acentos certos) e exclusão definitiva, que atende ao direito
 de exclusão da LGPD.
@@ -665,8 +665,39 @@ Ao alterar qualquer conteúdo, lembre de refletir a mudança no `llms.txt`
 
 ### Domínio
 
-Domínio registrado: **`drjvlcg.com.br`**. Basta apontá-lo na Vercel e definir
-`NEXT_PUBLIC_SITE_URL=https://drjvlcg.com.br`.
+Domínio definitivo: **`drjosevictor.com`**, registrado na GoDaddy.
+
+**1. Na Vercel** — Settings → Domains → Add: cadastre `drjosevictor.com` **e**
+`www.drjosevictor.com`. A Vercel mostra os registros de DNS a criar e sugere qual
+dos dois é o principal (o outro passa a redirecionar).
+
+**2. Na GoDaddy** — Meus produtos → o domínio → **DNS** → Gerenciar zonas:
+
+| Tipo | Nome | Valor |
+| --- | --- | --- |
+| A | `@` | `76.76.21.21` |
+| CNAME | `www` | `cname.vercel-dns.com` |
+
+Confira os valores na tela da Vercel antes de salvar: são eles que valem, e a
+Vercel às vezes indica um endereço diferente conforme a região.
+
+Se a GoDaddy já tiver criado registros de "estacionamento" (uma página de venda
+ou um redirecionamento), **apague-os** — dois registros `A` no `@` fazem o
+domínio cair ora num, ora noutro.
+
+**3. Na Vercel** — Settings → Environment Variables:
+`NEXT_PUBLIC_SITE_URL=https://drjosevictor.com` (sem barra no fim), em
+*Production*. Depois, **Redeploy**: essa variável entra no `sitemap.xml`, no
+`robots.txt`, nos canonicais e no Schema, e só é lida na hora de compilar.
+
+A propagação costuma levar de minutos a algumas horas. O certificado HTTPS a
+Vercel emite sozinha assim que o DNS resolve.
+
+> **Sobre o domínio antigo:** `drjvlcg.com.br` nunca chegou a apontar para o
+> site, então **não há nada a migrar** — nenhuma página foi indexada sob ele e
+> nenhum link externo aponta para lá. Se quiser aproveitá-lo, o caminho é
+> adicioná-lo também na Vercel como redirecionamento para o novo; se não,
+> é só deixar expirar.
 
 ### Pós-deploy (recomendado)
 

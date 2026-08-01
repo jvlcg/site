@@ -48,7 +48,7 @@ function configurarVapid() {
     return false;
   }
   // o "assunto" identifica quem envia, exigido pelo padrão Web Push
-  const assunto = process.env.VAPID_SUBJECT ?? "https://drjvlcg.com.br";
+  const assunto = process.env.VAPID_SUBJECT ?? "https://drjosevictor.com";
   webpush.setVapidDetails(assunto, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
   return true;
 }
