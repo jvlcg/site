@@ -339,6 +339,59 @@ Três freios embutidos, porque notificação irrita rápido:
 O controle do que já foi avisado fica em `content/notificados.json`, versionado
 no repositório — assim dois deploys não repetem o mesmo aviso.
 
+### Avisos por e-mail
+
+Quem se cadastra pode marcar, no formulário, uma caixa **separada e desmarcada
+por padrão**: receber por e-mail o mesmo aviso de conteúdo novo. Os dois canais
+são independentes — o push é anônimo e por aparelho; o e-mail é nominal e por
+pessoa.
+
+| Arquivo | Papel |
+| --- | --- |
+| `lib/avisos-email.ts` | A lista, com chave própria e o link assinado de cancelamento |
+| `lib/enviar-email.ts` | Envio pelo Resend e o modelo da mensagem |
+| `app/api/avisos/route.ts` | Cancelamento (só cancela — não inscreve) |
+| `app/cancelar-avisos/` | Página de confirmação do cancelamento |
+
+**Por que a lista de e-mails é separada do cadastro**, e não um campo dentro
+dele: o robô que dispara os avisos roda no GitHub, e para ler e-mails precisa da
+chave que decifra a lista. Se os e-mails morassem junto do cadastro, essa chave
+teria de ser a `CADASTRO_CHAVE` — a mesma que protege nome completo, CPF e data
+de nascimento — e ela deixaria de existir só no painel da Vercel. Com chave
+própria (`AVISOS_CHAVE`), o pior caso é o vazamento de uma lista de e-mails e
+primeiros nomes, e não de dados de identificação de paciente.
+
+**Cancelamento** em todo e-mail, por dois caminhos: o link no rodapé, que leva a
+uma página de confirmação, e o cabeçalho `List-Unsubscribe`, que faz o Gmail e o
+Outlook mostrarem o botão "Cancelar inscrição" ao lado do remetente. O link é
+assinado — sem isso, bastaria trocar o endereço na URL para descadastrar outra
+pessoa. A página pede confirmação em vez de cancelar ao abrir, porque
+antivírus e pré-visualizadores de e-mail abrem todos os links da mensagem.
+
+#### Ligar (uma vez)
+
+**1. Conta no Resend** (`resend.com`) — o plano gratuito envia 3.000 e-mails por
+mês, folgado para esta finalidade.
+
+**2. Verificar o domínio** no Resend: ele mostra registros DNS (SPF, DKIM e
+DMARC) para criar na GoDaddy. **Esse passo não é opcional** — sem ele o e-mail
+sai de um remetente não autenticado e vai direto para o spam, ou nem é aceito.
+
+**3. Gerar a chave da lista:**
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+**4. Na Vercel** (Production): `AVISOS_CHAVE` com o valor acima.
+
+**5. Nos Secrets do GitHub:** `AVISOS_CHAVE` (o mesmo valor), `RESEND_API_KEY`,
+`EMAIL_REMETENTE` (ex.: `avisos@drjosevictor.com`) e `NEXT_PUBLIC_SITE_URL`.
+
+Sem `RESEND_API_KEY`, o robô manda só pelo navegador e segue funcionando; sem
+`AVISOS_CHAVE`, a caixa do formulário não grava ninguém. Um canal nunca derruba
+o outro.
+
 ### Limitação do iPhone
 
 No iPhone, notificação da web **só funciona com o site adicionado à Tela de

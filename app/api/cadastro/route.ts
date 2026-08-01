@@ -12,6 +12,7 @@ import {
   gravarFicha,
   validarFicha,
 } from "@/lib/cadastro";
+import { avisosConfigurados, inscreverEmail } from "@/lib/avisos-email";
 
 /**
  * Recebe o cadastro de paciente.
@@ -52,6 +53,16 @@ export async function POST(req: Request) {
 
   const ok = await gravarFicha(resultado.ficha);
   if (!ok) return responde({ erro: "Não foi possível gravar agora. Tente de novo." }, 503);
+
+  /*
+    A lista de avisos por e-mail é gravada à parte, com chave própria (ver
+    lib/avisos-email.ts). Falha aqui não derruba o cadastro: a pessoa se
+    inscreveu para ser atendida, e perder isso por causa de um aviso opcional
+    seria trocar o essencial pelo acessório.
+  */
+  if ((corpo as { avisosEmail?: unknown })?.avisosEmail === true && avisosConfigurados()) {
+    await inscreverEmail(resultado.ficha.email, resultado.ficha.nome);
+  }
 
   return responde({ cadastrado: true });
 }

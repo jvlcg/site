@@ -28,6 +28,8 @@ import path from "node:path";
 import matter from "gray-matter";
 import webpush from "web-push";
 import { listarAssinaturas, removerAssinatura } from "../lib/assinaturas.ts";
+import { avisosConfigurados, linkDeCancelamento, listarAssinantes } from "../lib/avisos-email.ts";
+import { emailConfigurado, enviarEmail, modeloAviso } from "../lib/enviar-email.ts";
 
 const RAIZ = path.resolve(import.meta.dirname, "..");
 const PASTA_ARTIGOS = path.join(RAIZ, "content/artigos");
@@ -86,11 +88,58 @@ async function lerArtigos() {
   return artigos.sort((a, b) => String(b.date).localeCompare(String(a.date)));
 }
 
+const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://drjosevictor.com").replace(/\/+$/, "");
+
+/**
+ * Manda o aviso por e-mail para quem pediu no cadastro.
+ *
+ * Roda depois do push e nunca no lugar dele: são canais independentes, e falha
+ * de um não pode calar o outro. Um erro num destinatário também não interrompe
+ * a fila — endereço que não existe mais é comum, e travaria todo o resto.
+ */
+async function enviarPorEmail({ titulo, corpo, url }) {
+  if (!emailConfigurado() || !avisosConfigurados()) return;
+
+  const assinantes = await listarAssinantes();
+  if (assinantes.length === 0) return;
+
+  let entregues = 0;
+  const falhas = [];
+
+  for (const a of assinantes) {
+    const cancelar = linkDeCancelamento(a.email, SITE);
+    const { html, texto } = modeloAviso({
+      nome: a.nome || "tudo bem",
+      titulo: corpo || titulo,
+      resumo: "Saiu conteúdo novo no site.",
+      url: url.startsWith("http") ? url : `${SITE}${url}`,
+      linkCancelar: cancelar,
+    });
+
+    const r = await enviarEmail({
+      para: a.email,
+      assunto: corpo ? `Novo no blog: ${corpo}` : titulo,
+      html,
+      texto,
+      // o cabeçalho aponta para a API, que aceita o POST do "um clique" do
+      // Gmail; o link visível no rodapé leva à página de confirmação
+      linkCancelar: `${SITE}/api/avisos?${cancelar.split("?")[1]}`,
+    });
+
+    if (r.ok) entregues++;
+    else falhas.push(`${a.email}: ${r.erro}`);
+  }
+
+  console.log(`  e-mail → ${entregues} de ${assinantes.length} entregue(s)`);
+  for (const f of falhas.slice(0, 5)) console.error(`    ! ${f}`);
+}
+
 /**
  * Dispara um aviso para todos os aparelhos inscritos.
  * Devolve quantos receberam e quantos foram removidos por não existirem mais.
  */
 async function enviar({ titulo, corpo, url, tag }) {
+  if (!temPush) return { entregues: 0, removidos: 0 };
   const assinaturas = await listarAssinaturas();
   if (assinaturas.length === 0) {
     console.log("Nenhum aparelho inscrito.");
@@ -122,18 +171,26 @@ async function enviar({ titulo, corpo, url, tag }) {
 
 // ---------------------------------------------------------------- execução
 
-if (!configurarVapid()) process.exit(0);
+// O push pode estar desligado e o e-mail ligado, ou o contrário. Encerrar aqui
+// por falta de VAPID calaria também os e-mails de quem pediu para receber.
+const temPush = configurarVapid();
+if (!temPush && !(emailConfigurado() && avisosConfigurados())) {
+  console.log("Nenhum canal de aviso configurado — nada a fazer.");
+  process.exit(0);
+}
 
 const tituloAvulso = argumento("titulo");
 
 if (tituloAvulso) {
   // comunicado escrito na hora
-  await enviar({
+  const aviso = {
     titulo: tituloAvulso,
     corpo: argumento("corpo") ?? "",
     url: argumento("url") ?? "/",
     tag: "comunicado",
-  });
+  };
+  await enviar(aviso);
+  await enviarPorEmail(aviso);
 } else {
   const artigos = await lerArtigos();
   const avisados = await lerEstado();
@@ -155,12 +212,14 @@ if (tituloAvulso) {
   }
 
   for (const artigo of novos) {
-    await enviar({
+    const aviso = {
       titulo: "Novo artigo no blog",
       corpo: artigo.title,
       url: `/blog/${artigo.slug}`,
       tag: `artigo-${artigo.slug}`,
-    });
+    };
+    await enviar(aviso);
+    await enviarPorEmail(aviso);
     avisados.add(artigo.slug);
   }
 

@@ -77,6 +77,9 @@ function mascarar(campo: string, valor: string): string {
 export function FormularioCadastro() {
   const [dados, setDados] = useState({ ...VAZIO });
   const [aceito, setAceito] = useState(false);
+  // começa desmarcado de propósito: consentimento pré-marcado não é
+  // consentimento — a pessoa tem de escolher receber
+  const [querAvisos, setQuerAvisos] = useState(false);
   const [erros, setErros] = useState<Record<string, string>>({});
   const [estado, setEstado] = useState<"parado" | "enviando" | "pronto">("parado");
   const [falha, setFalha] = useState("");
@@ -94,7 +97,7 @@ export function FormularioCadastro() {
       const resposta = await fetch("/api/cadastro", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...dados, consentimento: aceito }),
+        body: JSON.stringify({ ...dados, consentimento: aceito, avisosEmail: querAvisos }),
       });
       const corpo = await resposta.json().catch(() => ({}));
 
@@ -238,6 +241,19 @@ export function FormularioCadastro() {
       {erros.consentimento && (
         <p className="mt-2 text-[0.8rem] text-red-400">{erros.consentimento}</p>
       )}
+
+      <label className="mt-4 flex cursor-pointer items-start gap-3 text-[0.86rem] leading-relaxed text-muted">
+        <input
+          type="checkbox"
+          checked={querAvisos}
+          onChange={(e) => setQuerAvisos(e.target.checked)}
+          className="mt-1 h-4 w-4 shrink-0 accent-[var(--accent)]"
+        />
+        <span>
+          Quero receber por e-mail um aviso quando sair artigo novo ou comunicado do
+          consultório. Sem propaganda, e com link para sair da lista em todo e-mail.
+        </span>
+      </label>
 
       {falha && (
         <p role="alert" className="mt-5 rounded-2xl border hairline p-4 text-[0.86rem] text-red-400">
