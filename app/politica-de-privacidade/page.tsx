@@ -39,9 +39,19 @@ export default function PrivacidadePage() {
 
           <h2>3. Cookies e medição</h2>
           <p>
-            Podemos utilizar cookies estritamente necessários ao funcionamento do site e
-            métricas agregadas de audiência, sem identificação individual. Nenhum dado de
-            navegação é vendido ou compartilhado para fins publicitários.
+            Este site utiliza apenas cookies estritamente necessários ao seu funcionamento —
+            como a memória da sua preferência de tema claro ou escuro. <strong>Não há
+            cookies de rastreamento, publicidade ou perfilamento.</strong>
+          </p>
+          <p>
+            Para saber quantas pessoas visitam cada página, usamos o serviço de medição da
+            Vercel, empresa que hospeda o site. Essa medição é <strong>feita sem cookies</strong> e
+            registra apenas dados agregados: página acessada, origem do acesso, tipo de
+            dispositivo e país. Ela não identifica você, não acompanha sua navegação em
+            outros sites e não constrói perfil individual.
+          </p>
+          <p>
+            Nenhum dado de navegação é vendido ou compartilhado para fins publicitários.
           </p>
 
           <h2>4. Base legal e finalidade</h2>
