@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { MotionProvider } from "@/components/motion/MotionProvider";
@@ -97,6 +98,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </MotionProvider>
         </ThemeProvider>
         <JsonLd data={[physicianSchema(), medicalClinicSchema(), websiteSchema()]} />
+        {/*
+          Métricas de audiência da Vercel: sem cookies e sem identificar o
+          visitante — só contagem agregada de páginas vistas. A escolha importa
+          num site médico: nada aqui rastreia indivíduo nem cria perfil.
+
+          O script é servido pelo próprio domínio (/_vercel/insights/), então
+          passa na Content-Security-Policy sem precisar liberar terceiros.
+        */}
+        <Analytics />
       </body>
     </html>
   );
