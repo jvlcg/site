@@ -72,8 +72,10 @@ function Network({ dark, tilt, tier }: { dark: boolean; tilt: RefObject<TiltRef>
     };
   }, [tier]);
 
-  const accent = dark ? new THREE.Color("#2dd4bf") : new THREE.Color("#0d9488");
-  const node = dark ? new THREE.Color("#5eead4") : new THREE.Color("#0f766e");
+  // No tema claro as cores são bem mais escuras: sobre fundo quase branco, um
+  // teal claro some. O escuro pode usar tons luminosos porque o fundo é grafite.
+  const accent = dark ? new THREE.Color("#2dd4bf") : new THREE.Color("#0f766e");
+  const node = dark ? new THREE.Color("#5eead4") : new THREE.Color("#0d5c55");
 
   // textura circular suave para os sinais (evita pontos quadrados)
   const sprite = useMemo(() => {
@@ -132,7 +134,7 @@ function Network({ dark, tilt, tier }: { dark: boolean; tilt: RefObject<TiltRef>
       if (geo) (geo.attributes.position as THREE.BufferAttribute).needsUpdate = true;
     }
 
-    if (matRef.current) matRef.current.opacity = dark ? 0.16 : 0.24;
+    if (matRef.current) matRef.current.opacity = dark ? 0.16 : 0.5;
   });
 
   return (
@@ -141,7 +143,7 @@ function Network({ dark, tilt, tier }: { dark: boolean; tilt: RefObject<TiltRef>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[edges, 3]} />
         </bufferGeometry>
-        <lineBasicMaterial ref={matRef} color={accent} transparent opacity={0.18} />
+        <lineBasicMaterial ref={matRef} color={accent} transparent opacity={dark ? 0.18 : 0.5} />
       </lineSegments>
 
       <instancedMesh ref={nodesRef} args={[undefined, undefined, nodes.length]}>
@@ -154,13 +156,19 @@ function Network({ dark, tilt, tier }: { dark: boolean; tilt: RefObject<TiltRef>
           <bufferAttribute attach="attributes-position" args={[signalPos, 3]} />
         </bufferGeometry>
         <pointsMaterial
-          color={dark ? "#a5fbec" : "#0d9488"}
+          color={dark ? "#a5fbec" : "#0f766e"}
           map={sprite}
           size={0.16}
           sizeAttenuation
           transparent
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
+          /*
+            Mistura aditiva soma luz: no escuro isso acende o sinal, mas sobre
+            fundo claro somar luz ao branco dá branco — o pulso ficava
+            literalmente invisível. É o mesmo tratamento que ParticlesCanvas e
+            WaveCanvas já faziam.
+          */
+          blending={dark ? THREE.AdditiveBlending : THREE.NormalBlending}
           toneMapped={false}
         />
       </points>
@@ -209,10 +217,11 @@ export default function NeuralCanvas() {
     >
       <ambientLight intensity={0.6} />
       <Network dark={dark} tilt={tilt} tier={tier} />
-      {tier.bloom && (
+      {/* Bloom é brilho: só faz sentido onde há escuridão para contrastar. */}
+      {tier.bloom && dark && (
         <EffectComposer>
           <Bloom
-            intensity={dark ? 0.9 : 0.4}
+            intensity={0.9}
             luminanceThreshold={0.15}
             luminanceSmoothing={0.9}
             mipmapBlur

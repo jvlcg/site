@@ -149,9 +149,14 @@ export default function HomePage() {
           <Reveal delay={200} className="relative mx-auto w-full max-w-sm lg:max-w-none">
             <div className="animate-float relative">
               <div className="glass relative overflow-hidden rounded-[1.8rem] p-2">
+                {/*
+                  Jaleco, e não traje social: é a primeira imagem que a pessoa
+                  vê, e precisa dizer "médico" antes de qualquer texto. O nome
+                  bordado e o brasão da faculdade fazem esse trabalho sozinhos.
+                */}
                 <Image
-                  src="/images/dr-retrato-gravata.jpg"
-                  alt="Dr. José Victor Lisboa Cardoso Gomes, médico, em traje social ajustando a gravata"
+                  src="/images/dr-jaleco-classico.jpg"
+                  alt="Dr. José Victor Lisboa Cardoso Gomes de jaleco branco, com o nome e a inscrição Médico bordados"
                   width={650}
                   height={975}
                   priority
