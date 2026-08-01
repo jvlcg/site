@@ -34,7 +34,6 @@ npm run build && npm run start
 | `NEXT_PUBLIC_SITE_URL` | URL pública definitiva (canonical, Schema, sitemap, OG). Domínio registrado: `drjvlcg.com.br`. |
 | `NEXT_PUBLIC_WHATSAPP` | WhatsApp **particular** (Dr. José Victor) — CTA principal de todo o site. Formato internacional sem `+`. |
 | `NEXT_PUBLIC_WHATSAPP_PLANOS` | WhatsApp de **planos de saúde** (secretária) — opção secundária/discreta (rodapé e Contato). |
-| `NEXT_PUBLIC_MUSICA_FUNDO` | Caminho de um arquivo de áudio licenciado em `public/` (ex.: `/audio/ambiente.mp3`). Vazio = sem música, só os sons de clique. |
 
 Os números reais já estão embutidos como padrão em `lib/site-config.ts`
 (particular `5562999758034`, planos `5562999961365`); as variáveis de ambiente
@@ -198,6 +197,106 @@ mesmo tempo. Editar esse arquivo atualiza todos eles de uma vez:
 A página gera Schema `FAQPage` automaticamente a partir dessas entradas — cada
 pergunta pode virar um *rich result* no Google.
 
+### Análise de oportunidade (automática, toda segunda)
+
+`scripts/faq-oportunidades.mjs` cruza o que o site **responde** com o que o site
+**publica** e aponta o que está faltando:
+
+1. **Perguntas que os artigos já respondem** e ainda não estão no FAQ — as mais
+   seguras, porque o texto já foi escrito e revisado para o artigo.
+2. **Assuntos publicados sem pergunta correspondente** no FAQ.
+3. **Cobertura por categoria**, da mais rasa para a mais completa.
+4. **Perguntas novas redigidas por IA** — só quando `ANTHROPIC_API_KEY` está
+   configurada; as três etapas acima são calculadas do próprio conteúdo e não
+   dependem de IA nenhuma.
+
+O fluxo `.github/workflows/faq-oportunidades.yml` roda toda segunda-feira (e
+logo depois de cada sincronização com a Soro, que é quando entram assuntos
+novos) e **abre um Pull Request** com o relatório em
+`content/faq-oportunidades.md`.
+
+> **Por que Pull Request e não publicação direta:** o texto do FAQ vai ao ar com
+> o nome e o CRM do Dr. José Victor. Conteúdo médico não se publica sozinho. O
+> robô faz o trabalho de garimpo; a decisão de publicar continua sendo dele —
+> basta copiar o bloco `ts` do relatório para `lib/chat-faq.ts`, ou fechar o PR
+> se nada valer a pena naquela rodada.
+
+Para rodar na mão: `npm run faq:oportunidades`.
+
+**Limite honesto:** a análise enxerga o conteúdo do site, não o volume de busca
+real do Google. Ela responde "o que o site deixou de explicar", não "o que as
+pessoas mais procuram". Para a segunda pergunta seria preciso ligar a API do
+Google Search Console — o que só faz sentido depois que o domínio estiver
+apontado e com alguns meses de dados.
+
+## Hiperlinks internos automáticos
+
+Quando um texto do site cita um assunto que tem página própria — "medicina
+endocanabinoide", "telemedicina", "check-up" —, a **primeira menção vira link**
+para aquela página. Ninguém precisa escrever o link à mão, e artigo novo
+(inclusive os que chegam sozinhos da Soro) já nasce com os links no lugar.
+
+| Arquivo | Papel |
+| --- | --- |
+| `lib/auto-links.ts` | O dicionário de termos → páginas. **É aqui que se mexe.** |
+| `lib/rehype-auto-link.ts` | Aplica nos artigos do blog, na hora de renderizar |
+| `app/perguntas-frequentes/page.tsx` | Aplica nas respostas do FAQ |
+
+Regras deliberadas, porque excesso de link atrapalha em vez de ajudar:
+
+- **Uma menção por destino, por texto** — a primeira. Repetir o mesmo link cinco
+  vezes cansa o leitor e o Google trata como spam.
+- **Teto de 6 links por artigo** (`MAX_LINKS`).
+- **Nunca linka para a página em que o leitor já está.**
+- **Nunca dentro de títulos, código, citações ou de um link que já existe.**
+
+Para adicionar um assunto novo, basta acrescentar uma entrada em `DESTINOS`. Os
+termos são comparados sem acento e sem diferenciar maiúsculas, e o mais
+específico ganha ("check-up executivo" antes de "check-up").
+
+## Som do site
+
+Efeitos nos botões e música ambiente, ligados pelo alto-falante no cabeçalho.
+
+**Tudo é sintetizado na hora pelo navegador** (`lib/soundscape.ts`) — não existe
+nenhum arquivo de áudio no projeto. Três motivos:
+
+- **Direitos autorais.** Trilha de banco de música exige licença comercial, e num
+  site que leva o nome e o CRM de um médico o uso indevido é risco jurídico real.
+  O que toca aqui é original por construção: são osciladores tocando notas
+  calculadas na hora, não uma gravação.
+- **Peso.** Uma faixa ambiente custaria alguns megabytes e competiria com o
+  carregamento da página. Aqui não baixa nada.
+- **Segurança.** Nenhum domínio novo precisa entrar na Content-Security-Policy.
+
+A música nunca se repete: as notas são sorteadas dentro de uma escala
+pentatônica, que não tem intervalos tensos — é por isso que soa calma em qualquer
+combinação, e é o mesmo princípio da música de espera de consultório.
+
+| Momento | Som |
+| --- | --- |
+| Link comum | um toque curto e agudo |
+| Botão principal | duas notas, com mais corpo |
+| **Qualquer link de agendamento** (`wa.me`) | **arpejo maior ascendente com cauda de reverb** |
+| Ligar / desligar o som | duas notas subindo / descendo |
+
+O agendamento é reconhecido pelo endereço do link, não por marcação no botão —
+todo botão de agendar que existir no futuro já entra com o som certo.
+
+### Sobre a música tocar sozinha
+
+**Nenhum navegador toca áudio quando alguém entra num site.** Chrome, Safari,
+Firefox e Edge bloqueiam som até o visitante interagir com a página. É trava do
+próprio navegador; não existe configuração que contorne isso.
+
+O que o site faz é o mais perto disso que a web permite: quem já ligou o som uma
+vez tem a preferência guardada, e nas visitas seguintes a música entra sozinha no
+**primeiro gesto** — rolar a página, tocar na tela, apertar uma tecla. Na
+primeira visita o som começa desligado, de propósito: som inesperado num site
+médico incomoda quem abre o link no trabalho, na sala de espera ou de madrugada.
+
+O áudio também pausa quando a aba sai de foco, para não gastar bateria.
+
 ## Duas seções de conteúdo — não confundir
 
 | Menu | Rota | O que é | Fonte |
@@ -227,7 +326,12 @@ do GitHub (`.github/workflows/sync-soro.yml`) roda `scripts/sync-soro.mjs`, que:
    deploy na Vercel.
 
 Para rodar na hora, sem esperar o horário: aba **Actions** do GitHub → *Sincronizar
-artigos da Soro* → **Run workflow**. Localmente, `node scripts/sync-soro.mjs`.
+artigos da Soro* → **Run workflow**. Localmente, `npm run soro:sync`.
+
+O artigo que chega por aqui já sai com os **hiperlinks internos automáticos**
+(ver seção própria) e, logo depois da sincronização, dispara a **análise de
+oportunidade do FAQ** — assunto novo no blog costuma ser exatamente o assunto que
+ainda não tem pergunta no FAQ.
 
 **Os artigos escritos à mão nunca são tocados.** Só arquivos com `origem: soro` no
 frontmatter podem ser sobrescritos. Se um texto da Soro tiver o mesmo nome de arquivo

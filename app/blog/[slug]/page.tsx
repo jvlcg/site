@@ -8,6 +8,7 @@ import { ReadingProgress } from "@/components/ui/ReadingProgress";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
 import { CtaSection } from "@/components/ui/CtaSection";
 import { getAllArticles, getArticle } from "@/lib/articles";
+import { rehypeLinksInternos } from "@/lib/rehype-auto-link";
 import { JsonLd, articleSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { site } from "@/lib/site-config";
 
@@ -110,7 +111,16 @@ export default async function ArtigoPage({ params }: Props) {
           </Reveal>
 
           <div className="prose-medical mt-10">
-            <MDXRemote source={article.content} />
+            {/*
+              Os hiperlinks internos são inseridos aqui, na renderização — não
+              no arquivo do artigo. Assim todo artigo novo já sai com eles,
+              inclusive os que chegam sozinhos da Soro, e o texto em `.mdx`
+              continua limpo. Ver `lib/auto-links.ts`.
+            */}
+            <MDXRemote
+              source={article.content}
+              options={{ mdxOptions: { rehypePlugins: [rehypeLinksInternos] } }}
+            />
           </div>
 
           {article.faq.length > 0 && (

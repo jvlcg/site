@@ -1,0 +1,97 @@
+name: Oportunidades para o FAQ
+
+# Mantém o FAQ vivo: cruza o que o site responde com o que o site publica e
+# abre um Pull Request com as lacunas encontradas.
+#
+# O Pull Request é de propósito: conteúdo médico sai com o nome e o CRM do
+# Dr. José Victor, então nada entra no ar sem ele ler. O robô prepara o
+# trabalho; a decisão continua sendo humana.
+on:
+  schedule:
+    # toda segunda-feira, 11h UTC (8h em Goiânia)
+    - cron: "0 11 * * 1"
+  # roda também logo depois de chegarem artigos novos da Soro, porque é
+  # justamente aí que aparecem assuntos ainda sem pergunta no FAQ
+  workflow_run:
+    workflows: ["Sincronizar artigos da Soro"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: faq-oportunidades
+  cancel-in-progress: false
+
+jobs:
+  analisar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Analisar o FAQ
+        # Sem a chave o script ainda roda: as seções calculadas do próprio
+        # conteúdo do site não dependem de IA. Só a redação das perguntas
+        # novas fica de fora.
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node --import ./scripts/resolver-ts.mjs scripts/faq-oportunidades.mjs
+
+      - name: Abrir Pull Request se houver novidade
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          RAMO=automacao/faq-oportunidades
+
+          if [ -z "$(git status --porcelain content/faq-oportunidades.md)" ]; then
+            echo "Nenhuma oportunidade nova desde a última análise."
+            exit 0
+          fi
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$RAMO"
+          git add content/faq-oportunidades.md
+          git commit -m "Análise de oportunidade do FAQ
+
+          Gerado automaticamente por scripts/faq-oportunidades.mjs."
+          # o ramo é inteiramente do robô: sobrescrever é o comportamento certo
+          git push --force -u origin "$RAMO"
+
+          # se já existe um PR aberto, o push acima já o atualizou
+          if [ -n "$(gh pr list --head "$RAMO" --state open --json number --jq '.[].number')" ]; then
+            echo "Pull Request já aberto — atualizado com a análise nova."
+            exit 0
+          fi
+
+          {
+            echo "Análise automática do FAQ (\`scripts/faq-oportunidades.mjs\`)."
+            echo
+            echo "O arquivo \`content/faq-oportunidades.md\` lista, nesta ordem:"
+            echo
+            echo "1. **Perguntas que os artigos já respondem** e ainda não estão no FAQ — as"
+            echo "   mais seguras, porque o texto já foi escrito e revisado para o artigo."
+            echo "2. **Assuntos publicados sem pergunta correspondente.**"
+            echo "3. **Cobertura por categoria**, da mais rasa para a mais completa."
+            echo "4. **Perguntas sugeridas** pela IA (só com \`ANTHROPIC_API_KEY\` configurada)."
+            echo
+            echo "**Nada aqui está no ar.** Para publicar uma pergunta, copie o bloco \`ts\`"
+            echo "correspondente para \`lib/chat-faq.ts\`. Se nenhuma valer a pena nesta"
+            echo "rodada, é só fechar este Pull Request."
+          } > /tmp/corpo-pr.md
+
+          gh pr create \
+            --head "$RAMO" \
+            --base "${{ github.event.repository.default_branch }}" \
+            --title "FAQ: oportunidades da semana" \
+            --body-file /tmp/corpo-pr.md

@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "faq:oportunidades": "node --import ./scripts/resolver-ts.mjs scripts/faq-oportunidades.mjs",
+    "soro:sync": "node scripts/sync-soro.mjs",
+    "marca": "node scripts/gen-brand.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.0.0",

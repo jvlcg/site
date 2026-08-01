@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CtaSection } from "@/components/ui/CtaSection";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { FAQ_COMPLETO, CATEGORIAS, faqForSchema } from "@/lib/chat-faq";
+import { DESTINOS, repartirComLinks } from "@/lib/auto-links";
 import { site, whatsappLink } from "@/lib/site-config";
 import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema } from "@/lib/schema";
 
@@ -16,8 +17,35 @@ export const metadata: Metadata = {
   alternates: { canonical: "/perguntas-frequentes" },
 };
 
+/**
+ * Trecho de texto comum, com os hiperlinks internos automáticos aplicados.
+ * O `usados` é compartilhado por toda a página (ver `linkados` abaixo), então
+ * cada destino é citado uma única vez — o leitor não vê a mesma palavra virar
+ * link em resposta após resposta.
+ */
+function Texto({ children, usados }: { children: string; usados: Set<string> }) {
+  const trechos = repartirComLinks(children, usados, "/perguntas-frequentes", DESTINOS.length);
+  return (
+    <>
+      {trechos.map((t, i) =>
+        t.href ? (
+          <Link
+            key={i}
+            href={t.href}
+            className="text-[var(--accent)] underline decoration-[color-mix(in_oklab,var(--accent)_40%,transparent)] underline-offset-4"
+          >
+            {t.texto}
+          </Link>
+        ) : (
+          <span key={i}>{t.texto}</span>
+        )
+      )}
+    </>
+  );
+}
+
 /** Converte **negrito** e listas em elementos, preservando parágrafos. */
-function Answer({ text }: { text: string }) {
+function Answer({ text, usados }: { text: string; usados: Set<string> }) {
   return (
     <div className="space-y-3">
       {text.split("\n\n").map((par, i) => (
@@ -30,7 +58,9 @@ function Answer({ text }: { text: string }) {
                     {part.slice(2, -2)}
                   </strong>
                 ) : (
-                  <span key={j}>{part}</span>
+                  <Texto key={j} usados={usados}>
+                    {part}
+                  </Texto>
                 )
               )}
             </span>
@@ -42,6 +72,9 @@ function Answer({ text }: { text: string }) {
 }
 
 export default function PerguntasFrequentesPage() {
+  // destinos já linkados nesta página — ver `Texto`
+  const linkados = new Set<string>();
+
   return (
     <>
       <PageHero
@@ -102,7 +135,7 @@ export default function PerguntasFrequentesPage() {
                       </span>
                     </summary>
                     <div className="pt-4">
-                      <Answer text={f.a} />
+                      <Answer text={f.a} usados={linkados} />
                       {f.cta && (
                         <a
                           href={whatsappLink()}
