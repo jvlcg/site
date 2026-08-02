@@ -23,14 +23,17 @@ export const site = {
   /** Place ID do perfil do Dr. José Victor no Google (público, não é segredo). */
   googlePlaceId: "ChIJl84fCu3xXpMR_l6BFBpBuhc",
   /**
-   * WhatsApp em formato internacional (sem "+"). O consultório é focado em
-   * atendimento PARTICULAR (Dr. José Victor). Planos de saúde são atendidos
-   * pela secretária e ficam como opção secundária/discreta no site.
+   * WhatsApp em formato internacional (sem "+").
+   *
+   * **Número único, o da secretaria.** Antes havia dois — o pessoal do médico
+   * para atendimento particular e o da secretaria para convênios. Todo contato
+   * do site passa a cair na secretaria, particular ou convênio.
+   *
+   * O número pessoal saiu do repositório inteiro, e não só dos botões: um
+   * telefone que aparece no código-fonte de um site público está publicado,
+   * ainda que nenhuma página o exiba.
    */
-  whatsapp: {
-    particular: process.env.NEXT_PUBLIC_WHATSAPP ?? "5562999758034",
-    planos: process.env.NEXT_PUBLIC_WHATSAPP_PLANOS ?? "5562999961365",
-  },
+  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP ?? "5562999961365",
   whatsappMessage:
     "Olá! Encontrei o site do Dr. José Victor e gostaria de agendar uma consulta particular.",
   whatsappMessagePlanos:
@@ -64,6 +67,10 @@ export const site = {
   ],
 } as const;
 
+/**
+ * O número é um só. Isto seleciona a **mensagem** já preenchida, para que a
+ * secretária saiba de onde a pessoa veio antes de responder.
+ */
 type WhatsAppKind = "particular" | "planos";
 
 /**
@@ -74,7 +81,7 @@ export function whatsappDireto(
   kind: WhatsAppKind = "particular",
   message?: string
 ): string {
-  const number = site.whatsapp[kind];
+  const number = site.whatsapp;
   const text =
     message ??
     (kind === "planos" ? site.whatsappMessagePlanos : site.whatsappMessage);

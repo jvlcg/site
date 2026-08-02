@@ -3,7 +3,7 @@ import { site } from "./site-config";
 /** JSON-LD builders — Schema.org para motores de busca e LLMs. */
 
 /** Telefone principal (WhatsApp particular) em E.164. */
-const telephone = `+${site.whatsapp.particular}`;
+const telephone = `+${site.whatsapp}`;
 
 const postalAddress = {
   "@type": "PostalAddress",

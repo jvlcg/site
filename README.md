@@ -32,12 +32,15 @@ npm run build && npm run start
 | Variável | Descrição |
 | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | URL pública definitiva (canonical, Schema, sitemap, OG). Domínio registrado: `drjosevictor.com` (GoDaddy). |
-| `NEXT_PUBLIC_WHATSAPP` | WhatsApp **particular** (Dr. José Victor) — CTA principal de todo o site. Formato internacional sem `+`. |
-| `NEXT_PUBLIC_WHATSAPP_PLANOS` | WhatsApp de **planos de saúde** (secretária) — opção secundária/discreta (rodapé e Contato). |
+| `NEXT_PUBLIC_WHATSAPP` | WhatsApp da **secretaria** — destino de todo contato do site. Formato internacional sem `+`. |
 
-Os números reais já estão embutidos como padrão em `lib/site-config.ts`
-(particular `5562999758034`, planos `5562999961365`); as variáveis de ambiente
-apenas permitem sobrescrevê-los sem tocar no código.
+O número é **um só**. Particular e convênio caem no mesmo lugar; o que muda
+entre eles é a mensagem já preenchida, para a secretária saber de onde a
+pessoa veio antes de responder.
+
+O número já está embutido como padrão em `lib/site-config.ts`
+(`5562999961365`); a variável de ambiente apenas permite sobrescrevê-lo sem
+tocar no código.
 
 ## Assistente virtual (chat)
 
