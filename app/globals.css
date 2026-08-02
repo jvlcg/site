@@ -194,18 +194,37 @@ body {
 }
 .holo:hover::before { opacity: 1; }
 
-/* Divisor ECG animado */
+/*
+  Divisor ECG animado.
+
+  `stroke-dashoffset` não é composto pela GPU: cada quadro obriga o navegador
+  a repintar na thread principal, e o Lighthouse acusava isso como animação
+  não composta. Como este divisor se repete em várias páginas e roda em laço
+  infinito, ele cobrava esse preço o tempo todo — inclusive enquanto a pessoa
+  lia, longe dele.
+
+  A animação continua idêntica aos olhos. O que mudou é quando ela roda:
+  `paused` por padrão, e só entra em movimento quando o elemento aparece na
+  tela (a classe `.em-cena` é posta pelo IntersectionObserver dos reveals).
+  Fora do viewport, custo zero.
+*/
 @keyframes ecg-dash {
   to { stroke-dashoffset: -1000; }
 }
 .ecg-line {
   stroke-dasharray: 6 10;
   animation: ecg-dash 14s linear infinite;
+  animation-play-state: paused;
 }
 .ecg-pulse {
   stroke-dasharray: 220;
   stroke-dashoffset: 220;
   animation: ecg-sweep 3.4s cubic-bezier(0.7, 0, 0.3, 1) infinite;
+  animation-play-state: paused;
+}
+.em-cena .ecg-line,
+.em-cena .ecg-pulse {
+  animation-play-state: running;
 }
 @keyframes ecg-sweep {
   0% { stroke-dashoffset: 220; }
