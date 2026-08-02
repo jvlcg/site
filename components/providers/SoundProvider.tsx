@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
-import { Soundscape } from "@/lib/soundscape";
+import { Soundscape, type Efeito } from "@/lib/soundscape";
 import { PADROES, vibrar } from "@/lib/vibrar";
 
 /**
@@ -25,9 +25,21 @@ import { PADROES, vibrar } from "@/lib/vibrar";
 type SomCtx = {
   ativo: boolean;
   alternar: () => void;
+  /**
+   * Toca um efeito fora do fluxo de clique — hoje, a voz do Estetô.
+   *
+   * Precisa vir daqui, e não de uma instância própria de quem chama, porque o
+   * navegador limita quantos AudioContext existem por aba e porque só este já
+   * foi destravado por um gesto do visitante. Um segundo contexto, criado sem
+   * gesto, nasceria suspenso e mudo.
+   *
+   * Respeita o botão de silêncio sozinho: quem chama não precisa se lembrar
+   * de checar.
+   */
+  tocar: (efeito: Efeito) => void;
 };
 
-const Ctx = createContext<SomCtx>({ ativo: true, alternar: () => {} });
+const Ctx = createContext<SomCtx>({ ativo: true, alternar: () => {}, tocar: () => {} });
 
 export const useSom = () => useContext(Ctx);
 
@@ -88,5 +100,13 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     });
   }, [motor]);
 
-  return <Ctx.Provider value={{ ativo, alternar }}>{children}</Ctx.Provider>;
+  const tocar = useCallback(
+    (efeito: Efeito) => {
+      if (!ativo) return;
+      motor().efeito(efeito);
+    },
+    [ativo, motor]
+  );
+
+  return <Ctx.Provider value={{ ativo, alternar, tocar }}>{children}</Ctx.Provider>;
 }
