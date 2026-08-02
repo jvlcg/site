@@ -12,6 +12,7 @@ import { CadastroFab } from "@/components/layout/CadastroFab";
 import { GyroPrompt } from "@/components/three/GyroPrompt";
 import { CursorGlow } from "@/components/ui/CursorGlow";
 import { ChatWidget } from "@/components/chat/ChatWidget";
+import { Mascote } from "@/components/ui/Mascote";
 import { JsonLd, physicianSchema, websiteSchema, medicalClinicSchema } from "@/lib/schema";
 import { site } from "@/lib/site-config";
 import "./globals.css";
@@ -109,6 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <WhatsAppFab />
               <CadastroFab />
               <ChatWidget />
+              <Mascote />
               <GyroPrompt />
             </MotionProvider>
           </SoundProvider>

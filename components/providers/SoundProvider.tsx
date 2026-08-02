@@ -58,7 +58,13 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
       // Agendamento: todo caminho para marcar consulta passa pelo WhatsApp,
       // então basta reconhecer o link — nenhum botão precisa ser marcado à
       // mão, inclusive os que vierem depois.
-      const agendamento = (alvo.getAttribute("href") ?? "").includes("wa.me");
+      //
+      // São dois endereços porque os botões do site apontam para `/agendar`,
+      // a ponte que existe para o contato ter uma URL mensurável; só ela
+      // aponta para `wa.me`. Reconhecer os dois mantém o som e a vibração
+      // funcionando de qualquer um dos lados.
+      const href = alvo.getAttribute("href") ?? "";
+      const agendamento = href.includes("wa.me") || href.startsWith("/agendar");
       const noMenu = !agendamento && alvo.closest("header") !== null;
 
       if (agendamento) vibrar(PADROES.agendar);

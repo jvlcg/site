@@ -66,7 +66,11 @@ export const site = {
 
 type WhatsAppKind = "particular" | "planos";
 
-export function whatsappLink(
+/**
+ * O endereço real do WhatsApp. Usado pela página `/agendar`, que é quem de
+ * fato leva a pessoa para lá.
+ */
+export function whatsappDireto(
   kind: WhatsAppKind = "particular",
   message?: string
 ): string {
@@ -75,6 +79,30 @@ export function whatsappLink(
     message ??
     (kind === "planos" ? site.whatsappMessagePlanos : site.whatsappMessage);
   return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
+}
+
+/**
+ * O que os botões do site apontam: `/agendar`, que redireciona para o
+ * WhatsApp.
+ *
+ * A volta extra existe por uma razão só, e ela é medição. Um link para
+ * `wa.me` sai do site sem deixar rastro: não há como saber quantas pessoas
+ * clicaram em "Agendar", de qual página vieram, nem se o anúncio que trouxe
+ * a visita gerou contato. Sem uma URL própria, o Google Ads não tem o que
+ * contar como conversão — e campanha sem conversão medida é dinheiro gasto
+ * às cegas.
+ *
+ * O custo é um instante de carregamento antes de o WhatsApp abrir. A página
+ * é estática e minúscula, e o redirecionamento dispara assim que ela monta.
+ * Quem tiver JavaScript desligado vê um botão e segue no mesmo clique.
+ */
+export function whatsappLink(
+  kind: WhatsAppKind = "particular",
+  message?: string
+): string {
+  const busca = new URLSearchParams({ via: kind });
+  if (message) busca.set("msg", message);
+  return `/agendar?${busca.toString()}`;
 }
 
 export const navLinks = [
