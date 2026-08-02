@@ -91,21 +91,24 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
-  experimental: {
-    /**
-     * Embute o CSS no próprio HTML em vez de servi-lo como arquivo à parte.
-     *
-     * O navegador não desenha nada antes de ter o CSS. Como arquivo, isso são
-     * 13 KB numa segunda ida ao servidor — o PageSpeed media 190 ms de
-     * renderização bloqueada no celular só por essa espera, com o texto do
-     * topo já pronto e parado atrás dela.
-     *
-     * Embutido, o estilo chega junto com o HTML e não há segunda viagem. O
-     * custo é um HTML maior, que se paga de sobra: 13 KB comprimidos contra
-     * uma ida e volta de rede em 4G.
-     */
-    inlineCss: true,
-  },
+  /**
+   * `experimental.inlineCss` foi TENTADO e REVERTIDO — não repetir.
+   *
+   * O PageSpeed apontava 190 ms de renderização bloqueada esperando o arquivo
+   * de CSS, e embutir parecia a correção óbvia. Medido depois: o celular caiu
+   * de 89 para 70. O desktop subiu para 97, o que confirma o diagnóstico em
+   * vez de contrariá-lo.
+   *
+   * Os "13 KB" do relatório eram o tamanho comprimido em transferência; o CSS
+   * cru tem 58 KB. Embutido, ele engorda o HTML em ~13,6 KB comprimidos que
+   * passam a viajar no caminho crítico de TODA visita, sem cache, porque agora
+   * fazem parte do documento. Como arquivo à parte, ele é baixado uma vez e
+   * reusado nas páginas seguintes.
+   *
+   * A troca é banda por ida-e-volta de rede. No desktop, banda sobra e a
+   * viagem economizada aparece. No 4G lento é o contrário, e o 4G lento é onde
+   * o paciente está.
+   */
   async redirects() {
     return [{ source: "/artigos/:slug", destination: "/blog/:slug", permanent: true }];
   },
