@@ -10,11 +10,11 @@ on:
   schedule:
     # toda segunda-feira, 11h UTC (8h em Goiânia)
     - cron: "0 11 * * 1"
-  # roda também logo depois de chegarem artigos novos da Soro, porque é
-  # justamente aí que aparecem assuntos ainda sem pergunta no FAQ
-  workflow_run:
-    workflows: ["Sincronizar artigos da Soro"]
-    types: [completed]
+  # A sincronização da Soro chama esta análise quando REALMENTE publica algo
+  # (ver sync-soro.yml). Antes isto era um `workflow_run` em toda conclusão
+  # daquele fluxo — e, como ele passou a rodar de 15 em 15 minutos, a análise
+  # disparava dezenas de vezes por dia sem nada novo para analisar, gastando
+  # chamada de IA à toa.
   workflow_dispatch:
 
 permissions:
@@ -90,8 +90,27 @@ jobs:
             echo "rodada, é só fechar este Pull Request."
           } > /tmp/corpo-pr.md
 
-          gh pr create \
+          # Abrir PR exige "Allow GitHub Actions to create and approve pull
+          # requests" ligado em Settings → Actions → General. Sem isso, o
+          # trabalho NÃO se perde: o relatório já está no ramo. Avisar e seguir
+          # é melhor do que falhar — um fluxo cronicamente vermelho ensina a
+          # ignorar o vermelho, e aí a falha que importa passa despercebida.
+          if ! gh pr create \
             --head "$RAMO" \
             --base "${{ github.event.repository.default_branch }}" \
             --title "FAQ: oportunidades da semana" \
             --body-file /tmp/corpo-pr.md
+          then
+            {
+              echo "### Relatório pronto, mas sem Pull Request"
+              echo
+              echo "O robô não tem permissão para abrir Pull Request nesta conta."
+              echo "O relatório já está no ramo \`$RAMO\`:"
+              echo
+              echo "<https://github.com/${{ github.repository }}/blob/$RAMO/content/faq-oportunidades.md>"
+              echo
+              echo "Para o PR passar a ser aberto sozinho: **Settings → Actions →"
+              echo "General → Workflow permissions** e marque *Allow GitHub Actions"
+              echo "to create and approve pull requests*."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi

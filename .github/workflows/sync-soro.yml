@@ -22,6 +22,8 @@ on:
 # necessário para o robô conseguir gravar o commit
 permissions:
   contents: write
+  # necessário para disparar a análise do FAQ quando algo é publicado
+  actions: write
 
 # se um deploy já estiver rodando, espera em vez de disputar
 concurrency:
@@ -73,3 +75,11 @@ jobs:
           # a `main` pode ter andado enquanto o build rodava
           git pull --rebase origin main
           git push
+
+      # Só aqui, e não a cada checagem: assunto novo no blog costuma ser
+      # exatamente o assunto que ainda não tem pergunta no FAQ.
+      - name: Pedir uma análise do FAQ
+        if: steps.mudou.outputs.sim == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run faq-oportunidades.yml --ref "${{ github.ref_name }}" || true
