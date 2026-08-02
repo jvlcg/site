@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { FormularioCadastro } from "@/components/ui/FormularioCadastro";
+import { Estetoscopio } from "@/components/ui/Estetoscopio";
 import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
@@ -64,7 +65,31 @@ export default function CadastroPage() {
         </div>
       </section>
 
+      {/*
+        O Estetô recebe quem ele mesmo convidou.
+        Quem chega aqui pelo balão do canto da tela foi trazido por ele; sumir
+        na hora de preencher o formulário quebraria a conversa no meio. E para
+        quem chega pelo menu, sem tê-lo visto, ele funciona como o que é: uma
+        pessoa recebendo na porta em vez de um formulário em branco.
+      */}
       <section className="mx-auto mt-16 max-w-3xl px-5 sm:px-8">
+        <Reveal>
+          <div className="flex items-center gap-4 rounded-2xl border hairline p-5 sm:gap-5 sm:p-6">
+            <span aria-hidden="true" className="shrink-0">
+              <Estetoscopio humor="aceno" tamanho={62} />
+            </span>
+            <div className="min-w-0">
+              <p className="font-display font-semibold">Que bom que você veio!</p>
+              <p className="mt-1.5 text-[0.9rem] leading-relaxed text-muted">
+                Sou o Estetô. É só preencher aqui embaixo — leva menos de um minuto, e
+                seus dados vão direto para o consultório.
+              </p>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
+      <section className="mx-auto mt-6 max-w-3xl px-5 sm:px-8">
         <Reveal>
           <FormularioCadastro />
         </Reveal>
