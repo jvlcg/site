@@ -147,7 +147,7 @@ export function ChatWidget() {
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Fechar o Estetô, assistente virtual" : "Falar com o Estetô, assistente virtual"}
         aria-expanded={open}
-        className="glass fixed bottom-[6.5rem] right-6 z-[70] flex h-14 w-14 items-center justify-center rounded-full shadow-[0_14px_40px_-12px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:scale-105"
+        className="glass fixed bottom-[7.5rem] right-6 z-[70] flex h-14 w-14 items-center justify-center rounded-full shadow-[0_14px_40px_-12px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:scale-105"
       >
         {open ? (
           <span className="text-2xl leading-none">×</span>

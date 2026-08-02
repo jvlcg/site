@@ -35,6 +35,7 @@ export function ThreeScene({ kind, className = "" }: { kind: SceneKind; classNam
 
     let ocioso = 0;
     let aoCarregar: (() => void) | null = null;
+    let limpar: (() => void) | null = null;
 
     /**
      * Entrar no viewport não basta para montar: a cena do topo já está visível
@@ -49,10 +50,41 @@ export function ThreeScene({ kind, className = "" }: { kind: SceneKind; classNam
      * O `timeout` do `requestIdleCallback` é o seguro: em aparelho que nunca
      * fica ocioso, a cena entra assim mesmo em 1,5 s em vez de nunca.
      */
+    /**
+     * No celular, a cena espera um sinal de vida — rolagem, toque ou clique —
+     * ou oito segundos.
+     *
+     * Não é para adiar por adiar. Num aparelho modesto cada quadro do WebGL
+     * leva perto de 80 ms, e a cena roda a 60 quadros por segundo: enquanto ela
+     * desenha, a thread principal não é de mais ninguém. Nos primeiros segundos
+     * a pessoa está lendo o título, e é justamente aí que a disputa custa mais.
+     *
+     * Quem rola, toca ou espera vê a cena igual. Quem só passou os olhos e
+     * saiu nunca precisou dela.
+     */
+    const noCelular = window.matchMedia("(pointer: coarse)").matches;
+
     const agendar = () => {
       const pedir =
         window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 200));
-      ocioso = pedir(() => setReady(true), { timeout: 1500 }) as number;
+
+      if (!noCelular) {
+        ocioso = pedir(() => setReady(true), { timeout: 1500 }) as number;
+        return;
+      }
+
+      const sinais = ["pointerdown", "touchstart", "scroll", "keydown"] as const;
+      const soltar = () => {
+        sinais.forEach((s) => window.removeEventListener(s, soltar));
+        clearTimeout(espera);
+        ocioso = pedir(() => setReady(true), { timeout: 1200 }) as number;
+      };
+      sinais.forEach((s) => window.addEventListener(s, soltar, { once: true, passive: true }));
+      const espera = window.setTimeout(soltar, 8000);
+      limpar = () => {
+        sinais.forEach((s) => window.removeEventListener(s, soltar));
+        clearTimeout(espera);
+      };
     };
 
     const io = new IntersectionObserver(
@@ -70,6 +102,7 @@ export function ThreeScene({ kind, className = "" }: { kind: SceneKind; classNam
       io.disconnect();
       if (ocioso) (window.cancelIdleCallback ?? window.clearTimeout)(ocioso);
       if (aoCarregar) window.removeEventListener("load", aoCarregar);
+      limpar?.();
     };
   }, []);
 
