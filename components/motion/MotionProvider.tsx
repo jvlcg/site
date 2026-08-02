@@ -21,14 +21,33 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
     let lenis: { raf: (t: number) => void; destroy: () => void } | null = null;
     let raf = 0;
 
-    import("lenis").then(({ default: Lenis }) => {
-      lenis = new Lenis({ lerp: 0.11, wheelMultiplier: 1 });
-      const loop = (time: number) => {
-        lenis?.raf(time);
+    /**
+     * Rolagem suave só no computador.
+     *
+     * O Lenis mantém um `requestAnimationFrame` vivo **o tempo todo**, mesmo
+     * com a página parada: a cada quadro ele acorda, calcula e devolve a vez.
+     * Num aparelho modesto isso é trabalho constante na thread principal, e
+     * some com qualquer momento ocioso — inclusive durante o carregamento, que
+     * é o que o Lighthouse mede.
+     *
+     * E no celular ele não acrescenta nada: iOS e Android já entregam rolagem
+     * com inércia, feita pelo compositor, fora da thread principal. Trocar o
+     * que o sistema faz de graça por um laço em JavaScript é pagar caro para
+     * ficar igual ou pior.
+     *
+     * No computador o ganho é real — a rolagem do mouse é em degraus — e lá
+     * sobra thread. Então lá ele fica.
+     */
+    if (window.matchMedia("(pointer: fine)").matches) {
+      import("lenis").then(({ default: Lenis }) => {
+        lenis = new Lenis({ lerp: 0.11, wheelMultiplier: 1 });
+        const loop = (time: number) => {
+          lenis?.raf(time);
+          raf = requestAnimationFrame(loop);
+        };
         raf = requestAnimationFrame(loop);
-      };
-      raf = requestAnimationFrame(loop);
-    });
+      });
+    }
 
     return () => {
       cancelAnimationFrame(raf);
