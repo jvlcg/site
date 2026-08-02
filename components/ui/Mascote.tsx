@@ -159,6 +159,35 @@ export function Mascote() {
     };
 
     window.addEventListener("scroll", porRolagem, { passive: true });
+
+    /**
+     * No celular ele espera um sinal de vida — toque, rolagem, clique — ou
+     * dez segundos.
+     *
+     * A fala escreve uma letra a cada 26 ms durante uns quatro segundos. Num
+     * aparelho modesto isso é a thread ocupada justamente enquanto a pessoa
+     * lê o título, e foi o que o Lighthouse mediu como página travada.
+     *
+     * No computador continua nos quatro segundos: lá a digitação não disputa
+     * com nada.
+     *
+     * Ele continua aparecendo em toda visita e toda recarga. O que muda é o
+     * gatilho: em vez de um relógio que dispara enquanto a página ainda está
+     * se montando, o primeiro gesto de quem está lendo.
+     */
+    const noCelular = window.matchMedia("(pointer: coarse)").matches;
+    let soltarGesto: (() => void) | null = null;
+
+    if (noCelular) {
+      const sinais = ["pointerdown", "touchstart", "keydown"] as const;
+      soltarGesto = () => {
+        sinais.forEach((s) => window.removeEventListener(s, soltarGesto!));
+        mostrar();
+      };
+      sinais.forEach((s) =>
+        window.addEventListener(s, soltarGesto!, { once: true, passive: true })
+      );
+    }
     /**
      * Quatro segundos.
      *
@@ -170,11 +199,16 @@ export function Mascote() {
      * Continua não sendo zero de propósito. Aparecer junto com a página é
      * pop-up; aparecer logo depois é alguém que percebeu que você chegou.
      */
-    const porTempo = setTimeout(mostrar, 4_000);
+    const porTempo = setTimeout(mostrar, noCelular ? 10_000 : 4_000);
 
     return () => {
       window.removeEventListener("scroll", porRolagem);
       clearTimeout(porTempo);
+      if (soltarGesto) {
+        (["pointerdown", "touchstart", "keydown"] as const).forEach((s) =>
+          window.removeEventListener(s, soltarGesto!)
+        );
+      }
     };
   }, [caminho]);
 
