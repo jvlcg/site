@@ -137,29 +137,33 @@ export function Mascote() {
     };
 
     /**
-     * Duas medidas, e basta uma.
+     * Meia tela de rolagem basta.
      *
-     * A fração sozinha não serve: a home tem quase 30 000 px, então "um terço"
-     * exigiria 10 000 px de rolagem — o convite só apareceria para quem já leu
-     * a página inteira, tarde demais para ser convite. A distância absoluta
-     * sozinha também não serve: numa página curta ela nunca é alcançada.
+     * A régua era de uma tela e meia, pensada para só abordar quem já estava
+     * lendo de verdade. Na prática ela adiava demais: numa página longa a
+     * pessoa desce um pouco, decide o que quer e clica — e nunca chegava lá.
+     * Meia tela ainda distingue "está lendo" de "abriu e saiu", que era o
+     * ponto.
      */
     const porRolagem = () => {
       const total = document.documentElement.scrollHeight - window.innerHeight;
-      if (window.scrollY > window.innerHeight * 1.5) return mostrar();
-      if (total > 0 && window.scrollY / total > 0.2) mostrar();
+      if (window.scrollY > window.innerHeight * 0.5) return mostrar();
+      if (total > 0 && window.scrollY / total > 0.1) mostrar();
     };
 
     window.addEventListener("scroll", porRolagem, { passive: true });
     /**
-     * Doze segundos, e não trinta e cinco.
+     * Quatro segundos.
      *
-     * A rolagem sozinha deixaria ele invisível nas páginas curtas — Contato,
-     * FAQ, artigo aberto no meio — que são justamente as que a pessoa abre e
-     * lê sem descer muito. Como agora ele deve aparecer em toda página, o
-     * relógio virou o caminho principal, não o socorro.
+     * Já foram 35, depois 12. O erro dos dois números era supor que quem chega
+     * fica parado esperando: quatro segundos é o tempo de ler o título e a
+     * primeira linha — a pessoa ainda está na página, e ainda não decidiu para
+     * onde ir. Doze já era tarde: muita gente clica ou sai antes disso.
+     *
+     * Continua não sendo zero de propósito. Aparecer junto com a página é
+     * pop-up; aparecer logo depois é alguém que percebeu que você chegou.
      */
-    const porTempo = setTimeout(mostrar, 12_000);
+    const porTempo = setTimeout(mostrar, 4_000);
 
     return () => {
       window.removeEventListener("scroll", porRolagem);
@@ -215,7 +219,7 @@ export function Mascote() {
 
   return (
     <div
-      className={`fixed bottom-6 left-6 z-[60] flex max-w-[min(21rem,calc(100vw-3rem))] items-end gap-2 transition-all duration-450 ${
+      className={`fixed bottom-6 left-6 z-[60] flex w-[min(21rem,calc(100vw-3rem))] items-end gap-2 transition-all duration-450 ${
         saindo ? "pointer-events-none translate-y-4 opacity-0" : "translate-y-0 opacity-100"
       }`}
       style={{
@@ -234,7 +238,14 @@ export function Mascote() {
       */}
       <div
         onClick={adiantar}
-        className="hairline relative rounded-2xl rounded-bl-sm border p-4 shadow-2xl"
+        /*
+          `flex-1` é o que trava a largura.
+          Sem isso o balão se ajusta ao texto — e como o texto nasce com uma
+          letra e cresce até a frase inteira, a caixa aparecia do tamanho de um
+          caractere e ia inchando. No celular ficava evidente: um quadradinho
+          com "D" dentro, crescendo aos saltos a cada letra digitada.
+        */
+        className="hairline relative min-w-0 flex-1 rounded-2xl rounded-bl-sm border p-4 shadow-2xl"
         style={{ background: "var(--bg)" }}
       >
         {/* bico do balão, apontando para o personagem */}
