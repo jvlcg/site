@@ -32,17 +32,45 @@ export function ThreeScene({ kind, className = "" }: { kind: SceneKind; classNam
 
     const el = ref.current;
     if (!el) return;
+
+    let ocioso = 0;
+    let aoCarregar: (() => void) | null = null;
+
+    /**
+     * Entrar no viewport não basta para montar: a cena do topo já está visível
+     * quando a página abre, então ela subia junto com a hidratação e disputava
+     * a thread principal com o próprio conteúdo. É o que o Lighthouse mostrava
+     * como dezenas de tarefas longas atribuídas ao layout.
+     *
+     * Agora a cena espera o carregamento terminar e a thread ficar ociosa. Ela
+     * aparece uma fração de segundo depois — visualmente igual, porque entra
+     * com fade — mas fora do caminho crítico do texto e da foto.
+     *
+     * O `timeout` do `requestIdleCallback` é o seguro: em aparelho que nunca
+     * fica ocioso, a cena entra assim mesmo em 1,5 s em vez de nunca.
+     */
+    const agendar = () => {
+      const pedir =
+        window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 200));
+      ocioso = pedir(() => setReady(true), { timeout: 1500 }) as number;
+    };
+
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setReady(true);
-          io.disconnect();
-        }
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+        if (document.readyState === "complete") agendar();
+        else window.addEventListener("load", (aoCarregar = agendar), { once: true });
       },
       { rootMargin: "240px" }
     );
     io.observe(el);
-    return () => io.disconnect();
+
+    return () => {
+      io.disconnect();
+      if (ocioso) (window.cancelIdleCallback ?? window.clearTimeout)(ocioso);
+      if (aoCarregar) window.removeEventListener("load", aoCarregar);
+    };
   }, []);
 
   return (
