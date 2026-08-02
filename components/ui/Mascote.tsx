@@ -11,29 +11,35 @@ import { Estetoscopio, type Humor } from "./Estetoscopio";
  * cadastro.
  *
  * A referência é o assistente do Windows antigo: personagem no canto, balão
- * de fala, texto que sai aos poucos com um somzinho por sílaba. O que dele
- * NÃO foi copiado é justamente o que fez todo mundo odiá-lo — aparecer sem
- * ser chamado, atrapalhar o que a pessoa fazia e voltar depois de dispensado.
+ * de fala, texto que sai aos poucos com um somzinho por sílaba.
  *
- * Daí as regras:
+ * **Ele aparece em toda visita, em toda recarga e em toda página** — decisão
+ * do Dr. José Victor. Não há memória de "já viu": cada carregamento é uma
+ * chegada nova.
  *
- * 1. **Não aparece ao abrir a página.** Espera a pessoa demonstrar interesse —
- *    passar de uma tela e meia de leitura, ou 35 segundos. Convite feito no
- *    primeiro segundo é interrupção; feito depois, é oferta.
- * 2. **Aparece uma vez só.** Quem fecha não vê de novo, quem se cadastra
- *    também não. A escolha fica gravada no navegador.
- * 3. **Fala e se cala.** Diz o que tem para dizer, faz o convite e some
+ * O que sobra do cuidado original, e que segue valendo:
+ *
+ * 1. **Não aparece no instante em que a página abre.** Espera a pessoa
+ *    começar a ler — uma tela e meia de rolagem, ou doze segundos. Convite no
+ *    primeiro segundo é interrupção; logo depois, é oferta.
+ * 2. **Fala e se cala.** Diz o que tem para dizer, faz o convite e some
  *    sozinho se ninguém responder.
- * 4. **Nunca prende ninguém.** O X está lá desde o primeiro instante, e um
+ * 3. **Nunca prende ninguém.** O X está lá desde o primeiro instante, e um
  *    toque no balão pula a digitação inteira.
- * 5. **Não aparece onde não faz sentido:** na própria página de cadastro, na
- *    área restrita, nem para quem prefere menos movimento na tela.
+ * 4. **Não atrapalha quem já decidiu:** some da própria página de cadastro
+ *    (onde ele já aparece dentro da página, ao lado do formulário), da área
+ *    restrita e do cancelamento de avisos.
  *
  * Ele entra pelo canto esquerdo porque o direito já tem WhatsApp, assistente e
  * o atalho do cadastro — mais um ali viraria uma parede de botões.
  */
 
-const CHAVE = "estetô-visto";
+/**
+ * Rotas em que ele não entra. Não é para "poupar" a pessoa: é que nas três o
+ * balão atrapalharia algo que já está em curso — cobrir o formulário de quem
+ * está preenchendo, poluir a área do médico, ou convidar ao cadastro
+ * justamente quem está clicando para sair da lista.
+ */
 const ROTAS_SEM_MASCOTE = ["/cadastro", "/area-restrita", "/cancelar-avisos"];
 
 /** Ritmo da digitação, em milissegundos por caractere. */
@@ -71,24 +77,31 @@ const CONVERSAS: Fala[][] = [
   ],
 ];
 
+const sortear = () => CONVERSAS[Math.floor(Math.random() * CONVERSAS.length)];
+
 export function Mascote() {
   const caminho = usePathname();
   const { tocar } = useSom();
 
   const [visivel, setVisivel] = useState(false);
   const [saindo, setSaindo] = useState(false);
-  const [conversa] = useState(() => CONVERSAS[Math.floor(Math.random() * CONVERSAS.length)]);
+  const [conversa, setConversa] = useState(() => sortear());
   const [indice, setIndice] = useState(0);
   const [escrito, setEscrito] = useState("");
   const [terminou, setTerminou] = useState(false);
+  /**
+   * Quem pediu menos movimento continua vendo o Estetô — só não vê a
+   * digitação. Esconder o personagem seria tirar dessa pessoa o convite que
+   * todo mundo recebe; o que incomoda ali é a animação, não a existência dele.
+   */
+  const [semAnimacao, setSemAnimacao] = useState(false);
 
   const jaMostrou = useRef(false);
   const falaAtual = conversa[indice];
-  const digitando = escrito.length < falaAtual.texto.length;
+  const digitando = !semAnimacao && escrito.length < falaAtual.texto.length;
 
   const encerrar = useCallback(() => {
     setSaindo(true);
-    localStorage.setItem(CHAVE, "1");
     setTimeout(() => setVisivel(false), 450);
   }, []);
 
@@ -97,11 +110,25 @@ export function Mascote() {
     if (digitando) setEscrito(falaAtual.texto);
   }, [digitando, falaAtual.texto]);
 
-  // ---- quando aparecer
+  // ---- quando aparecer (recomeça a cada página)
   useEffect(() => {
+    /**
+     * Zera tudo na troca de rota. O componente vive no layout e não é
+     * desmontado ao navegar, então sem isto ele guardaria o estado da página
+     * anterior — teria "já mostrado", e não apareceria mais.
+     */
+    jaMostrou.current = false;
+    setVisivel(false);
+    setSaindo(false);
+    setIndice(0);
+    setEscrito("");
+    setTerminou(false);
+    setConversa(sortear());
+
     if (ROTAS_SEM_MASCOTE.some((r) => caminho.startsWith(r))) return;
-    if (localStorage.getItem(CHAVE) === "1") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setSemAnimacao(reduzido);
 
     const mostrar = () => {
       if (jaMostrou.current) return;
@@ -124,7 +151,15 @@ export function Mascote() {
     };
 
     window.addEventListener("scroll", porRolagem, { passive: true });
-    const porTempo = setTimeout(mostrar, 35_000);
+    /**
+     * Doze segundos, e não trinta e cinco.
+     *
+     * A rolagem sozinha deixaria ele invisível nas páginas curtas — Contato,
+     * FAQ, artigo aberto no meio — que são justamente as que a pessoa abre e
+     * lê sem descer muito. Como agora ele deve aparecer em toda página, o
+     * relógio virou o caminho principal, não o socorro.
+     */
+    const porTempo = setTimeout(mostrar, 12_000);
 
     return () => {
       window.removeEventListener("scroll", porRolagem);
@@ -171,15 +206,23 @@ export function Mascote() {
   if (!visivel) return null;
 
   const humor: Humor = digitando ? "falando" : (falaAtual.humor ?? "feliz");
+  /**
+   * Sem animação, a frase inteira já aparece — senão o balão ficaria vazio,
+   * porque quem preenche `escrito` é justamente o efeito de digitação que
+   * está desligado.
+   */
+  const texto = semAnimacao ? falaAtual.texto : escrito;
 
   return (
     <div
       className={`fixed bottom-6 left-6 z-[60] flex max-w-[min(21rem,calc(100vw-3rem))] items-end gap-2 transition-all duration-450 ${
         saindo ? "pointer-events-none translate-y-4 opacity-0" : "translate-y-0 opacity-100"
       }`}
-      style={{ animation: saindo ? undefined : "est-entrada 0.55s cubic-bezier(0.22,1,0.36,1)" }}
+      style={{
+        animation: saindo || semAnimacao ? undefined : "est-entrada 0.55s cubic-bezier(0.22,1,0.36,1)",
+      }}
     >
-      <div className="shrink-0 animate-float">
+      <div className={semAnimacao ? "shrink-0" : "shrink-0 animate-float"}>
         <Estetoscopio humor={humor} tamanho={68} />
       </div>
 
@@ -222,7 +265,7 @@ export function Mascote() {
           aria-live="polite"
           aria-atomic="true"
         >
-          {escrito}
+          {texto}
           {digitando && <span className="est-cursor" aria-hidden="true">▍</span>}
         </p>
 
