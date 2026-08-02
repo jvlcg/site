@@ -299,6 +299,28 @@ body {
   transform: none;
 }
 
+/*
+  Entrada do conteúdo que já está na tela quando a página abre.
+
+  Mesma animação do reveal acima, com uma diferença que vale o índice inteiro
+  de desempenho: esta roda em CSS puro, sem esperar JavaScript. O reveal comum
+  depende de `.reveal-ready` (posto na hidratação) e do IntersectionObserver —
+  até lá o elemento fica invisível, e o Chrome só marca o LCP quando ele
+  aparece. Era o `<h1>` do topo segurando 730 ms de LCP escondido atrás disso.
+
+  `backwards` no `animation-fill-mode` é o que garante que o estado inicial
+  valha antes do atraso começar: sem ele, um elemento com `--reveal-delay`
+  apareceria inteiro, sumiria e voltaria.
+*/
+.reveal-imediato {
+  animation: reveal-entrada 0.9s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: var(--reveal-delay, 0s);
+}
+@keyframes reveal-entrada {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal-ready [data-reveal] {

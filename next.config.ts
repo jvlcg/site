@@ -91,6 +91,21 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  experimental: {
+    /**
+     * Embute o CSS no próprio HTML em vez de servi-lo como arquivo à parte.
+     *
+     * O navegador não desenha nada antes de ter o CSS. Como arquivo, isso são
+     * 13 KB numa segunda ida ao servidor — o PageSpeed media 190 ms de
+     * renderização bloqueada no celular só por essa espera, com o texto do
+     * topo já pronto e parado atrás dela.
+     *
+     * Embutido, o estilo chega junto com o HTML e não há segunda viagem. O
+     * custo é um HTML maior, que se paga de sobra: 13 KB comprimidos contra
+     * uma ida e volta de rede em 4G.
+     */
+    inlineCss: true,
+  },
   async redirects() {
     return [{ source: "/artigos/:slug", destination: "/blog/:slug", permanent: true }];
   },
