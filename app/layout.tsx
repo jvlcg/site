@@ -8,12 +8,9 @@ import { MotionProvider } from "@/components/motion/MotionProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
-import { CadastroFab } from "@/components/layout/CadastroFab";
-import { GyroPrompt } from "@/components/three/GyroPrompt";
-import { CursorGlow } from "@/components/ui/CursorGlow";
 import { ChatWidgetLazy } from "@/components/chat/ChatWidgetLazy";
+import { ExtrasAdiados } from "@/components/layout/ExtrasAdiados";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
-import { Mascote } from "@/components/ui/Mascote";
 import { JsonLd, physicianSchema, websiteSchema, medicalClinicSchema } from "@/lib/schema";
 import { site } from "@/lib/site-config";
 import "./globals.css";
@@ -104,15 +101,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider>
           <SoundProvider>
             <MotionProvider>
-              <CursorGlow />
               <Header />
               <main id="conteudo">{children}</main>
               <Footer />
               <WhatsAppFab />
-              <CadastroFab />
               <ChatWidgetLazy />
-              <Mascote />
-              <GyroPrompt />
+              <ExtrasAdiados />
             </MotionProvider>
           </SoundProvider>
         </ThemeProvider>
