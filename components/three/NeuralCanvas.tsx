@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
@@ -12,6 +12,14 @@ import { useTilt, type TiltRef } from "./useTilt";
  * SINAIS pulsando pelas arestas, brilho aditivo + bloom (desktop/tablet) e
  * reação a mouse / toque / giroscópio. Cenografia procedural (sem assets).
  */
+
+/**
+ * O brilho é carregado à parte, e só por quem o vê — são 364 KB.
+ * Ver o comentário em `BrilhoNeural.tsx`.
+ */
+const BrilhoNeural = dynamic(() => import("./BrilhoNeural").then((m) => m.BrilhoNeural), {
+  ssr: false,
+});
 
 type Tier = { nodes: number; signals: number; dpr: [number, number]; bloom: boolean };
 
@@ -179,6 +187,15 @@ function Network({ dark, tilt, tier }: { dark: boolean; tilt: RefObject<TiltRef>
 export default function NeuralCanvas() {
   const { resolvedTheme } = useTheme();
   const dark = resolvedTheme !== "light";
+  /**
+   * Para o brilho, exigimos o tema resolvido como escuro — e não "diferente de
+   * claro". Enquanto o `next-themes` não decide, `resolvedTheme` é indefinido:
+   * a regra frouxa dava "escuro" nesse intervalo, o componente do brilho
+   * montava por um instante e os 364 KB eram baixados mesmo por quem estava em
+   * tema claro. Para as cores a regra frouxa serve — o padrão do site é
+   * escuro, e um piscar de cor não custa nada.
+   */
+  const escuroConfirmado = resolvedTheme === "dark";
   const tilt = useTilt();
   const wrap = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(true);
@@ -217,17 +234,11 @@ export default function NeuralCanvas() {
     >
       <ambientLight intensity={0.6} />
       <Network dark={dark} tilt={tilt} tier={tier} />
-      {/* Bloom é brilho: só faz sentido onde há escuridão para contrastar. */}
-      {tier.bloom && dark && (
-        <EffectComposer>
-          <Bloom
-            intensity={0.9}
-            luminanceThreshold={0.15}
-            luminanceSmoothing={0.9}
-            mipmapBlur
-          />
-        </EffectComposer>
-      )}
+      {/*
+        Bloom é brilho: só faz sentido onde há escuridão para contrastar — e
+        só é baixado por quem cai nessa condição. Ver `BrilhoNeural`.
+      */}
+      {tier.bloom && escuroConfirmado && <BrilhoNeural />}
     </Canvas>
     </div>
   );
