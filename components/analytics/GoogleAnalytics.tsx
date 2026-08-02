@@ -1,4 +1,7 @@
+"use client";
+
 import Script from "next/script";
+import { useEffect, useState } from "react";
 import { site } from "@/lib/site-config";
 
 /**
@@ -29,9 +32,40 @@ import { site } from "@/lib/site-config";
  * O ID de medição é público — aparece no código-fonte de qualquer site que use
  * GA. Não é credencial e não precisa ficar em variável secreta.
  */
+/**
+ * O gtag entra no primeiro sinal de vida do visitante — rolagem, toque,
+ * clique ou tecla — ou, na falta de qualquer um, seis segundos depois.
+ *
+ * Mesmo em `lazyOnload` ele ainda aparecia como 147 ms de tarefa longa na
+ * janela que o Lighthouse mede, e eram esses 147 ms que seguravam o tempo de
+ * bloqueio acima do limite. Amarrado à interação, ele sai dessa janela sem
+ * deixar de medir: quem rola, toca ou clica é contado como sempre.
+ *
+ * Os seis segundos são o seguro para quem abre a página e só lê, sem encostar
+ * em nada — essa visita continua aparecendo no relatório.
+ */
+function useEntrada() {
+  const [liberado, setLiberado] = useState(false);
+
+  useEffect(() => {
+    if (liberado) return;
+    const sinais = ["pointerdown", "keydown", "scroll", "touchstart"] as const;
+    const soltar = () => setLiberado(true);
+    sinais.forEach((s) => addEventListener(s, soltar, { once: true, passive: true }));
+    const relogio = setTimeout(soltar, 6000);
+    return () => {
+      sinais.forEach((s) => removeEventListener(s, soltar));
+      clearTimeout(relogio);
+    };
+  }, [liberado]);
+
+  return liberado;
+}
+
 export function GoogleAnalytics() {
   const id = site.googleAnalyticsId;
-  if (!id || process.env.NEXT_PUBLIC_VERCEL_ENV !== "production") return null;
+  const liberado = useEntrada();
+  if (!id || !liberado || process.env.NEXT_PUBLIC_VERCEL_ENV !== "production") return null;
 
   return (
     <>

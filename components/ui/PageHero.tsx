@@ -53,20 +53,21 @@ export function PageHero({ eyebrow, title, lede, scene = "none", breadcrumbs, ch
           </nav>
         )}
         <div className="max-w-3xl">
-          <Reveal as="p" className="eyebrow mb-5">
+          <Reveal imediato as="p" className="eyebrow mb-5">
             {eyebrow}
           </Reveal>
           <Reveal
+            imediato
             as="h1"
             delay={70}
             className="font-display text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
           >
             {title}
           </Reveal>
-          <Reveal as="p" delay={150} className="mt-6 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">
+          <Reveal imediato as="p" delay={150} className="mt-6 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">
             {lede}
           </Reveal>
-          {children && <Reveal delay={230} className="mt-9">{children}</Reveal>}
+          {children && <Reveal imediato delay={230} className="mt-9">{children}</Reveal>}
         </div>
       </div>
     </section>

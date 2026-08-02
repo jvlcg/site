@@ -104,11 +104,12 @@ export default function HomePage() {
 
         <div className="relative mx-auto grid w-full max-w-7xl items-center gap-14 px-5 sm:px-8 lg:grid-cols-[1.15fr_0.85fr]">
           <div>
-            <Reveal as="p" className="font-mono-tech mb-6 inline-flex items-center gap-2 rounded-full border hairline px-4 py-2 text-[0.72rem] uppercase tracking-[0.16em] text-muted">
+            <Reveal imediato as="p" className="font-mono-tech mb-6 inline-flex items-center gap-2 rounded-full border hairline px-4 py-2 text-[0.72rem] uppercase tracking-[0.16em] text-muted">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
               Goiânia-GO · Presencial e Telemedicina
             </Reveal>
             <Reveal
+              imediato
               as="h1"
               delay={80}
               className="font-display text-[2.6rem] font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-[4.2rem]"
@@ -117,13 +118,13 @@ export default function HomePage() {
               <span className="text-gradient">guiada por ciência</span> e pelo seu
               contexto.
             </Reveal>
-            <Reveal as="p" delay={170} className="mt-7 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
+            <Reveal imediato as="p" delay={170} className="mt-7 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
               Clínica médica, medicina endocanabinoide e medicina esportiva em um
               cuidado integrado: consultas aprofundadas, plano terapêutico
               individualizado e acompanhamento próximo — no consultório ou onde você
               estiver.
             </Reveal>
-            <Reveal delay={260} className="mt-10 flex flex-wrap items-center gap-4">
+            <Reveal imediato delay={260} className="mt-10 flex flex-wrap items-center gap-4">
               <MagneticButton>
                 <a
                   href={whatsappLink()}
