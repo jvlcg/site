@@ -63,8 +63,32 @@ export async function GoogleReviews({ className = "" }: { className?: string }) 
             <Reveal key={i} delay={(i % 3) * 80} className="glass card-hover flex h-full flex-col rounded-3xl p-7">
               <div className="flex items-center gap-3">
                 {r.photo ? (
+                  /*
+                    O Google entrega a foto de perfil no tamanho que a URL
+                    pedir, e o padrão dela é `=s128`. Como o círculo aqui tem
+                    40 px, vinham 128 px para exibir 40 — 27 KiB baixados para
+                    jogar fora, e é exatamente o que o PageSpeed apontava.
+                    `s96` cobre tela de 2× com folga.
+
+                    `lazy` porque o bloco de avaliações fica bem abaixo da
+                    dobra: baixar seis fotos antes de alguém rolar até lá é
+                    disputar banda com o que está na tela.
+
+                    `<img>` e não `next/image` de propósito: são URLs de
+                    terceiro, com host que muda, e passar pelo otimizador da
+                    Vercel custaria uma ida ao servidor por foto sem ganho.
+                  */
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={r.photo} alt="" width={40} height={40} className="h-10 w-10 rounded-full object-cover" />
+                  <img
+                    src={r.photo.replace(/=s\d+/, "=s96")}
+                    alt=""
+                    width={40}
+                    height={40}
+                    loading="lazy"
+                    decoding="async"
+                    referrerPolicy="no-referrer"
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
                 ) : (
                   <span className="glass flex h-10 w-10 items-center justify-center rounded-full font-display text-sm font-semibold">
                     {r.author.charAt(0)}
