@@ -6,10 +6,16 @@ import { site } from "@/lib/site-config";
  *
  * Três decisões que separam isto de colar o trecho que o Google entrega:
  *
- * 1. **`next/script` com `afterInteractive`.** O trecho do Google usa `async`
- *    puro, que compete com o carregamento da página. Aqui o script só entra
- *    depois que a página está utilizável — medição não vale um LCP pior, e
- *    Core Web Vitals é fator de ranqueamento.
+ * 1. **`next/script` com `lazyOnload`.** O trecho do Google usa `async` puro,
+ *    que compete com o carregamento da página. Aqui o script só entra depois
+ *    que tudo terminou de carregar — medição não vale um LCP pior, e Core Web
+ *    Vitals é fator de ranqueamento.
+ *
+ *    Era `afterInteractive`, que já ajudava mas ainda entrava cedo demais: o
+ *    Lighthouse media 181 KiB do gtag, 73 deles sem uso, e mais de 120 ms de
+ *    thread principal disputando espaço com a hidratação. Com `lazyOnload` a
+ *    contagem continua idêntica — o `dataLayer` guarda os eventos e o gtag os
+ *    processa quando chega.
  *
  * 2. **Só em produção.** Cada deploy de preview da Vercel e cada `npm run dev`
  *    mandaria visita para o mesmo painel. Em pouco tempo o número de sessões
@@ -31,7 +37,7 @@ export function GoogleAnalytics() {
     <>
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${id}`}
-        strategy="afterInteractive"
+        strategy="lazyOnload"
       />
       <Script id="ga4" strategy="afterInteractive">
         {`window.dataLayer=window.dataLayer||[];
