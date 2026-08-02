@@ -12,7 +12,7 @@
  * é do gênero; o desenho é original.
  */
 
-export type Humor = "normal" | "feliz" | "aceno" | "dormindo";
+export type Humor = "normal" | "feliz" | "aceno" | "dormindo" | "falando";
 
 /**
  * `inteiro` mostra o personagem de corpo todo — é assim que ele se apresenta
@@ -112,7 +112,24 @@ export function Estetoscopio({
         )}
 
         {/* boca */}
-        {humor === "feliz" || humor === "aceno" ? (
+        {humor === "falando" ? (
+          /*
+            Enquanto fala, a boca é uma elipse que abre e fecha. Duas razões
+            para ser elipse e não a curva sorridente animada: a silhueta muda
+            de verdade (a curva só mudaria de espessura, o que a esta escala
+            não se enxerga), e o ciclo é rápido o bastante para o olho ler
+            "articulando" em vez de "piscando".
+          */
+          <ellipse
+            className="est-boca"
+            cx="44"
+            cy="103"
+            rx="4.6"
+            ry="3.6"
+            fill="#0f172a"
+            opacity="0.85"
+          />
+        ) : humor === "feliz" || humor === "aceno" ? (
           <path d="M37 102 q7 7 14 0" fill="none" stroke="#0f172a" strokeWidth="2.6" strokeLinecap="round" />
         ) : humor === "dormindo" ? (
           <ellipse cx="44" cy="103" rx="3" ry="3.6" fill="#0f172a" opacity="0.75" />
@@ -139,6 +156,11 @@ export function Estetoscopio({
           0%, 92%, 100% { transform: scaleY(1); }
           95%           { transform: scaleY(0.1); }
         }
+        .est-boca { animation: est-talk 0.26s ease-in-out infinite; transform-origin: 44px 103px; }
+        @keyframes est-talk {
+          0%, 100% { transform: scaleY(0.35); }
+          50%      { transform: scaleY(1); }
+        }
         .est-acena { animation: est-wave 1.6s ease-in-out infinite; }
         @keyframes est-wave {
           0%, 100% { transform: rotate(0deg); }
@@ -146,7 +168,7 @@ export function Estetoscopio({
           75%      { transform: rotate(7deg); }
         }
         @media (prefers-reduced-motion: reduce) {
-          .est-pisca, .est-acena { animation: none; }
+          .est-pisca, .est-acena, .est-boca { animation: none; }
         }
       `}</style>
     </svg>

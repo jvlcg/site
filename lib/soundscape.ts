@@ -16,10 +16,20 @@
  *   Content-Security-Policy.
  */
 
-export type Efeito = "clique" | "botao" | "agendar" | "ligar" | "desligar";
+export type Efeito = "clique" | "botao" | "agendar" | "ligar" | "desligar" | "fala";
 
 /** Arpejo de Ré maior que confirma o agendamento. */
 const ARPEJO_AGENDAR = [587.33, 739.99, 880.0, 1174.66]; // D5 F#5 A5 D6
+
+/**
+ * Notas da "voz" do Estetô, sorteadas a cada sílaba.
+ *
+ * É uma pentatônica de Ré, a mesma tonalidade do arpejo de agendamento — e a
+ * escolha da escala é o que faz a fala soar como personagem em vez de
+ * telefone com defeito: numa pentatônica, **quaisquer** duas notas soam bem
+ * juntas, então o sorteio nunca produz um intervalo dissonante por azar.
+ */
+const VOZ = [587.33, 659.25, 783.99, 880.0, 1046.5]; // D5 E5 G5 A5 C6
 
 export class Soundscape {
   private ctx: AudioContext | null = null;
@@ -152,6 +162,26 @@ export class Soundscape {
         });
         // oitava grave sustentando o acorde, para dar peso ao final
         this.sino(293.66, agora + 0.04, 0.06, 1.4, 0.8);
+        break;
+
+      /**
+       * A voz do Estetô: um pontinho curto por sílaba, enquanto o texto é
+       * digitado. É o truque de jogo antigo — ninguém entende palavra, mas o
+       * cérebro lê aquilo como alguém falando.
+       *
+       * Volume bem abaixo dos demais (0.028 contra 0.075 do clique) porque
+       * este dispara dezenas de vezes seguidas: no mesmo nível dos outros
+       * viraria metralhadora. Duração curtíssima e quase sem reverb, senão as
+       * caudas se sobrepõem e a fala vira uma papa sonora.
+       */
+      case "fala":
+        this.sino(
+          VOZ[Math.floor(Math.random() * VOZ.length)],
+          agora,
+          0.028,
+          0.07,
+          0.25
+        );
         break;
 
       case "ligar":
