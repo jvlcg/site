@@ -45,7 +45,7 @@ export function CadastroFab() {
 
   return (
     <div
-      className={`fixed bottom-[11.5rem] right-6 z-40 flex items-center gap-3 transition-all duration-500 ${
+      className={`fixed bottom-[13.5rem] right-6 z-40 flex items-center gap-3 transition-all duration-500 ${
         visivel ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
       }`}
     >

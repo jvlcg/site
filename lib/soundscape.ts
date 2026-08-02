@@ -136,6 +136,14 @@ export class Soundscape {
   efeito(tipo: Efeito) {
     const ctx = this.preparar();
     if (!ctx) return;
+    /**
+     * Contexto suspenso significa que o navegador ainda não liberou áudio —
+     * ele só libera depois de um gesto da pessoa. Montar osciladores aqui
+     * seria trabalho para produzir silêncio, e trabalho que aparece: a fala do
+     * Estetô cria uma nota a cada três letras, então uma visita sem nenhum
+     * clique gastava dezenas de osciladores sem emitir som algum.
+     */
+    if (ctx.state === "suspended") return;
     const agora = ctx.currentTime;
 
     switch (tipo) {

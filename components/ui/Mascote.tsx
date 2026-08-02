@@ -87,8 +87,13 @@ export function Mascote() {
   const [saindo, setSaindo] = useState(false);
   const [conversa, setConversa] = useState(() => sortear());
   const [indice, setIndice] = useState(0);
-  const [escrito, setEscrito] = useState("");
   const [terminou, setTerminou] = useState(false);
+  /**
+   * Muda duas vezes por frase — ao começar e ao terminar de falar. É o que
+   * abre e fecha a boca. A letra a letra NÃO passa por aqui: ver o efeito de
+   * digitação mais abaixo.
+   */
+  const [falando, setFalando] = useState(false);
   /**
    * Quem pediu menos movimento continua vendo o Estetô — só não vê a
    * digitação. Esconder o personagem seria tirar dessa pessoa o convite que
@@ -97,8 +102,10 @@ export function Mascote() {
   const [semAnimacao, setSemAnimacao] = useState(false);
 
   const jaMostrou = useRef(false);
+  const textoRef = useRef<HTMLParagraphElement>(null);
+  /** Guardada pelo efeito de digitação; um toque no balão a chama. */
+  const pular = useRef<(() => void) | null>(null);
   const falaAtual = conversa[indice];
-  const digitando = !semAnimacao && escrito.length < falaAtual.texto.length;
 
   const encerrar = useCallback(() => {
     setSaindo(true);
@@ -106,9 +113,7 @@ export function Mascote() {
   }, []);
 
   /** Um toque no balão pula a digitação — esperar texto sair nunca é a graça. */
-  const adiantar = useCallback(() => {
-    if (digitando) setEscrito(falaAtual.texto);
-  }, [digitando, falaAtual.texto]);
+  const adiantar = useCallback(() => pular.current?.(), []);
 
   // ---- quando aparecer (recomeça a cada página)
   useEffect(() => {
@@ -121,9 +126,11 @@ export function Mascote() {
     setVisivel(false);
     setSaindo(false);
     setIndice(0);
-    setEscrito("");
     setTerminou(false);
+    setFalando(false);
     setConversa(sortear());
+    // o parágrafo é escrito direto no DOM, então limpar é aqui e não por estado
+    if (textoRef.current) textoRef.current.textContent = "";
 
     if (ROTAS_SEM_MASCOTE.some((r) => caminho.startsWith(r))) return;
 
@@ -171,30 +178,70 @@ export function Mascote() {
     };
   }, [caminho]);
 
-  // ---- a digitação, letra a letra, com a voz junto
+  /**
+   * A digitação, letra a letra, com a voz junto — escrita direto no DOM.
+   *
+   * Por estado do React, cada caractere disparava uma renderização do
+   * componente inteiro, personagem em SVG incluído, com seus gradientes e
+   * máscaras. São cerca de 150 letras por conversa: 150 reconciliações
+   * completas em quatro segundos, bem no meio da janela que o Lighthouse
+   * mede. Foi isso que levou o tempo de bloqueio a 1.650 ms e o Speed Index a
+   * 8,5 s — o site parecia lento porque, naquele instante, estava.
+   *
+   * Escrevendo em `textContent`, o navegador repinta um nó de texto e nada
+   * mais. O React volta a ser chamado duas vezes por frase: ao começar e ao
+   * terminar de falar, que é o de que a boca precisa.
+   */
   useEffect(() => {
-    if (!visivel || !digitando) return;
-    const t = setTimeout(() => {
-      const proximo = escrito.length + 1;
-      setEscrito(falaAtual.texto.slice(0, proximo));
-      // `tocar` já respeita o botão de silêncio; aqui só decidimos o ritmo
-      if (proximo % CARACTERES_POR_NOTA === 0) tocar("fala");
-    }, VELOCIDADE);
-    return () => clearTimeout(t);
-  }, [visivel, digitando, escrito, falaAtual.texto, tocar]);
+    if (!visivel) return;
+    const alvo = textoRef.current;
+    if (!alvo) return;
 
-  // ---- da fala terminada para a próxima
-  useEffect(() => {
-    if (!visivel || digitando) return;
-    if (indice < conversa.length - 1) {
-      const t = setTimeout(() => {
-        setIndice((i) => i + 1);
-        setEscrito("");
-      }, PAUSA);
-      return () => clearTimeout(t);
+    const texto = falaAtual.texto;
+    let relogio = 0;
+
+    const avancar = () => {
+      if (indice < conversa.length - 1) setIndice((n) => n + 1);
+      else setTerminou(true);
+    };
+
+    if (semAnimacao) {
+      alvo.textContent = texto;
+      relogio = window.setTimeout(avancar, PAUSA);
+      return () => clearTimeout(relogio);
     }
-    setTerminou(true);
-  }, [visivel, digitando, indice, conversa.length]);
+
+    let i = 0;
+    setFalando(true);
+
+    const encerrarFala = () => {
+      alvo.textContent = texto;
+      setFalando(false);
+      pular.current = null;
+      relogio = window.setTimeout(avancar, PAUSA);
+    };
+
+    const escrever = () => {
+      i += 1;
+      alvo.textContent = texto.slice(0, i);
+      // `tocar` já respeita o botão de silêncio; aqui só decidimos o ritmo
+      if (i % CARACTERES_POR_NOTA === 0) tocar("fala");
+      if (i >= texto.length) return encerrarFala();
+      relogio = window.setTimeout(escrever, VELOCIDADE);
+    };
+
+    pular.current = () => {
+      clearTimeout(relogio);
+      encerrarFala();
+    };
+
+    relogio = window.setTimeout(escrever, VELOCIDADE);
+
+    return () => {
+      clearTimeout(relogio);
+      pular.current = null;
+    };
+  }, [visivel, indice, conversa, falaAtual.texto, semAnimacao, tocar]);
 
   // ---- se ninguém responder, ele mesmo se retira
   useEffect(() => {
@@ -209,13 +256,7 @@ export function Mascote() {
 
   if (!visivel) return null;
 
-  const humor: Humor = digitando ? "falando" : (falaAtual.humor ?? "feliz");
-  /**
-   * Sem animação, a frase inteira já aparece — senão o balão ficaria vazio,
-   * porque quem preenche `escrito` é justamente o efeito de digitação que
-   * está desligado.
-   */
-  const texto = semAnimacao ? falaAtual.texto : escrito;
+  const humor: Humor = falando ? "falando" : (falaAtual.humor ?? "feliz");
 
   return (
     <div
@@ -258,7 +299,13 @@ export function Mascote() {
           type="button"
           onClick={encerrar}
           aria-label="Fechar mensagem do Estetô"
-          className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full text-faint transition-colors hover:text-[var(--fg)]"
+          /*
+            24 px era pequeno demais: o Lighthouse reprova área de toque abaixo
+            de 24×24 COM folga ao redor, e um X de 24 px encostado na borda do
+            balão não tem folga nenhuma. Em dedo de verdade, errar o alvo e
+            fechar sem querer o convite é pior ainda. 36 px resolve os dois.
+          */
+          className="absolute right-1.5 top-1.5 flex h-9 w-9 items-center justify-center rounded-full text-faint transition-colors hover:text-[var(--fg)]"
         >
           <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
             <path d="M6 6l12 12M18 6L6 18" />
@@ -272,13 +319,11 @@ export function Mascote() {
           de forma ininteligível.
         */}
         <p
-          className="min-h-[3.2rem] pr-5 text-[0.92rem] leading-relaxed"
+          ref={textoRef}
+          className={`min-h-[3.2rem] pr-6 text-[0.92rem] leading-relaxed ${falando ? "est-cursor" : ""}`}
           aria-live="polite"
           aria-atomic="true"
-        >
-          {texto}
-          {digitando && <span className="est-cursor" aria-hidden="true">▍</span>}
-        </p>
+        />
 
         {/*
           Os botões só entram quando a conversa acaba. Aparecendo antes, a
@@ -305,7 +350,17 @@ export function Mascote() {
           from { transform: translateY(22px) scale(0.94); opacity: 0; }
           to   { transform: translateY(0)    scale(1);    opacity: 1; }
         }
-        .est-cursor { animation: est-piscar 0.9s steps(1) infinite; opacity: 0.55; }
+        /*
+          O cursor é pseudo-elemento porque o texto agora é escrito direto no
+          DOM: um elemento irmão dentro do mesmo parágrafo seria apagado a cada
+          escrita. Como ::after, ele acompanha o fim da frase sem fazer parte
+          do conteúdo, e sem entrar no que o leitor de tela lê.
+        */
+        .est-cursor::after {
+          content: "▍";
+          opacity: 0.55;
+          animation: est-piscar 0.9s steps(1) infinite;
+        }
         @keyframes est-piscar { 0%, 49% { opacity: 0.55; } 50%, 100% { opacity: 0; } }
       `}</style>
     </div>
