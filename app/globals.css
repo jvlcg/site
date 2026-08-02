@@ -157,6 +157,21 @@ body {
   animation: var(--animate-mesh);
 }
 
+/*
+  No celular o mesh fica parado.
+
+  Ele é um elemento de tela cheia com `blur(80px)` — o filtro mais caro que
+  existe — e a animação o faz repintar sem parar. Num aparelho modesto isso
+  compete com tudo, e o efeito é um degradê que se move devagar: quem olha
+  para o texto não percebe a diferença, e quem percebe já reparou no gradiente,
+  que continua ali.
+
+  No computador ele anima igual: lá sobra GPU e o movimento é parte do visual.
+*/
+@media (pointer: coarse) {
+  .mesh-bg { animation: none; }
+}
+
 /* Scrim: garante contraste do texto sobre cenas 3D / mesh.
    Colocar como filho posicionado atrás do conteúdo do hero. */
 .scrim {
