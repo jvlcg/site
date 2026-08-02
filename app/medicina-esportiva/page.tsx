@@ -86,7 +86,8 @@ export default function MedicinaEsportivaPage() {
           {services.map((s, i) => (
             <Reveal key={s.title} delay={(i % 2) * 80}>
               <div className="glass card-hover h-full rounded-3xl p-8">
-                <h3 className="font-display text-xl font-semibold tracking-tight">{s.title}</h3>
+                {/* h2: é a primeira seção depois do h1, não pode entrar em h3 */}
+                <h2 className="font-display text-xl font-semibold tracking-tight">{s.title}</h2>
                 <p className="mt-3 leading-relaxed text-muted">{s.text}</p>
               </div>
             </Reveal>

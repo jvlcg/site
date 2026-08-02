@@ -25,6 +25,19 @@ export function physicianSchema() {
     description: site.description,
     url: site.url,
     image: `${site.url}/images/dr-jose-victor-jaleco.jpg`,
+    /**
+     * `image` é a foto do médico; `logo` é a marca. O Google usa cada uma em
+     * lugar diferente — a foto ilustra o resultado, a marca aparece no painel
+     * de conhecimento — e quem declara só `image` fica sem marca nenhuma.
+     * PNG quadrado e opaco de propósito: o resultado de busca é renderizado
+     * sobre fundo branco, onde SVG com traço claro some.
+     */
+    logo: {
+      "@type": "ImageObject",
+      url: `${site.url}/logo-512.png`,
+      width: 512,
+      height: 512,
+    },
     email: site.email,
     telephone,
     priceRange: "$$$",
@@ -79,6 +92,12 @@ export function medicalClinicSchema() {
     description: site.description,
     url: site.url,
     image: `${site.url}/images/dr-jose-victor-jaleco.jpg`,
+    logo: {
+      "@type": "ImageObject",
+      url: `${site.url}/logo-512.png`,
+      width: 512,
+      height: 512,
+    },
     telephone,
     email: site.email,
     priceRange: "$$$",

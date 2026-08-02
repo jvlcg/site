@@ -1,13 +1,22 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { LogoMark } from "@/components/layout/Logo";
+import { Estetoscopio } from "@/components/ui/Estetoscopio";
 import { site, whatsappLink } from "@/lib/site-config";
 import { FAQ_CHAT, CATEGORIAS, type FaqEntry } from "@/lib/chat-faq";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-const SAUDACAO = `Olá! Sou o assistente virtual do consultório do ${site.shortName}.\n\nEscolha uma pergunta abaixo para uma resposta detalhada — ou escreva a sua dúvida no campo de texto.`;
+/**
+ * O assistente tem nome e cara. Um "assistente virtual" anônimo é uma caixa de
+ * texto; o Estetô é alguém a quem se pergunta — e a diferença aparece na
+ * disposição da pessoa em escrever a primeira dúvida.
+ *
+ * A apresentação diz o que ele é logo na primeira linha, de propósito: quem
+ * chega ao site de um médico precisa saber, sem ambiguidade, que não está
+ * falando com o Dr. José Victor.
+ */
+const SAUDACAO = `Oi! Eu sou o Estetô, o assistente virtual do consultório do ${site.shortName}.\n\nEscolha uma pergunta abaixo para uma resposta detalhada — ou escreva a sua dúvida no campo de texto.`;
 
 /** Separa a marca [AGENDAR] do texto da resposta. */
 function parse(content: string) {
@@ -136,7 +145,7 @@ export function ChatWidget() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Fechar assistente virtual" : "Abrir assistente virtual"}
+        aria-label={open ? "Fechar o Estetô, assistente virtual" : "Falar com o Estetô, assistente virtual"}
         aria-expanded={open}
         className="glass fixed bottom-[6.5rem] right-6 z-[70] flex h-14 w-14 items-center justify-center rounded-full shadow-[0_14px_40px_-12px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:scale-105"
       >
@@ -144,9 +153,14 @@ export function ChatWidget() {
           <span className="text-2xl leading-none">×</span>
         ) : (
           <>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
-              <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.3-.6L3 21l1.8-4.5A8.3 8.3 0 0 1 3.6 11.5a8.4 8.4 0 0 1 9-8.4 8.4 8.4 0 0 1 8.4 8.4z" />
-            </svg>
+            {/*
+              O personagem no lugar do balãozinho genérico: é o mesmo Estetô que
+              convida ao cadastro, então quem clica aqui já sabe com quem vai
+              falar. O `aria-hidden` evita que o rótulo dele repita o do botão.
+            */}
+            <span aria-hidden="true" className="translate-y-[1px]">
+              <Estetoscopio tamanho={34} recorte="cabeca" humor="feliz" />
+            </span>
             {unread && (
               <span className="absolute -right-0.5 -top-0.5 flex h-3.5 w-3.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-70" />
@@ -170,9 +184,11 @@ export function ChatWidget() {
         <div className="glass flex h-full flex-col sm:rounded-3xl">
           {/* cabeçalho */}
           <header className="flex items-center gap-3 border-b hairline px-5 py-4">
-            <LogoMark className="h-9 w-9 shrink-0 text-[var(--fg)]" />
+            <span aria-hidden="true" className="shrink-0">
+              <Estetoscopio tamanho={34} recorte="cabeca" humor="feliz" />
+            </span>
             <div className="min-w-0 flex-1">
-              <p className="font-display text-sm font-semibold">Assistente do consultório</p>
+              <p className="font-display text-sm font-semibold">Estetô · assistente do consultório</p>
               <p className="text-[0.7rem] text-faint">
                 Tira dúvidas · não substitui consulta
               </p>

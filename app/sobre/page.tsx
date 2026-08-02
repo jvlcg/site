@@ -190,9 +190,12 @@ export default function SobrePage() {
             <div className="grid gap-4 pt-4 sm:grid-cols-2">
               {values.map((v, i) => (
                 <Reveal key={v.title} delay={i * 70} className="glass rounded-2xl p-6">
-                  <h3 className="font-display text-base font-semibold text-[var(--fg)]">
+                  {/* h2, e não h3: nada de h2 vem antes nesta página, e pular
+                      nível quebra a navegação por títulos de quem usa leitor de
+                      tela. O tamanho visual é dado pela classe, não pela tag. */}
+                  <h2 className="font-display text-base font-semibold text-[var(--fg)]">
                     {v.title}
-                  </h3>
+                  </h2>
                   <p className="mt-2 text-sm leading-relaxed">{v.text}</p>
                 </Reveal>
               ))}
