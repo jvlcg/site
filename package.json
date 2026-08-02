@@ -14,7 +14,6 @@
     "vapid": "node -e \"console.log(require('web-push').generateVAPIDKeys())\""
   },
   "dependencies": {
-    "@react-three/drei": "^10.0.0",
     "@react-three/fiber": "^9.0.0",
     "@react-three/postprocessing": "^3.0.4",
     "@vercel/analytics": "^2.0.1",
