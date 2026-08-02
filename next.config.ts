@@ -10,16 +10,28 @@ import type { NextConfig } from "next";
  * clickjacking (frame-ancestors), injeção de <base>, exfiltração por formulário
  * e carregamento de plugins ou de recursos de terceiros não previstos.
  *
- * Terceiros permitidos: mapa do consultório (Google Maps) e fotos de perfil de
- * quem avalia no Google. Nada além disso.
+ * Terceiros permitidos: mapa do consultório (Google Maps), fotos de perfil de
+ * quem avalia no Google e o Google Analytics. Nada além disso.
  */
+
+/**
+ * Domínios do Google Analytics.
+ *
+ * São três porque o GA usa um para servir o script, outro para receber os
+ * eventos e um terceiro para o pixel de fallback — liberar só o primeiro faz o
+ * script carregar e nenhuma visita ser registrada, falha que aparece no painel
+ * como "site sem tráfego" em vez de como erro.
+ */
+const GA_SCRIPT = "https://www.googletagmanager.com";
+const GA_DADOS = "https://*.google-analytics.com https://*.analytics.google.com";
+
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline' ${GA_SCRIPT}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://*.googleusercontent.com https://*.ggpht.com https://maps.gstatic.com https://places.googleapis.com",
+  `img-src 'self' data: blob: https://*.googleusercontent.com https://*.ggpht.com https://maps.gstatic.com https://places.googleapis.com ${GA_DADOS}`,
   "font-src 'self' data:",
-  "connect-src 'self'",
+  `connect-src 'self' ${GA_SCRIPT} ${GA_DADOS}`,
   "frame-src https://www.google.com https://maps.google.com",
   "media-src 'self'",
   "worker-src 'self' blob:",

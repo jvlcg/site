@@ -23,6 +23,11 @@ export const site = {
   /** Place ID do perfil do Dr. José Victor no Google (público, não é segredo). */
   googlePlaceId: "ChIJl84fCu3xXpMR_l6BFBpBuhc",
   /**
+   * ID de medição do Google Analytics 4. Também é público — aparece no
+   * código-fonte de qualquer site que use GA.
+   */
+  googleAnalyticsId: process.env.NEXT_PUBLIC_GA_ID ?? "G-5E4R1QLD2V",
+  /**
    * WhatsApp em formato internacional (sem "+").
    *
    * **Número único, o da secretaria.** Antes havia dois — o pessoal do médico

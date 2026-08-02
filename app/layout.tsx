@@ -12,6 +12,7 @@ import { CadastroFab } from "@/components/layout/CadastroFab";
 import { GyroPrompt } from "@/components/three/GyroPrompt";
 import { CursorGlow } from "@/components/ui/CursorGlow";
 import { ChatWidget } from "@/components/chat/ChatWidget";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { Mascote } from "@/components/ui/Mascote";
 import { JsonLd, physicianSchema, websiteSchema, medicalClinicSchema } from "@/lib/schema";
 import { site } from "@/lib/site-config";
@@ -118,8 +119,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd data={[physicianSchema(), medicalClinicSchema(), websiteSchema()]} />
         {/*
           Métricas de audiência da Vercel: sem cookies e sem identificar o
-          visitante — só contagem agregada de páginas vistas. A escolha importa
-          num site médico: nada aqui rastreia indivíduo nem cria perfil.
+          visitante — só contagem agregada de páginas vistas.
 
           O script é servido pelo próprio domínio (/_vercel/insights/), então
           passa na Content-Security-Policy sem precisar liberar terceiros.
@@ -132,6 +132,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           verdade com quem acessa. Também é fator de ranqueamento no Google.
         */}
         <SpeedInsights />
+        {/*
+          Google Analytics 4. Diferente dos dois acima, este usa cookie e
+          identifica o visitante entre sessões — por isso está declarado na
+          Política de Privacidade, com o caminho para recusar. Só carrega em
+          produção (ver o componente).
+        */}
+        <GoogleAnalytics />
       </body>
     </html>
   );

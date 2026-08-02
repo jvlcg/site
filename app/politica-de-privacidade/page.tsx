@@ -44,9 +44,11 @@ export default function PrivacidadePage() {
 
           <h2>3. Cookies e medição</h2>
           <p>
-            Este site utiliza apenas cookies estritamente necessários ao seu funcionamento —
-            como a memória da sua preferência de tema claro ou escuro. <strong>Não há
-            cookies de rastreamento, publicidade ou perfilamento.</strong>
+            Além dos cookies estritamente necessários ao funcionamento do site — como a
+            memória da sua preferência de tema claro ou escuro —, este site utiliza
+            <strong> cookies de medição de audiência</strong>, descritos abaixo.
+            <strong> Não há cookies de publicidade e nenhum dado seu é usado para
+            direcionar anúncios.</strong>
           </p>
           <p>
             Para saber quantas pessoas visitam cada página, e para verificar se o site
@@ -55,6 +57,30 @@ export default function PrivacidadePage() {
             registram apenas dados agregados: página acessada, origem do acesso, tipo de
             dispositivo, país e tempos de carregamento. Elas não identificam você, não
             acompanham sua navegação em outros sites e não constroem perfil individual.
+          </p>
+          <p>
+            Usamos também o <strong>Google Analytics 4</strong>, da Google. Diferente da
+            medição acima, ele <strong>grava um cookie no seu navegador</strong> para
+            reconhecer visitas repetidas e entender o caminho percorrido dentro do site.
+            São registrados páginas acessadas, origem do acesso, tipo de dispositivo,
+            localização aproximada por cidade e duração da visita. O endereço IP é
+            truncado antes de ser armazenado, e os dados são tratados pela Google, que
+            pode processá-los fora do Brasil. A base legal é o legítimo interesse em
+            entender e melhorar o site (art. 7º, IX, da LGPD).
+          </p>
+          <p>
+            <strong>Você pode recusar essa medição</strong> a qualquer momento, sem perder
+            nenhuma funcionalidade: instale o{" "}
+            <a
+              href="https://tools.google.com/dlpage/gaoptout"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              complemento de desativação do Google Analytics
+            </a>{" "}
+            no seu navegador, ative a opção &ldquo;Não me rastrear&rdquo; nas
+            configurações dele, ou bloqueie cookies deste site. Você pode também apagar
+            os cookies já gravados a qualquer momento.
           </p>
           <p>
             A página <strong>Novidades</strong> exibe conteúdo publicado por meio da
