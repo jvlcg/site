@@ -1,6 +1,7 @@
 "use client";
 
 import Script from "next/script";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { site } from "@/lib/site-config";
 
@@ -45,10 +46,28 @@ import { site } from "@/lib/site-config";
  * em nada — essa visita continua aparecendo no relatório.
  */
 function useEntrada() {
+  const caminho = usePathname();
   const [liberado, setLiberado] = useState(false);
+
+  /**
+   * Na ponte do agendamento o gtag entra na hora, sem esperar gesto.
+   *
+   * `/agendar` redireciona para o WhatsApp em menos de um segundo — não há
+   * tempo para a pessoa mexer em nada, e é justamente ali que a conversão do
+   * Google Ads precisa ser disparada. Esperar interação nessa página seria
+   * garantir que a conversão nunca fosse contada.
+   *
+   * Não custa desempenho: a página é `noindex`, tem uma âncora e nada mais, e
+   * não é ela que o PageSpeed mede.
+   */
+  const naPonte = caminho === "/agendar";
 
   useEffect(() => {
     if (liberado) return;
+    if (naPonte) {
+      setLiberado(true);
+      return;
+    }
     const sinais = ["pointerdown", "keydown", "scroll", "touchstart"] as const;
     const soltar = () => setLiberado(true);
     sinais.forEach((s) => addEventListener(s, soltar, { once: true, passive: true }));
@@ -57,7 +76,7 @@ function useEntrada() {
       sinais.forEach((s) => removeEventListener(s, soltar));
       clearTimeout(relogio);
     };
-  }, [liberado]);
+  }, [liberado, naPonte]);
 
   return liberado;
 }
