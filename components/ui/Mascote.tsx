@@ -294,15 +294,22 @@ export function Mascote() {
 
   return (
     <div
-      className={`fixed bottom-6 left-6 z-[60] flex w-[min(21rem,calc(100vw-3rem))] items-end gap-2 transition-all duration-450 ${
+      className={`fixed bottom-4 left-4 z-[60] flex w-[min(16.5rem,calc(100vw-5.5rem))] items-end gap-1.5 transition-all duration-450 sm:bottom-6 sm:left-6 sm:w-[min(21rem,calc(100vw-3rem))] sm:gap-2 ${
         saindo ? "pointer-events-none translate-y-4 opacity-0" : "translate-y-0 opacity-100"
       }`}
       style={{
         animation: saindo || semAnimacao ? undefined : "est-entrada 0.55s cubic-bezier(0.22,1,0.36,1)",
       }}
     >
+      {/*
+        No celular o personagem encolhe de 68 para 44 px de largura.
+        Ele e o balão juntos ocupavam quase metade da tela de um telefone, e
+        um convite que cobre o que a pessoa está lendo deixa de ser convite.
+        A escala é por CSS, não pela propriedade `tamanho`: assim o mesmo
+        elemento serve os dois tamanhos sem renderizar de novo ao girar a tela.
+      */}
       <div className={semAnimacao ? "shrink-0" : "shrink-0 animate-float"}>
-        <Estetoscopio humor={humor} tamanho={68} />
+        <Estetoscopio humor={humor} tamanho={68} className="h-auto w-11 sm:w-[68px]" />
       </div>
 
       {/*
@@ -320,7 +327,7 @@ export function Mascote() {
           caractere e ia inchando. No celular ficava evidente: um quadradinho
           com "D" dentro, crescendo aos saltos a cada letra digitada.
         */
-        className="hairline relative min-w-0 flex-1 rounded-2xl rounded-bl-sm border p-4 shadow-2xl"
+        className="hairline relative min-w-0 flex-1 rounded-2xl rounded-bl-sm border p-3 shadow-2xl sm:p-4"
         style={{ background: "var(--bg)" }}
       >
         {/* bico do balão, apontando para o personagem */}
@@ -339,7 +346,7 @@ export function Mascote() {
             balão não tem folga nenhuma. Em dedo de verdade, errar o alvo e
             fechar sem querer o convite é pior ainda. 36 px resolve os dois.
           */
-          className="absolute right-1.5 top-1.5 flex h-9 w-9 items-center justify-center rounded-full text-faint transition-colors hover:text-[var(--fg)]"
+          className="absolute right-1 top-1 flex h-9 w-9 items-center justify-center rounded-full text-faint transition-colors hover:text-[var(--fg)] sm:right-1.5 sm:top-1.5"
         >
           <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
             <path d="M6 6l12 12M18 6L6 18" />
@@ -354,7 +361,7 @@ export function Mascote() {
         */}
         <p
           ref={textoRef}
-          className={`min-h-[3.2rem] pr-6 text-[0.92rem] leading-relaxed ${falando ? "est-cursor" : ""}`}
+          className={`min-h-[2.6rem] pr-7 text-[0.84rem] leading-snug sm:min-h-[3.2rem] sm:text-[0.92rem] sm:leading-relaxed ${falando ? "est-cursor" : ""}`}
           aria-live="polite"
           aria-atomic="true"
         />
@@ -364,14 +371,14 @@ export function Mascote() {
           pessoa clicaria no meio da frase — e o convite ficaria pela metade.
         */}
         {terminou && (
-          <div className="mt-3 flex flex-wrap items-center gap-2" style={{ animation: "est-entrada 0.4s ease-out" }}>
-            <Link href="/cadastro" onClick={encerrar} className="btn-primary !px-4 !py-2 text-[0.82rem]">
+          <div className="mt-2.5 flex flex-wrap items-center gap-2 sm:mt-3" style={{ animation: "est-entrada 0.4s ease-out" }}>
+            <Link href="/cadastro" onClick={encerrar} className="btn-primary !px-3.5 !py-2 text-[0.78rem] sm:!px-4 sm:text-[0.82rem]">
               Quero me cadastrar
             </Link>
             <button
               type="button"
               onClick={encerrar}
-              className="text-[0.8rem] text-faint underline underline-offset-4 transition-colors hover:text-[var(--fg)]"
+              className="text-[0.76rem] text-faint underline underline-offset-4 transition-colors hover:text-[var(--fg)] sm:text-[0.8rem]"
             >
               Agora não
             </button>
