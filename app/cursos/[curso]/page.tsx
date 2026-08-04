@@ -1,0 +1,220 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { PageHero } from "@/components/ui/PageHero";
+import { Reveal } from "@/components/ui/Reveal";
+import { DoacaoPix } from "@/components/cursos/DoacaoPix";
+import { cursosPublicados, getCurso, totalDeAulas } from "@/lib/cursos";
+import { JsonLd, breadcrumbSchema } from "@/lib/schema";
+import { site, whatsappDireto } from "@/lib/site-config";
+
+type Props = { params: Promise<{ curso: string }> };
+
+export function generateStaticParams() {
+  return cursosPublicados().map((c) => ({ curso: c.slug }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { curso: slug } = await params;
+  const curso = getCurso(slug);
+  if (!curso) return {};
+  return {
+    title: curso.titulo,
+    description: curso.resumo,
+    alternates: { canonical: `/cursos/${slug}` },
+    openGraph: { title: curso.titulo, description: curso.resumo },
+  };
+}
+
+export default async function CursoPage({ params }: Props) {
+  const { curso: slug } = await params;
+  const curso = getCurso(slug);
+  if (!curso) notFound();
+
+  const total = totalDeAulas(curso);
+
+  return (
+    <>
+      <PageHero
+        eyebrow={curso.acesso === "pago" ? "Curso" : "Curso gratuito"}
+        title={curso.titulo}
+        lede={curso.resumo}
+        breadcrumbs={[
+          { name: "Início", path: "/" },
+          { name: "Cursos", path: "/cursos" },
+          { name: curso.titulo, path: `/cursos/${curso.slug}` },
+        ]}
+      />
+
+      <section className="mx-auto max-w-5xl px-5 sm:px-8">
+        <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
+          <div>
+            <div className="space-y-4 text-[1rem] leading-relaxed text-muted">
+              {curso.descricao.map((p, i) => (
+                <Reveal key={i} as="p" delay={i * 60}>
+                  {p}
+                </Reveal>
+              ))}
+            </div>
+
+            {curso.paraQuem && curso.paraQuem.length > 0 && (
+              <Reveal>
+                <div className="mt-10">
+                  <h2 className="font-display text-lg font-semibold">Para quem é</h2>
+                  <ul className="mt-4 space-y-2.5">
+                    {curso.paraQuem.map((p) => (
+                      <li key={p} className="flex gap-3 text-[0.94rem] leading-relaxed text-muted">
+                        <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[var(--accent)]" />
+                        {p}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
+            )}
+
+            <div className="mt-12">
+              <h2 className="font-display text-lg font-semibold">
+                Conteúdo — {total} aula{total === 1 ? "" : "s"}
+              </h2>
+              <div className="mt-5 space-y-7">
+                {curso.modulos.map((m, mi) => (
+                  <Reveal key={m.titulo} delay={mi * 50}>
+                    <div>
+                      <p className="font-mono-tech text-[0.68rem] uppercase tracking-[0.16em] text-faint">
+                        {m.titulo}
+                      </p>
+                      {m.resumo && (
+                        <p className="mt-1.5 text-[0.86rem] leading-relaxed text-muted">{m.resumo}</p>
+                      )}
+                      <ol className="mt-3 space-y-1.5">
+                        {m.aulas.map((a) => (
+                          <li key={a.slug}>
+                            <Link
+                              href={`/cursos/${curso.slug}/${a.slug}`}
+                              className="glass card-hover flex items-baseline justify-between gap-4 rounded-xl px-4 py-3"
+                            >
+                              <span className="min-w-0">
+                                <span className="text-[0.94rem]">{a.titulo}</span>
+                                {/*
+                                  A espera aparece na lista pública para quem
+                                  ainda não é aluno — mas como "libera em N
+                                  dias", nunca como data. Data exigiria saber
+                                  quando essa pessoa se matriculou, e ela ainda
+                                  não se matriculou.
+                                */}
+                                {(a.liberaApos ?? 0) > 0 && (
+                                  <span className="ml-2 font-mono-tech text-[0.62rem] uppercase tracking-[0.14em] text-faint">
+                                    libera em {a.liberaApos} dia
+                                    {a.liberaApos === 1 ? "" : "s"}
+                                  </span>
+                                )}
+                              </span>
+                              {a.duracao && (
+                                <span className="shrink-0 font-mono-tech text-[0.68rem] text-faint">
+                                  {a.duracao}
+                                </span>
+                              )}
+                            </Link>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <aside className="lg:sticky lg:top-28 lg:self-start">
+            {curso.acesso === "pago" ? (
+              <Reveal>
+                <div className="glass rounded-2xl p-6">
+                  <p className="font-mono-tech text-[0.66rem] uppercase tracking-[0.16em] text-faint">
+                    Acesso ao curso
+                  </p>
+                  {curso.preco !== undefined && (
+                    <p className="font-display mt-2 text-3xl font-semibold">
+                      R$ {curso.preco.toFixed(2).replace(".", ",")}
+                    </p>
+                  )}
+                  <p className="mt-3 text-[0.88rem] leading-relaxed text-muted">
+                    Pagamento por PIX. Depois de confirmado, o acesso é liberado
+                    para o e-mail que você usar para entrar.
+                  </p>
+                  <a
+                    href={whatsappDireto(
+                      "particular",
+                      `Olá! Tenho interesse no curso "${curso.titulo}".`
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-primary mt-5 w-full justify-center"
+                  >
+                    Quero este curso <span aria-hidden="true">→</span>
+                  </a>
+                  <p className="mt-4 text-[0.76rem] leading-relaxed text-faint">
+                    Direito de arrependimento em 7 dias, conforme o art. 49 do
+                    Código de Defesa do Consumidor. Basta pedir por{" "}
+                    {site.email}.
+                  </p>
+                </div>
+              </Reveal>
+            ) : (
+              <Reveal>
+                <DoacaoPix referencia={`CURSO${curso.slug.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 18)}`} />
+              </Reveal>
+            )}
+          </aside>
+        </div>
+
+        <p className="mt-16 mb-24 border-t hairline pt-8 text-[0.82rem] leading-relaxed text-faint">
+          Conteúdo educativo, sem relação médico-paciente. Não substitui
+          consulta, não prescreve tratamento e não avalia caso individual.
+          Responsabilidade de {site.name}, {site.crm}.
+        </p>
+      </section>
+
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Course",
+            name: curso.titulo,
+            description: curso.resumo,
+            url: `${site.url}/cursos/${curso.slug}`,
+            inLanguage: "pt-BR",
+            provider: { "@id": `${site.url}/#physician` },
+            /**
+             * `isAccessibleForFree` e a oferta refletem o acesso real. Declarar
+             * gratuito um curso pago é motivo de penalidade do Google, e o
+             * contrário esconde do resultado de busca a informação que mais
+             * interessa a quem procura conteúdo aberto.
+             */
+            isAccessibleForFree: curso.acesso !== "pago",
+            ...(curso.acesso === "pago" && curso.preco !== undefined
+              ? {
+                  offers: {
+                    "@type": "Offer",
+                    price: curso.preco.toFixed(2),
+                    priceCurrency: "BRL",
+                    category: "Paid",
+                  },
+                }
+              : {}),
+            hasCourseInstance: {
+              "@type": "CourseInstance",
+              courseMode: "online",
+              courseWorkload: curso.cargaHoraria,
+            },
+          },
+          breadcrumbSchema([
+            { name: "Início", path: "/" },
+            { name: "Cursos", path: "/cursos" },
+            { name: curso.titulo, path: `/cursos/${curso.slug}` },
+          ]),
+        ]}
+      />
+    </>
+  );
+}

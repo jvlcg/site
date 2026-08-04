@@ -30,12 +30,14 @@ const grupos = [
       { href: "/sobre", label: "Sobre o médico", desc: "Formação, trajetória de pesquisa e publicações científicas." },
       { href: "/contato", label: "Contato e agendamento", desc: "Canais de atendimento, endereço e mapa." },
       { href: "/perguntas-frequentes", label: "Perguntas frequentes", desc: "Respostas sobre consultas, valores, convênios e telemedicina." },
+      { href: "/voluntariado", label: "Projetos voluntários", desc: "Trabalho comunitário realizado e iniciativas em preparação." },
       { href: "/cadastro", label: "Cadastro de pacientes", desc: "Canal digital direto com o consultório e prioridade no retorno." },
     ],
   },
   {
     titulo: "Conteúdo",
     links: [
+      { href: "/cursos", label: "Cursos e aulas em vídeo", desc: "Aulas sobre saúde em linguagem sem jargão. Conteúdo gratuito e cursos completos." },
       { href: "/blog", label: "Blog — educação em saúde", desc: "Textos educativos para pacientes." },
       { href: "/artigos", label: "Artigos científicos", desc: "Produção científica publicada em periódicos e congressos." },
       { href: "/poemas", label: "Poemas", desc: "Escrita pessoal, com análise literária de cada texto. Sem conteúdo médico." },

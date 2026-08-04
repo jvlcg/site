@@ -15,8 +15,15 @@ const headerLinks = [
   { href: "/medicina-esportiva", label: "Esportiva" },
   { href: "/telemedicina", label: "Telemedicina" },
   { href: "/consultorio", label: "Consultório" },
+  { href: "/cursos", label: "Cursos" },
   { href: "/blog", label: "Blog" },
-  { href: "/artigos", label: "Artigos" },
+  /*
+    "Artigos" (a produção científica) sai do topo e fica no rodapé, no mapa do
+    site e no link dentro da página Sobre, que é de onde a maioria chega nela.
+    É o item de menor uso entre os doze, e o menu precisava de espaço: sem
+    isso o botão de agendar passava da faixa do cabeçalho e desalinhava com o
+    conteúdo da página.
+  */
   { href: "/perguntas-frequentes", label: "FAQ" },
   { href: "/poemas", label: "Poemas" },
   { href: "/contato", label: "Contato" },
@@ -57,14 +64,31 @@ export function Header() {
           <LogoLockup compact />
         </Link>
 
-        <nav aria-label="Navegação principal" className="hidden items-center gap-0.5 xl:flex">
+        {/*
+          O menu horizontal só aparece a partir de 1400px, e não de 1280.
+
+          Com doze itens ele não cabe em 1280 junto com a marca e o botão de
+          agendar: o excesso não quebra linha (os itens têm `whitespace-nowrap`)
+          nem encolhe — ele transborda, e quem sai da tela é o botão da direita.
+          Ou seja, o menu crescendo empurrava para fora justamente o botão que
+          traz paciente.
+
+          Abaixo de 1400 o menu de toque assume, e ele comporta qualquer número
+          de itens porque rola. Trocar o ponto de corte custa o menu horizontal
+          em telas de 1280 a 1400 e devolve o botão de agendar em todas elas —
+          uma troca fácil de fazer.
+        */}
+        <nav
+          aria-label="Navegação principal"
+          className="hidden items-center gap-0 min-[1500px]:flex"
+        >
           {headerLinks.map((link) => {
             const active = pathname === link.href || pathname.startsWith(link.href + "/");
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`whitespace-nowrap rounded-full px-2.5 py-2 text-[0.82rem] transition-colors ${
+                className={`whitespace-nowrap rounded-full px-1.5 py-2 text-[0.78rem] transition-colors ${
                   active ? "text-[var(--accent)]" : "text-muted hover:text-[var(--fg)]"
                 }`}
               >
@@ -90,7 +114,7 @@ export function Header() {
             aria-label={open ? "Fechar menu" : "Abrir menu"}
             aria-expanded={open}
             onClick={() => setOpen(!open)}
-            className="glass flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-full xl:hidden"
+            className="glass flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-full min-[1500px]:hidden"
           >
             <span
               className={`h-[1.5px] w-4 bg-current transition-transform duration-300 ${open ? "translate-y-[3.25px] rotate-45" : ""}`}
@@ -104,7 +128,7 @@ export function Header() {
 
       {/* menu mobile */}
       <div
-        className={`fixed inset-0 top-[72px] z-40 transition-all duration-500 xl:hidden ${
+        className={`fixed inset-0 top-[72px] z-40 transition-all duration-500 min-[1500px]:hidden ${
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
         style={{ background: "var(--bg)" }}
