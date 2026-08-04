@@ -1,7 +1,17 @@
-# Passo a passo: token do Redis e e-mail dos artigos
+# Passo a passo: o que ainda falta configurar
 
-Duas tarefas de configuração, cada uma independente da outra. Nenhuma exige
-mexer em código.
+Quatro tarefas, cada uma independente da outra. Nenhuma exige mexer em código.
+
+| # | Tarefa | Urgência | Tempo | O que quebra se não fizer |
+|---|---|---|---|---|
+| 1 | Rotacionar o token do Redis | **Alta — segurança** | 10 min | Nada quebra hoje; o risco é alguém com o token antigo ler o banco |
+| 2 | E-mail dos artigos (Resend) | Média — recurso novo | 20 min + DNS | Os inscritos recebem só notificação no aparelho, nunca e-mail |
+| 3 | Apagar a chave do Google | **Alta — segurança** | 3 min | Cobrança na sua conta do Google Cloud se alguém usar a chave |
+| 4 | Chave VAPID na Vercel | Baixa — recurso novo | 5 min | O bloco "receber avisos" some do site; ninguém consegue se inscrever |
+
+**Faça a 1 e a 3 primeiro.** As duas são de segurança e não dependem de mais
+nada. As outras duas ligam recursos que hoje estão desligados — nenhuma
+pressa, e o site funciona sem elas.
 
 ---
 
@@ -229,6 +239,166 @@ Se não chegar:
 | Aba **Actions** no GitHub | o fluxo ficou vermelho? o log diz o motivo |
 | **Logs** na Resend | o envio saiu? foi recusado? |
 | Sua caixa de spam | domínio recém-verificado às vezes cai lá nos primeiros envios |
+
+---
+
+# 3. Apagar a chave de API do Google
+
+**Por que:** uma chave do Google Cloud (as que começam com `AIza…`) foi colada
+numa conversa. Chave do Google é diferente de senha: ela não protege dado
+nenhum, ela **autoriza gasto**. Quem a tiver pode chamar as APIs do Google
+cobrando na sua conta, e a fatura chega para você.
+
+**Tempo:** 3 minutos.
+
+> **Apagar, não trocar.** Editar a chave, renomear ou restringir o domínio não
+> resolve — o valor antigo continua válido. A única ação que encerra o risco é
+> excluir a credencial.
+
+## 3.1 — Abrir a lista de credenciais
+
+1. Entre em `console.cloud.google.com`
+2. Confira, no alto da tela, se o **projeto selecionado é o seu** — o Google
+   costuma abrir no último usado, e num projeto errado a chave nem aparece
+3. Menu **☰** → **APIs e serviços** → **Credenciais**
+
+## 3.2 — Identificar qual apagar
+
+A tela lista as chaves em **Chaves de API**. Cada linha mostra os primeiros
+caracteres do valor.
+
+Procure a que começa com `AIzaSyAL32…`. Se houver várias e você não souber
+qual é qual, olhe a coluna **Data de criação** e a coluna **Restrições**.
+
+> Se você não reconhece nenhuma delas e nada no seu site usa API do Google
+> paga, o mais seguro é apagar todas: o site não depende de nenhuma. As
+> ferramentas que você usa — Search Console, Google Analytics, Google Ads,
+> Perfil da Empresa — **não usam chave de API**. Elas fazem login com a sua
+> conta Google. Apagar chave nenhuma delas afeta.
+
+## 3.3 — Apagar
+
+1. Marque a caixinha à esquerda da chave
+2. Botão **Excluir** (ícone de lixeira) no alto da lista
+3. Confirme
+
+## 3.4 — Fechar a porta do gasto (recomendado)
+
+Enquanto está aí, vale limitar o estrago de qualquer chave futura:
+
+1. Menu **☰** → **Faturamento** → **Orçamentos e alertas**
+2. **Criar orçamento**, valor baixo (R$ 20, por exemplo)
+3. Marque os alertas em 50%, 90% e 100%
+
+Isso não bloqueia o gasto sozinho, mas você recebe e-mail antes de virar
+problema.
+
+---
+
+# 4. Ligar o bloco de avisos no navegador
+
+**O que isto liga:** o bloco "Quer ser avisado de conteúdo novo?" que aparece
+no fim dos artigos e na página de cadastro. Hoje ele **não aparece para
+ninguém**.
+
+**Por que não aparece:** o navegador do visitante precisa da metade pública de
+um par de chaves (VAPID) para se inscrever. O código foi escrito para não
+mostrar botão que não funciona — sem a chave, o bloco inteiro some em vez de
+dar erro na cara do paciente.
+
+**Tempo:** 5 minutos.
+
+## 4.1 — Descobrir se você já tem o par
+
+O par pode já existir nos Secrets do GitHub, de quando as notificações foram
+montadas.
+
+1. `github.com/jvlcg/site` → **Settings**
+2. **Secrets and variables → Actions**
+3. Procure na lista por **`VAPID_PUBLIC_KEY`** e **`VAPID_PRIVATE_KEY`**
+
+| O que você vê | Vá para |
+|---|---|
+| Os dois estão lá | 4.2 |
+| Nenhum dos dois | 4.4 (gerar o par do zero) |
+| Só um dos dois | 4.4 — um par incompleto não serve, gere os dois de novo |
+
+> O GitHub **não deixa você ver** o valor de um secret depois de salvo, só o
+> nome. Isso é proposital. Se os dois existem mas você não guardou o valor da
+> pública em lugar nenhum, siga para o 4.4 e gere um par novo — é mais rápido
+> que tentar recuperar.
+
+## 4.2 — Copiar a chave pública
+
+Se você guardou o valor quando gerou (num gerenciador de senhas, num arquivo),
+pegue de lá. São cerca de 87 caracteres, só letras, números, `-` e `_`.
+
+## 4.3 — Colocar na Vercel
+
+1. Vercel → **Settings → Environment Variables → Add New**
+2. **Name:** `NEXT_PUBLIC_VAPID_PUBLIC_KEY`
+3. **Value:** a chave pública
+4. **Ambientes:** marque **Production e Preview**
+
+   Aqui é o contrário das outras variáveis. Esta chave é **pública por
+   natureza** — ela vai dentro do JavaScript que qualquer visitante baixa, e
+   está no código-fonte de todo site que usa notificação. Não há o que
+   proteger, e ter em Preview deixa você testar antes de publicar.
+
+5. **Save**
+
+> ⚠️ **A privada nunca vai para a Vercel.** `VAPID_PRIVATE_KEY` fica só nos
+> Secrets do GitHub, porque quem envia as notificações é o robô do GitHub, não
+> o site. Uma chave privada na Vercel seria uma cópia a mais de um segredo em
+> um lugar que não precisa dele.
+
+## 4.4 — Gerar um par novo (só se não existir)
+
+Gere no seu próprio computador, para o valor não passar por conversa nenhuma:
+
+1. Abra o **Terminal** (Mac) ou o **Prompt de Comando** (Windows)
+2. Cole e aperte Enter:
+
+```
+npx web-push generate-vapid-keys
+```
+
+3. Ele imprime duas linhas, **Public Key** e **Private Key**
+4. Guarde as duas num gerenciador de senhas **antes de fechar a janela**
+
+Depois:
+
+| Chave | Onde vai | Nome exato |
+|---|---|---|
+| Public | Vercel (Production + Preview) | `NEXT_PUBLIC_VAPID_PUBLIC_KEY` |
+| Public | GitHub Secrets | `VAPID_PUBLIC_KEY` |
+| Private | GitHub Secrets **e só lá** | `VAPID_PRIVATE_KEY` |
+| — | GitHub Secrets | `VAPID_SUBJECT` = `mailto:jvlcg.work@gmail.com` |
+
+> **Trocar o par apaga as inscrições existentes.** Quem já tinha ligado o aviso
+> para de receber, sem ser avisado disso. Como hoje ninguém conseguiu se
+> inscrever (o bloco não aparece), gerar um par novo agora não custa nada — mas
+> depois que houver inscritos, custa.
+
+## 4.5 — Redeploy
+
+Vercel → **Deployments** → três pontinhos → **Redeploy**. Sem isso a variável
+salva não entra no site.
+
+## 4.6 — Conferir
+
+Abra qualquer artigo do blog no computador e role até o fim. O bloco **"Quer
+ser avisado de conteúdo novo?"** deve estar lá.
+
+| O que você vê | O que significa |
+|---|---|
+| O bloco aparece | Deu certo |
+| Continua sem aparecer | Faltou o redeploy, ou o nome da variável saiu diferente — tem de ser exatamente `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, com o `NEXT_PUBLIC_` na frente |
+| Aparece e dá erro ao clicar | A pública da Vercel e a privada do GitHub não são do mesmo par |
+
+**No iPhone é diferente e não é defeito.** A Apple só permite notificação da
+web se o site tiver sido adicionado à Tela de Início. O bloco detecta isso e
+explica o caminho em vez de mostrar um botão que não funcionaria.
 
 ---
 

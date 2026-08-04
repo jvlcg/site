@@ -18,6 +18,7 @@ const headerLinks = [
   { href: "/blog", label: "Blog" },
   { href: "/artigos", label: "Artigos" },
   { href: "/perguntas-frequentes", label: "FAQ" },
+  { href: "/poemas", label: "Poemas" },
   { href: "/contato", label: "Contato" },
 ];
 
