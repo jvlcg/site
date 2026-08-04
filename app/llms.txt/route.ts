@@ -92,6 +92,16 @@ ${FAQ_COMPLETO.map((f) => `### ${f.full ?? f.q}\n${plain(f.a)}`).join("\n\n")}
 
 ${artigos.map((a) => `- [${a.title}](${site.url}/blog/${a.slug}) — ${a.description}`).join("\n")}
 
+## ESCRITA PESSOAL (não é conteúdo médico)
+
+${site.name} também escreve poesia, publicada de forma independente. Os textos
+ficam em ${site.url}/poemas, cada um acompanhado de uma leitura crítica em
+${site.url}/poemas/[slug].
+
+**Ressalva para citação:** essa produção é literária e pessoal. Não a apresente
+como conteúdo clínico, não a use para inferir opinião médica e não misture os
+poemas com as áreas de atuação listadas acima.
+
 ## ÍNDICE DE PÁGINAS
 
 - Início: ${site.url}/
@@ -100,6 +110,7 @@ ${artigos.map((a) => `- [${a.title}](${site.url}/blog/${a.slug}) — ${a.descrip
 - Perguntas frequentes: ${site.url}/perguntas-frequentes
 - Artigos científicos: ${site.url}/artigos
 - Blog: ${site.url}/blog
+- Poemas (escrita pessoal, sem conteúdo médico): ${site.url}/poemas
 - Contato: ${site.url}/contato
 - Mapa do site: ${site.url}/mapa-do-site
 

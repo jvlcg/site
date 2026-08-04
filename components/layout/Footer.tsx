@@ -71,6 +71,18 @@ export function Footer() {
                   Cadastro de pacientes →
                 </Link>
               </li>
+              {/* Também fora de `navLinks`: os poemas são escrita pessoal e não
+                  disputam espaço com o menu do consultório. Aqui embaixo a
+                  página fica alcançável — e uma página que ninguém alcança é
+                  meia página. */}
+              <li>
+                <Link
+                  href="/poemas"
+                  className="text-faint transition-colors hover:text-[var(--accent)]"
+                >
+                  Poemas
+                </Link>
+              </li>
             </ul>
           </nav>
 
