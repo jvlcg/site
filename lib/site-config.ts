@@ -28,6 +28,21 @@ export const site = {
    */
   googleAnalyticsId: process.env.NEXT_PUBLIC_GA_ID ?? "G-5E4R1QLD2V",
   /**
+   * ID do cliente OAuth, usado no botão "Continuar com Google" do cadastro.
+   *
+   * Também público, e por construção: ele viaja dentro do JavaScript que todo
+   * visitante baixa, e o Google conta com isso — a proteção não está em
+   * escondê-lo, e sim na lista de origens autorizadas do console, que só
+   * aceita `drjosevictor.com`.
+   *
+   * O `client_secret` do mesmo cliente é outra história e **não existe neste
+   * projeto**. Ele só serviria ao fluxo de acesso continuado à conta do
+   * visitante, que o site não faz. Ver `lib/google-identidade.ts`.
+   */
+  googleClientId:
+    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ??
+    "148201884967-0s8mrmv85h0cssrsum36d68mofp9asps.apps.googleusercontent.com",
+  /**
    * WhatsApp em formato internacional (sem "+").
    *
    * **Número único, o da secretaria.** Antes havia dois — o pessoal do médico

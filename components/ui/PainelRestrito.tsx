@@ -21,6 +21,8 @@ type Ficha = {
   cidade: string;
   origem: string;
   observacao?: string;
+  /** Confirmado pelo Google no cadastro. Ausente = digitado à mão, sem conferência. */
+  emailVerificado?: boolean;
 };
 
 const telefoneBonito = (t: string) =>
@@ -112,13 +114,14 @@ export function PainelRestrito() {
 
   /** Exporta em CSV para abrir no Excel. O ponto e vírgula é o separador que o Excel em português espera. */
   function exportar() {
-    const colunas = ["Data", "Nome", "E-mail", "Telefone", "CPF", "Nascimento", "Cidade", "Origem", "Observação"];
+    const colunas = ["Data", "Nome", "E-mail", "E-mail verificado", "Telefone", "CPF", "Nascimento", "Cidade", "Origem", "Observação"];
     const escapar = (v: string) => `"${String(v ?? "").replace(/"/g, '""')}"`;
     const linhas = fichas.map((f) =>
       [
         dataBonita(f.criadoEm),
         f.nome,
         f.email,
+        f.emailVerificado ? "Sim" : "Não",
         telefoneBonito(f.telefone),
         cpfBonito(f.cpf),
         nascimentoBonito(f.nascimento),
@@ -265,7 +268,14 @@ export function PainelRestrito() {
               <dl className="mt-4 grid gap-x-6 gap-y-2 text-[0.88rem] sm:grid-cols-2">
                 {[
                   ["Telefone", telefoneBonito(f.telefone), `https://wa.me/55${f.telefone}`],
-                  ["E-mail", f.email, `mailto:${f.email}`],
+                  [
+                    // O visto marca o que o Google confirmou. Sem ele o endereço
+                    // pode estar certo — só não foi conferido por ninguém, e é
+                    // essa diferença que importa na hora de contar com o e-mail.
+                    f.emailVerificado ? "E-mail ✓" : "E-mail",
+                    f.email,
+                    `mailto:${f.email}`,
+                  ],
                   ["CPF", cpfBonito(f.cpf)],
                   ["Nascimento", nascimentoBonito(f.nascimento)],
                   ["Cidade", f.cidade],

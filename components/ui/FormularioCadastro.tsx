@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useTheme } from "next-themes";
+import { EntrarComGoogle } from "./EntrarComGoogle";
 
 /**
  * Formulário do cadastro de pacientes.
@@ -77,6 +79,15 @@ function mascarar(campo: string, valor: string): string {
 export function FormularioCadastro() {
   const [dados, setDados] = useState({ ...VAZIO });
   const [aceito, setAceito] = useState(false);
+  const { resolvedTheme } = useTheme();
+  /**
+   * O token do Google, quando a pessoa optou por preencher com ele.
+   *
+   * Fica em estado à parte, e não junto de `dados`, porque não é campo de
+   * formulário: ninguém digita e ninguém edita. Viaja junto do envio só para
+   * o servidor poder confirmar que o e-mail é mesmo dela.
+   */
+  const [credencialGoogle, setCredencialGoogle] = useState("");
   // começa desmarcado de propósito: consentimento pré-marcado não é
   // consentimento — a pessoa tem de escolher receber
   const [querAvisos, setQuerAvisos] = useState(false);
@@ -97,7 +108,12 @@ export function FormularioCadastro() {
       const resposta = await fetch("/api/cadastro", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...dados, consentimento: aceito, avisosEmail: querAvisos }),
+        body: JSON.stringify({
+          ...dados,
+          consentimento: aceito,
+          avisosEmail: querAvisos,
+          credencialGoogle: credencialGoogle || undefined,
+        }),
       });
       const corpo = await resposta.json().catch(() => ({}));
 
@@ -144,6 +160,29 @@ export function FormularioCadastro() {
 
   return (
     <form onSubmit={enviar} noValidate className="holo glass rounded-3xl p-6 sm:p-9">
+      {/*
+        O atalho do Google vem antes dos campos, que é onde ele serve para
+        alguma coisa: depois de a pessoa já ter digitado o nome e o e-mail,
+        preencher os dois automaticamente não economiza nada.
+      */}
+      <div className="mb-7">
+        <EntrarComGoogle
+          escuro={resolvedTheme === "dark"}
+          aoIdentificar={({ nome, email, credencial }) => {
+            setCredencialGoogle(credencial);
+            setDados((d) => ({
+              ...d,
+              // o que a pessoa já tinha digitado tem precedência: se ela
+              // corrigiu o nome à mão antes de clicar, sobrescrever seria
+              // desfazer o trabalho dela na frente dos olhos
+              nome: d.nome || nome,
+              email: d.email || email,
+            }));
+            setErros((e) => ({ ...e, nome: "", email: "" }));
+          }}
+        />
+      </div>
+
       <div className="grid gap-5 sm:grid-cols-2">
         {CAMPOS.map((campo) => (
           <div key={campo.nome} className={campo.nome === "nome" ? "sm:col-span-2" : ""}>
