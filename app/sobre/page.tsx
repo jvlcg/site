@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -185,6 +186,21 @@ export default function SobrePage() {
               integração da sua saúde: investigar a fundo, prevenir com estratégia e
               acompanhar de perto — presencialmente em Goiânia ou por telemedicina, com
               a mesma qualidade de atenção.
+            </Reveal>
+            <Reveal as="p" delay={240}>
+              Fora do consultório, sou{" "}
+              <strong className="text-[var(--fg)]">escritor e poeta</strong>. Assino
+              capítulos e organização de obras acadêmicas na área médica e escrevo
+              poesia desde a adolescência — textos publicados de forma independente e
+              reunidos aqui em{" "}
+              <Link
+                href="/poemas"
+                className="text-[var(--accent)] underline underline-offset-4"
+              >
+                uma página à parte
+              </Link>
+              . É escrita pessoal, sem relação com a prática clínica, mas vem do mesmo
+              lugar: o hábito de olhar de perto e nomear com precisão.
             </Reveal>
 
             <div className="grid gap-4 pt-4 sm:grid-cols-2">

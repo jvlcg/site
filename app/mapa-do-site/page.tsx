@@ -38,6 +38,7 @@ const grupos = [
     links: [
       { href: "/blog", label: "Blog — educação em saúde", desc: "Textos educativos para pacientes." },
       { href: "/artigos", label: "Artigos científicos", desc: "Produção científica publicada em periódicos e congressos." },
+      { href: "/poemas", label: "Poemas", desc: "Escrita pessoal, com análise literária de cada texto. Sem conteúdo médico." },
     ],
   },
   {

@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
+import { AnalisePoema } from "@/components/ui/AnalisePoema";
 import { POEMAS } from "@/content/poemas";
+import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -31,7 +33,7 @@ export default function PoemasPage() {
             <span className="text-gradient">Poemas</span>
           </>
         }
-        lede="Escrita pessoal, sem relação com a atividade clínica. Também publicados em @poemas.mortos."
+        lede="Escrita pessoal, sem relação com a atividade clínica. Também publicados em @poemas.mortos. Cada poema traz uma leitura crítica, que abre logo abaixo do texto."
         breadcrumbs={[
           { name: "Início", path: "/" },
           { name: "Poemas", path: "/poemas" },
@@ -60,6 +62,18 @@ export default function PoemasPage() {
                 <p className="mt-5 whitespace-pre-line text-[1.05rem] leading-[1.9] text-muted">
                   {p.texto}
                 </p>
+                {p.dedicatoria && (
+                  <p className="mt-5 text-[0.9rem] italic leading-relaxed text-faint">
+                    {p.dedicatoria}
+                  </p>
+                )}
+                {p.analise && (
+                  <AnalisePoema
+                    slug={p.slug}
+                    titulo={p.titulo}
+                    paragrafos={p.analise}
+                  />
+                )}
               </article>
             </Reveal>
           ))}
@@ -67,9 +81,17 @@ export default function PoemasPage() {
 
         <p className="mt-20 border-t hairline pt-8 text-[0.82rem] leading-relaxed text-faint">
           Textos de {site.name}. Publicação pessoal, sem conteúdo médico e sem
-          relação com a atividade clínica.
+          relação com a atividade clínica. As análises são leituras críticas dos
+          próprios poemas, escritas para esta página.
         </p>
       </section>
+
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Início", path: "/" },
+          { name: "Poemas", path: "/poemas" },
+        ])}
+      />
     </>
   );
 }

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllArticles } from "@/lib/articles";
+import { POEMAS_COM_ANALISE } from "@/content/poemas";
 import { galleryImageUrls } from "@/lib/gallery";
 import { site } from "@/lib/site-config";
 
@@ -17,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/contato",
     "/perguntas-frequentes",
     "/cadastro",
+    "/poemas",
     "/mapa-do-site",
     "/politica-de-privacidade",
   ].map((path) => ({
@@ -35,5 +37,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     images: [`${site.url}/blog/${a.slug}/opengraph-image`],
   }));
 
-  return [...staticRoutes, ...articleRoutes];
+  /**
+   * Prioridade baixa de propósito. Os poemas são conteúdo pessoal e não
+   * disputam nada com as páginas de atendimento — declarar isso evita que o
+   * rastreador gaste orçamento neles antes das páginas que importam para
+   * quem procura consultório.
+   */
+  const poemaRoutes = POEMAS_COM_ANALISE.map((p) => ({
+    url: `${site.url}/poemas/${p.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "yearly" as const,
+    priority: 0.3,
+  }));
+
+  return [...staticRoutes, ...articleRoutes, ...poemaRoutes];
 }

@@ -35,6 +35,14 @@ export type Poema = {
    * mantém; à parte, continua sendo lido — e se lê como o que é.
    */
   dedicatoria?: string;
+  /**
+   * Leitura crítica do poema, escrita para o site.
+   *
+   * Fica junto do texto, e não num arquivo à parte, por um motivo prático: a
+   * análise só existe por causa do poema, e separá-los abriria espaço para
+   * uma ficar sem a outra. Um parágrafo por bloco.
+   */
+  analise?: string[];
 };
 
 export const POEMAS: Poema[] = [
@@ -67,6 +75,11 @@ O resto é sombra, o resto é futilidade;
 Pois ser teu filho, ó alma radiante,
 É minha única e plena dignidade.`,
     dedicatoria: "Feliz dia das mães, eu te amo.",
+    analise: [
+      "Soneto expandido em cinco quadras de decassílabos, com rimas alternadas (ABAB) mantidas do início ao fim. A forma fixa não é enfeite: num poema para a mãe, o risco é o excesso, e a métrica funciona como contenção — obriga a escolher a palavra que cabe, não a que transborda.",
+      "O poema é construído sobre uma oposição que atravessa as cinco estrofes: luz contra escuridão, sol contra bruma, aurora contra inverno. A mãe nunca é descrita fisicamente; ela é sempre o termo luminoso do par. É uma escolha de retórica clássica — definir por contraste em vez de por adjetivo — e é o que impede o texto de cair no retrato sentimental.",
+      "A virada está na quarta estrofe, quando a recusa se organiza em lista: nem pompas, nem tesouros, nem glórias, nem lauréis. A acumulação de negativas prepara a única afirmação que interessa, e o verso final da estrofe a entrega como se fosse óbvia. É o mesmo movimento da quinta e última: tudo o mais é sombra, e a filiação é a coisa inteira.",
+    ],
   },
 
   {
@@ -94,6 +107,12 @@ E se houver algo depois,
 que seja apenas a lembrança
 de que vivi como quem arde,
 sem pedir permissão ao fogo.`,
+    analise: [
+      "Verso livre, estrofes curtas, sem rima. Depois da fatura clássica de outros poemas do autor, aqui a escolha é oposta — e coerente com o assunto, porque um poema sobre não se deixar formatar dificilmente caberia numa forma fixa.",
+      "Abre com um aforismo que reescreve Heráclito: não se encontra a mesma pessoa duas vezes. O detalhe está no complemento — nem quando ela insiste em ser a mesma. A insistência é o que o verso acusa; a mudança acontece de qualquer jeito, e fingir permanência é a única forma de mentira que o poema não perdoa.",
+      "O centro é uma escolha declarada entre sangrar e silenciar, e o poema opta pela primeira. Daí a série de imagens de ferida como prova de vida: pele marcada, olhos cansados, alma incendiada. A morte aparece não como fim, mas como testemunha — que encontre o falante vivo, o que desloca o medo do morrer para o medo de já estar morto antes.",
+      "O fecho troca a chama pela lembrança da chama, e é aí que o poema se resolve: não pede permanência, pede que reste o registro de uma intensidade. Viver como quem arde, sem pedir licença ao fogo.",
+    ],
   },
 
   {
@@ -131,6 +150,12 @@ um abraço que não queria acabar.
 
 Se alguém me der um nome hoje, eu devolvo com um olhar inteiro.
 Se me derem silêncio, eu faço dele um cobertor.`,
+    analise: [
+      "O poema mais narrativo do conjunto, e o único em que o falante não é o autor. É um monólogo dramático: alguém em situação de rua fala em primeira pessoa, e o texto se sustenta inteiro na consistência dessa voz — que nunca pede pena nem se explica.",
+      "A tese está no terceiro verso, curto e isolado depois de duas linhas longas: eu tenho um nome. Todo o resto do poema é o desenvolvimento dessa afirmação contra um mundo que a nega. A cidade passa por cima; a chuva conhece o rosto melhor que a mãe; a polícia pergunta a origem e recebe os ombros como resposta.",
+      "O procedimento dominante é a inversão do sagrado para o urbano: os prédios são altares que recusam preces, os santos estão nas vitrines, as rachaduras do viaduto se contam como salmo. Não é ironia fácil — é a constatação de que a transcendência disponível ali é a que passa pela vidraça de loja.",
+      "A estrofe da casa perdida é a única em que o passado aparece, e ela funciona porque é concreta: um cachorro com nome, uma janela com sol, um café que não era favor. A precisão desses três itens faz a perda ter tamanho. Os dois versos finais devolvem a dignidade do começo — quem oferece nome recebe olhar inteiro; quem oferece silêncio, tem o silêncio transformado em abrigo.",
+    ],
   },
 
   {
@@ -157,6 +182,12 @@ Veio o xeque: simples, limpo e dolorido.
 É o fim da partida, encarando meu rei derrotado e duas xícaras frias.
 No placar, escreveram “mérito”. No fim, ficou a pergunta:
 quem perdeu — eu, ou o próprio xadrez?`,
+    analise: [
+      "Alegoria sustentada do começo ao fim, sem quebrar a metáfora nem explicá-la. O xadrez organiza tudo: peças, relógio, árbitro, placar. O leitor entende que se fala de outra coisa sem que o poema precise dizer qual.",
+      "A estrutura é de tríades anafóricas, e cada bloco muda o sujeito: dizem que era amistoso, ninguém viu, todos sabiam, chamaram de. A progressão é o argumento do poema — do que foi dito ao que foi visto, do que era sabido ao que foi renomeado. A quarta tríade é a mais dura, porque nomeia o mecanismo: chamar de estratégia o atalho pelas costas, de mercado o leilão da palavra dada.",
+      "O termo técnico zugzwang carrega a estrofe central. É a posição do enxadrista obrigado a jogar quando qualquer lance piora sua situação — e é exatamente o que o poema descreve sem precisar de mais nada. Usar o jargão exato, sem traduzi-lo, confia no leitor.",
+      "O fecho recusa o consolo. As duas xícaras frias retomam as duas do primeiro verso, fechando o círculo do tempo passado, e a pergunta final desloca a derrota do jogador para o jogo. Não é lamento — é acusação.",
+    ],
   },
 
   {
@@ -191,6 +222,12 @@ vou te estrangulando — lentamente — mesmo ao preço da minha vida.
 La vem o outono
 Minha família a salvo.
 O urso cai. Eu, junto.`,
+    analise: [
+      "Narrativa em cinco movimentos, com estrutura de conto: aparição, preparação, enfrentamento, luta, desfecho. O verso livre e longo aqui serve à prosa da ação; o poema quer contar, e não cantar.",
+      "O urso é a única presença nunca nomeada por aquilo que representa, e essa recusa é o que o mantém eficaz. Ele é sazonal (chega sempre no inverno), progressivo (a cada ano mais perto), e não recua diante do que antes o afastava. A pergunta central — por que justo a minha casa — é a pergunta de quem não escolheu o próprio adversário.",
+      "A imagem que fixa o poema são os olhos: poços escuros que não piscam. Poço é profundidade sem fundo visível, e o não piscar retira do animal qualquer traço de hesitação. Contra isso, as armas humanas aparecem como o que são — estampido, carabina, disparos inúteis.",
+      "O desfecho é uma vitória que custa o vencedor. O corpo a corpo substitui a arma, e o estrangulamento lento inverte os papéis: o homem passa a fazer ao urso o que o urso fazia ao inverno dele. Os três versos finais são os mais curtos do poema, e a brevidade é o luto. O outono chega, a família está a salvo, e a conjunção final — eu, junto — entrega o preço sem adjetivo nenhum.",
+    ],
   },
 
   {
@@ -225,6 +262,12 @@ e assim perder-me em ti, rendido e perplexo;
 pois desejar-te não é um querer que se segue,
 é dissolver-me inteiro nesse enigmático nexo —
 mas, agora, basta o arrepio rente à pele, um convite sem palavras.`,
+    analise: [
+      "Cinco quintilhas de verso longo, com esquema de rimas alternadas frouxo, na tradição do poema erótico-metafísico. O vocabulário é deliberadamente elevado (intangível, secreto labirinto, enigmático nexo) e essa elevação é o que mantém o desejo no campo da contemplação.",
+      "O poema constrói o corpo do outro como texto a ser lido: mapear a pele como quem lê um manuscrito. A metáfora é sustentada — há o que a boca completa e a voz recusa, há palavras silenciadas, há gestos insinuados e não mostrados. O desejo aqui é hermenêutico antes de ser físico: quer decifrar.",
+      "A quarta estrofe faz a declaração mais precisa do conjunto, e é uma correção do que se esperaria: não é a ternura que guia, mas a sede doce, o prazer da vulnerabilidade. O poema admite que deseja o outro exposto, não o outro confortável — e essa honestidade é o que o separa do lugar-comum romântico.",
+      "O último verso recua de propósito. Depois de cinco estrofes de dissolução e entrega, o poema se contenta com o arrepio rente à pele. É a conclusão coerente de um texto que se chama Conquista e nunca conquista nada: o convite sem palavras é tudo o que existe, e o poema é o próprio convite.",
+    ],
   },
 
   {
@@ -241,6 +284,12 @@ Eis que hoje ergo, não taça, senão artéria inteiriça transbordante de grati
 
 Assim vencido o século de estudos num só lampejo declaro: entre ruína e renascer, escolho o verbo curar.`,
     dedicatoria: "Texto referente à minha jornada do curso de Medicina.",
+    analise: [
+      "Não é poema em versos, e sim prosa poética em quatro parágrafos, com sintaxe deliberadamente arcaizante — a invocação ao leitor benévolo é fórmula da retórica clássica, e o poema a usa para marcar solenidade desde a primeira linha.",
+      "A imagem que estrutura o texto é a passagem do frio ao calor: a frialdade do anfiteatro cede ao lume da aurora. Anfiteatro é o espaço da dissecação e também o do espetáculo, e é dele que o texto parte. O diploma como lâmina recém-forjada mantém a metáfora cortante — o instrumento é o mesmo, muda o uso.",
+      "O parágrafo central converte o tempo em matéria: o relógio retalha o sono em lâminas, cada compêndio é degrau. A frase que sustenta o texto inteiro é a que diz que a morte fala baixo mas ensina alto — antítese perfeita, e a única declaração da formação médica que o poema faz sem ornamento.",
+      "O fecho é uma escolha declarada de verbo. Entre ruína e renascer, escolho o verbo curar: o poema termina no infinitivo, que é a forma da ação sem sujeito nem tempo — e portanto a forma do que se assume como ofício, não como episódio.",
+    ],
   },
 
   {
@@ -264,6 +313,12 @@ Mais difíceis de descascar e ainda mais pungentes.
 Anéis concêntricos—por vezes excêntricos.
 
 Há quem não aprecie as cebolas…`,
+    analise: [
+      "Poema de imagem única desdobrada, construído inteiro sobre uma metáfora que se sabe humilde: o sentir como cebola. A escolha do vegetal doméstico contra a grandiloquência do tema é o primeiro acerto — impede o texto de se levar a sério demais.",
+      "A metáfora é levada às últimas consequências, e é aí que ela deixa de ser piada. Descascar não revela núcleo: revela mais cebola, até que nada reste além das lágrimas. O poema propõe uma teoria do autoconhecimento sem centro — não há um eu verdadeiro no fundo, só o processo de descascar e o choro que ele produz.",
+      "A terceira estrofe amplia com um dado real de horticultura: sem água, a cebola cria camadas mais densas e mais pungentes. O poema usa isso como o que é, uma observação técnica, e deixa o leitor fazer a transposição. O jogo entre concêntricos e excêntricos, quase idênticos no som e opostos no sentido, condensa a ideia toda num verso.",
+      "O verso final isolado — há quem não aprecie as cebolas — muda o registro de repente. Depois de três estrofes de introspecção, termina numa constatação social quase seca, com reticências. É o poema admitindo que nem todos têm paciência para esse tipo de gente.",
+    ],
   },
 
   {
@@ -300,6 +355,12 @@ Entre a criação e a destruição.
 Para que a inteligência fria,
 Não se torne nossa perdição.`,
     dedicatoria: "Escrito com banco de dados dos meus poemas prévios. Feito com ChatGPT-4o.",
+    analise: [
+      "Seis quadras de metro regular e dicção declarativa. É o poema mais convencional do conjunto na forma — e a nota do autor explica por quê: foi escrito com auxílio de IA, treinada nos poemas anteriores dele. O texto é, portanto, também um documento sobre a própria ferramenta que critica.",
+      "A construção é sistemática: cada estrofe toma um domínio (trabalho, decisão, vigilância, progresso) e aplica o mesmo movimento — a máquina substitui, e no lugar do que foi substituído resta abstração. O toque, o calor e a essência se perdem em linhas de código; o humano vira número na rede.",
+      "A imagem mais forte é a dos olhos digitais sempre atentos, que transforma vigilância em corpo e prepara o verso seguinte: liberdade como conceito, não como estado. O poema não recorre a distopia futurista — mantém tudo no presente do indicativo, o que é mais desconfortável.",
+      "A última estrofe pede equilíbrio em vez de recusa, e essa moderação é o que mais chama atenção num poema com esse título. A ironia envolvente é involuntária e vale registrar: um texto que teme a inteligência fria substituir a humana foi escrito com a ajuda dela, e o autor faz questão de declarar isso em vez de esconder.",
+    ],
   },
 
   {
@@ -338,6 +399,12 @@ A sensação é de estar em uma prisão perpétua,
 E todos os dias é um regime de solitária.
 Ansie sau
 dade`,
+    analise: [
+      "O poema mais ambicioso do conjunto em estrutura: define um conceito e depois o examina em três domínios — luto, lembrança, amor — cada um com sua estrofe. É um texto de método, quase ensaístico.",
+      "A abertura funciona por deslocamento de provérbio. A saudade como prato que se come quente inverte a expressão feita, e o complemento é o que dá liga: queima os beiços mas não te enche. Alimento que fere e não sacia é a definição inteira, entregue em dois versos.",
+      "A estrofe do luto encontra sua imagem mais precisa na afirmação de que nada cura a saudade, mas de tanto doer a dor se torna uma só com a alma. Não é superação: é fusão. E o que resta depois não é alívio, é amargura sem sensação — que é pior.",
+      "A estrofe da lembrança traz a formulação que melhor resume o poema: o que resta é o cartão de visitas da memória. A imagem é doméstica e exata — o cartão fica quando a pessoa vai embora. A estrofe do amor troca o registro para o corpo, com a claustrofobia e a prisão perpétua, e o texto termina com a própria palavra partida ao meio, que é o gesto formal mais expressivo do poema.",
+    ],
   },
 
   {
@@ -355,6 +422,12 @@ Totalmente perdido, você tende ao vazio, o vazio lhe abraça.
 É um abraço frio, mas foi o mais aquecido que já recebera na vida.
 
 Pare de morrer, seu corpo não suporta mais o vazio…`,
+    analise: [
+      "Prosa poética em blocos curtos, com espaços largos entre eles. O branco da página faz parte do texto: cada afirmação fica sozinha, e o silêncio ao redor é o vazio de que o poema fala.",
+      "A operação central é ressignificar o verbo morrer. Aqui morrer não é um evento único, é um acúmulo — morre-se um pouco mais do que ontem, e cada vez que se deixa de dizer o que se queria. A morte vira sintoma de omissão, e não de fim.",
+      "O paradoxo que sustenta o texto está no abraço do vazio: frio, mas o mais aquecido que já se recebera na vida. É um oxímoro que diz muito sobre quem fala — não é que o vazio conforte, é que nada mais chegou perto.",
+      "A frase final quebra a segunda pessoa em que o poema todo se apoiava, e vira ordem: pare de morrer. Depois de cinco blocos de constatação, aparece o único imperativo do texto, e as reticências que o seguem tiram dele a certeza. É pedido, não comando.",
+    ],
   },
 
   {
@@ -394,6 +467,12 @@ Vendi meus companheiros,
 Matei os meus próprios sonhos,
 Fiz o meu último poema.
 Hoje eu me liberto dos meus demônios…`,
+    analise: [
+      "Quatro estrofes de extensão desigual, verso livre, dicção coloquial. A irregularidade é funcional: o poema imita o pensamento de quem faz um balanço, e balanço não tem métrica.",
+      "A obsessão com o último organiza a primeira estrofe — o último suspiro, o último sonho, o último beijo — e instala a ideia de que os fins acontecem sem aviso. A segunda estrofe vira essa mesma atenção para trás, na direção da criança que se foi, e o pedido de desculpas dirigido a ela é o gesto mais delicado do poema.",
+      "O trem, que atravessa outros textos do autor, reaparece: só não sabia que era tão veloz. Na terceira estrofe a estrutura muda — as perguntas se acumulam com o mesmo será?, e a repetição transforma projeto em dúvida.",
+      "A quarta estrofe abandona a sintaxe e vira lista: pílulas, livros, caminhos, dúvidas, pressão, razão. A ausência de vírgulas acelera o verso e é o momento em que o poema mais se desorganiza — de propósito. O fecho enumera perdas em série e termina no que o título anunciava, com a libertação e a escrita colocadas no mesmo gesto.",
+    ],
   },
 
   {
@@ -419,6 +498,12 @@ Uma dose por dia vai resolver o problema, por enquanto.
 Espero que quando eu me for, que possamos conversar um com o outro
 nem que seja por um minuto
 para que eu possa encontrar meu verdadeiro eu.`,
+    analise: [
+      "Monólogo diante do espelho, em bloco único, com a segunda pessoa dirigida à própria imagem. A cisão é o assunto e também a forma: quem fala e quem é olhado são gramaticalmente distintos do primeiro verso ao último.",
+      "A abertura finge inventário físico — barba, calvície, olheira — para descartá-lo em seguida. O poema usa a lista de sinais de envelhecimento como isca, e a nega para chegar ao que interessa: não é o rosto que mudou, é o reconhecimento que se perdeu.",
+      "A imagem central é a das cores arrancadas dos olhos. Ela permite o verso mais preciso do texto: mesmo castanhos, me sinto cego. A cor permanece, a visão não — que é a definição exata do que o poema descreve, uma perda invisível de fora.",
+      "Dois versos carregam o resto. Hoje sou muitos, menos você condensa a fragmentação num paradoxo aritmético; e a menção à dose por dia, com o por enquanto que a segue, introduz o tratamento sem nomeá-lo e sem confiar nele. O fecho adia o reencontro para depois da morte e pede um minuto de conversa — o que faz do poema inteiro uma tentativa de antecipar essa conversa por escrito.",
+    ],
   },
 
   {
@@ -453,6 +538,12 @@ Para nao me afogar, então, só me restou dançar ao som dos trovões
 transpirando ofegante o excesso de água,
 Mantendo nossa melodia viva por toda eternidade.
 o deserto deixará de existir…`,
+    analise: [
+      "Alegoria do cacto sustentada em quatro movimentos, com verso livre longo e sintaxe coloquial. O poema conta uma história e a conta em ordem — o que faz dele o mais legível do conjunto, e não por acaso um dos mais completos.",
+      "O primeiro movimento estabelece a autoimagem: dureza e perigo como cartão de visita. A comparação entre água e amor no deserto — muitos procurando, poucos para compartilhar — é o tipo de verso que parece simples e carrega a economia inteira do poema.",
+      "O segundo movimento é onde está o achado do texto: os espinhos falam. Não são só defesa, são conselho, e o conselho é pessimista — depois da última chuva nunca mais cairá outra gota. O poema identifica com precisão o mecanismo pelo qual a couraça se justifica sozinha, prevendo a seca que garante a própria necessidade.",
+      "O desfecho recusa a resolução fácil. A chuva chega, os espinhos amolecem — e aparece o risco novo: um cacto com água demais se afoga. Que o poema escolha dançar em vez de se proteger, e que aceite o afogamento como preço, é o que o separa do final feliz. O deserto deixará de existir não é promessa de segurança; é aceitação de que a paisagem inteira vai mudar.",
+    ],
   },
 
   {
@@ -469,6 +560,12 @@ Maldito Noel.
 Minha lareira estará sempre acesa.
 Do calor, nascem os mais belos cristais.
 Farei eu mesmo minha taça, para que eu, sozinho, possa brindar com meus demônios.`,
+    analise: [
+      "Poema em bloco único, sem estrofes, escrito como carta. A moldura epistolar — querido papai noel — instala um tom infantil que o texto desmonta verso a verso, e é desse contraste que ele vive.",
+      "A oposição estruturante é cristal contra carvão. O cristal é o pedido: puro, frágil, brilhante, que beija os lábios. O carvão é o que se recebe: espalha pó nas roupas amadas, e de sua escuridão surge o medo que enforca. A tradição do carvão como castigo de quem não mereceu presente é usada com precisão — o poema fala de quem se convenceu de não merecer.",
+      "O verso sobre o carvão do ano passado que ainda arde é o eixo do texto. Carvão que arde não é castigo inerte, é combustível — e é aí que o poema vira. A maldição dirigida ao Noel vem logo depois, curta e isolada, como quem termina uma discussão.",
+      "O fecho converte o castigo em matéria-prima: se a lareira está sempre acesa e do calor nascem os cristais, então o carvão recebido produz o presente que foi negado. Fazer a própria taça e brindar sozinho com os demônios é autossuficiência e solidão na mesma imagem — e o poema não escolhe entre as duas.",
+    ],
   },
 
   {
@@ -494,6 +591,12 @@ Tentando nos substituir...
 
 Vai dormir, seus dedos
 DOEM`,
+    analise: [
+      "O poema mais visual do conjunto. A tipografia é o método: palavras isoladas em caixa alta, versos de uma palavra só, espaços largos entre blocos. É insônia transcrita como diagramação.",
+      "O vocativo dirigido aos próprios pensamentos, com o MEUS destacado, estabelece o conflito do texto: o falante disputa a posse do que se passa na própria cabeça. Chamar de meus algo que não obedece é a contradição que o poema não resolve.",
+      "O centro é uma fantasia de aniquilação — o estalar de dedos que faz tudo ir embora, com DEDOS isolado antes do resultado. A pergunta que vem depois é a mais inquietante: será eu ou o mundo que tenta constantemente nos substituir. A ambiguidade do nos, que pode incluir os pensamentos ou o leitor, é deixada aberta.",
+      "O fecho troca a metafísica pelo corpo. Depois de estalar dedos e substituir mundos, a ordem final é ir dormir porque os dedos doem — provavelmente de escrever. O poema termina se reconhecendo como sintoma daquilo de que fala.",
+    ],
   },
 
   {
@@ -503,6 +606,12 @@ DOEM`,
     texto: `LAMENTAVEL
 Você conseguiu, baixo
 Eu, mais baixo.`,
+    analise: [
+      "Três versos. É o poema mais curto do conjunto e um dos mais eficientes, porque a brevidade é o argumento: um texto sobre silêncio que se estendesse se contradiria.",
+      "O LAMENTAVEL isolado em caixa alta e sem acento abre com um veredicto antes de qualquer contexto. A ausência do acento pode ser lapso, mas na página funciona — a palavra chega desarrumada, como julgamento dito no impulso.",
+      "A estrutura é de competição descendente. Você conseguiu, baixo estabelece um patamar; Eu, mais baixo o supera pela negativa. A vírgula em cada verso força a pausa e transforma o adjetivo em posição, não em qualidade.",
+      "O que o poema não diz é o que ele faz. Não há assunto, não há adversário nomeado, não há causa. Só a constatação de que houve uma disputa por quem chega mais fundo — e que ela foi vencida no pior sentido possível.",
+    ],
   },
 
   {
@@ -540,6 +649,12 @@ Mas a chama do amor vem pra segurar
 Sou Filho do medo, irmão da covardia
 Mas quem sabe um dia
 O tempo passe mais devagar.`,
+    analise: [
+      "Poema com estrutura de canção: refrão, contagens numéricas entre estrofes, dicção falada. As sequências de números funcionam como marcação de compasso — quem lê é forçado a contar, e contar tempo é o assunto do texto.",
+      "O verso que abre e retorna — quanto mais penso mais vazio fico — inverte a expectativa de que pensar preencha. É a tese do poema, e o fato de reaparecer no meio da terceira estrofe confirma que o pensamento não avançou.",
+      "O trem organiza a metáfora inteira: a estação da vida, o trem perdido, o pai chamado para buscar. O pedido dirigido ao PAI em caixa alta, seguido da menção ao lindo silêncio que não se ouve mais, é o ponto em que o poema deixa de ser sobre tempo e passa a ser sobre ausência — sem que precise dizê-lo.",
+      "As contagens invertem antes da última estrofe, de crescente para decrescente, e a estrofe final assume as culpas em série. A autodefinição como filho do medo e irmão da covardia estabelece uma genealogia de afetos, e o desejo final — que o tempo passe mais devagar — é o único pedido que o poema faz, sabendo que não será atendido.",
+    ],
   },
 
   {
@@ -561,6 +676,12 @@ Acho que perdi o meu trem.
 Tudo passageiro,
 Inclusive.
 Eu`,
+    analise: [
+      "Dois blocos de verso livre com forte trabalho sonoro. É o poema mais experimental do conjunto na superfície da língua, e o que mais depende de ser lido em voz alta.",
+      "O terceiro verso é o achado formal: a mesma palavra repetida quatro vezes com maiúsculas migrando de posição. A grafia encena o que descreve — a fuga se acelera e se desorganiza dentro da própria palavra, até virar grito. Nenhuma explicação seria tão eficaz.",
+      "A referência a Narciso que perdeu o espelho inverte o mito: sem superfície onde se ver, resta mergulhar. E mergulhar no fundo do próprio ser, num mito que termina em afogamento, carrega o risco sem precisar enunciá-lo.",
+      "A segunda estrofe muda para o registro do desperdício, com frases nominais curtas que imitam o esgotamento. O fecho é o momento mais engenhoso: tudo passageiro, inclusive — e o ponto depois de inclusive corta a frase. O Eu isolado no verso seguinte, sem pontuação, chega como o que sobrou. Passageiro, no contexto do trem, é também quem viaja.",
+    ],
   },
 
   {
@@ -584,6 +705,12 @@ Olho para ti e odeio odiar,
 O ódio me assola.
 Pois mesmo sem ninguém lhe estender a mão,
 Tu não paras de caminhar.`,
+    analise: [
+      "Diálogo com a tradição literária brasileira. Severino é o retirante de João Cabral, e o poema assume a dívida no vocativo inicial, tratando-o não como personagem mas como interlocutor vivo.",
+      "A construção mais forte está na primeira estrofe: os que estão à margem não dos rios, mas do desespero. A frase reaproveita a geografia do poema de origem e a desloca para o campo moral, num único enjambement.",
+      "A segunda estrofe formula o paradoxo que sustenta o texto — o desespero que gera vida. E a terceira mantém o rio como agente ambíguo: mesmo sujo, salva. O irmão que não tem nada para odiar não é elogio à resignação; é constatação de que a pobreza extrema retira até o objeto do ódio.",
+      "A virada é o eu. Depois de três estrofes sobre Severino, o falante se coloca vagando moribundo, e confessa o que o título anuncia: odeia odiar. O que ele inveja não é a condição do outro, é a capacidade de seguir caminhando sem que ninguém estenda a mão. O poema termina admitindo que o ódio é dele, e que a admiração é o que o torna insuportável.",
+    ],
   },
 
   // ─────────────────────────────────────────────────────────────────
@@ -598,3 +725,28 @@ Tu não paras de caminhar.`,
   // },
   // ─────────────────────────────────────────────────────────────────
 ];
+
+/** Um poema pelo endereço. `undefined` se o slug não existir. */
+export function getPoema(slug: string): Poema | undefined {
+  return POEMAS.find((p) => p.slug === slug);
+}
+
+/**
+ * Só os poemas que já têm leitura crítica escrita.
+ *
+ * São esses que ganham página própria em `/poemas/<slug>`. Um poema sem
+ * análise continua aparecendo na listagem — o que ele não tem é página
+ * separada, porque uma página que só repete o que a listagem já mostra é
+ * conteúdo duplicado, e o Google trata isso como ruído.
+ */
+export const POEMAS_COM_ANALISE = POEMAS.filter((p) => (p.analise?.length ?? 0) > 0);
+
+/** Poema anterior e seguinte na ordem da página, entre os que têm análise. */
+export function vizinhos(slug: string) {
+  const i = POEMAS_COM_ANALISE.findIndex((p) => p.slug === slug);
+  if (i === -1) return { anterior: undefined, proximo: undefined };
+  return {
+    anterior: POEMAS_COM_ANALISE[i - 1],
+    proximo: POEMAS_COM_ANALISE[i + 1],
+  };
+}
