@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { PainelCursos } from "./PainelCursos";
 
 /**
  * Painel da área restrita: entrar, ver as fichas, exportar e apagar.
@@ -53,6 +54,13 @@ export function PainelRestrito() {
   const [erro, setErro] = useState("");
   const [ocupado, setOcupado] = useState(false);
   const [busca, setBusca] = useState("");
+  /**
+   * Duas coisas muito diferentes moram nesta área, e é bom que não se
+   * misturem na tela: fichas de paciente carregam CPF e nascimento; matrículas
+   * de curso carregam só e-mail e nome. Abas separadas evitam o descuido de
+   * deixar a lista de pacientes aberta enquanto se libera um curso.
+   */
+  const [aba, setAba] = useState<"cadastros" | "cursos">("cadastros");
 
   const carregar = useCallback(async () => {
     const r = await fetch("/api/area-restrita", { cache: "no-store" });
@@ -177,8 +185,32 @@ export function PainelRestrito() {
       )
     : fichas;
 
+  const classeAba = (qual: typeof aba) =>
+    `font-mono-tech rounded-full px-4 py-2 text-[0.7rem] uppercase tracking-[0.14em] transition-colors ${
+      aba === qual
+        ? "bg-[var(--accent)] text-[var(--bg)]"
+        : "text-faint hover:text-[var(--fg)]"
+    }`;
+
   return (
     <>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <div className="glass flex gap-1 rounded-full p-1">
+          <button type="button" onClick={() => setAba("cadastros")} className={classeAba("cadastros")}>
+            Cadastros
+          </button>
+          <button type="button" onClick={() => setAba("cursos")} className={classeAba("cursos")}>
+            Cursos
+          </button>
+        </div>
+        <button type="button" onClick={sair} className="btn-ghost !py-2.5 text-sm">
+          Sair
+        </button>
+      </div>
+
+      {aba === "cursos" && <PainelCursos />}
+
+      <div className={aba === "cadastros" ? "" : "hidden"}>
       <div className="flex flex-wrap items-center gap-3">
         <input
           type="search"
@@ -189,9 +221,6 @@ export function PainelRestrito() {
         />
         <button type="button" onClick={exportar} disabled={fichas.length === 0} className="btn-ghost !py-2.5 text-sm">
           Baixar CSV
-        </button>
-        <button type="button" onClick={sair} className="btn-ghost !py-2.5 text-sm">
-          Sair
         </button>
       </div>
 
@@ -304,6 +333,7 @@ export function PainelRestrito() {
           ))}
         </div>
       )}
+      </div>
     </>
   );
 }

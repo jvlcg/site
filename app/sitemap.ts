@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllArticles } from "@/lib/articles";
 import { POEMAS_COM_ANALISE } from "@/content/poemas";
+import { aulasDo, cursosPublicados } from "@/lib/cursos";
 import { galleryImageUrls } from "@/lib/gallery";
 import { site } from "@/lib/site-config";
 
@@ -18,6 +19,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/contato",
     "/perguntas-frequentes",
     "/cadastro",
+    "/cursos",
+    "/voluntariado",
     "/poemas",
     "/mapa-do-site",
     "/politica-de-privacidade",
@@ -50,5 +53,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.3,
   }));
 
-  return [...staticRoutes, ...articleRoutes, ...poemaRoutes];
+  /**
+   * Só os cursos publicados, e dentro deles só as aulas livres.
+   *
+   * Aula que exige conta no sitemap seria convidar o Google a indexar uma
+   * porta fechada — e mandar quem clicar no resultado para uma tela de login
+   * em vez do conteúdo que o resultado prometia.
+   */
+  const cursoRoutes = cursosPublicados().flatMap((c) => [
+    {
+      url: `${site.url}/cursos/${c.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
+    ...(c.acesso === "livre"
+      ? aulasDo(c).map((a) => ({
+          url: `${site.url}/cursos/${c.slug}/${a.slug}`,
+          lastModified: new Date(),
+          changeFrequency: "yearly" as const,
+          priority: 0.5,
+        }))
+      : []),
+  ]);
+
+  return [...staticRoutes, ...articleRoutes, ...cursoRoutes, ...poemaRoutes];
 }

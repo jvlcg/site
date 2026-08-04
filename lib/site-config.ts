@@ -16,6 +16,22 @@ export const site = {
   description:
     "Dr. José Victor Lisboa Cardoso Gomes (CRM-GO 38508) — clínica médica, medicina endocanabinoide e medicina esportiva em Goiânia-GO, com atendimento presencial e por telemedicina.",
   email: "jvlcg.work@gmail.com",
+  /**
+   * Chave PIX das doações do conteúdo gratuito.
+   *
+   * Não é segredo: chave PIX serve justamente para ser divulgada, e ela só
+   * permite **enviar** dinheiro para a conta, nunca retirar.
+   */
+  pixChave: "jvlcg.work@gmail.com",
+  /**
+   * Nome que aparece no aplicativo de quem vai doar.
+   *
+   * O padrão do Banco Central corta em 25 caracteres, e o nome completo tem
+   * mais que isso — abreviado aqui, e não deixado para o corte automático,
+   * porque "JOSE VICTOR LISBOA CARDOS" na tela do banco de outra pessoa parece
+   * erro do site.
+   */
+  pixNome: "Jose Victor L C Gomes",
   instagram: "https://instagram.com/dr.josevlcg",
   instagramHandle: "@dr.josevlcg",
   /** Avaliações reais no Google (link do perfil compartilhado pelo médico). */
@@ -139,8 +155,10 @@ export const navLinks = [
   { href: "/medicina-esportiva", label: "Medicina Esportiva" },
   { href: "/telemedicina", label: "Telemedicina" },
   { href: "/consultorio", label: "Consultório em Goiânia" },
+  { href: "/cursos", label: "Cursos" },
   { href: "/blog", label: "Blog" },
   { href: "/artigos", label: "Artigos científicos" },
+  { href: "/voluntariado", label: "Projetos voluntários" },
   { href: "/perguntas-frequentes", label: "Perguntas frequentes" },
   { href: "/contato", label: "Contato" },
 ] as const;
