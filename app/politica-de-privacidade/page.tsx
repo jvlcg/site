@@ -169,6 +169,36 @@ export default function PrivacidadePage() {
             publicado: <strong>nunca são propaganda e nunca falam do seu caso</strong>.
           </p>
 
+          <h3>Preencher com a conta do Google</h3>
+          <p>
+            No topo do formulário existe um botão opcional,{" "}
+            <strong>“Continuar com Google”</strong>. Ele preenche apenas{" "}
+            <strong>nome e e-mail</strong>, e serve para confirmar que o endereço
+            informado realmente existe e é seu. Nenhuma conta é criada neste site, não
+            há login de paciente, e o consultório <strong>não recebe acesso nenhum</strong>{" "}
+            à sua conta do Google — nem e-mails, nem agenda, nem contatos.
+          </p>
+          <p>
+            <strong>Usar esse botão é uma escolha, e ela tem uma consequência que você
+            precisa conhecer antes.</strong> Ao tocar nele, o Google passa a saber que
+            você se cadastrou neste site, que é de um consultório médico. Esse é um dado
+            que permite inferência sobre saúde, e a LGPD o trata como{" "}
+            <strong>dado sensível</strong> (art. 5º, II). Por isso o aviso aparece na
+            própria tela, antes do botão, e não em letra miúda depois.
+          </p>
+          <p>
+            Enquanto você não tocar nesse botão,{" "}
+            <strong>nada do Google é carregado nesta página</strong>: nenhum script,
+            nenhuma requisição, nenhum cookie. Quem preenche os campos à mão não é
+            informado ao Google de forma alguma, e o cadastro resultante é exatamente o
+            mesmo — nenhuma vantagem de atendimento depende de usar o botão.
+          </p>
+          <p>
+            O que o site guarda dessa verificação é apenas uma marca de que o e-mail foi
+            confirmado. <strong>Não guardamos identificador de conta do Google, foto de
+            perfil nem qualquer token de acesso.</strong>
+          </p>
+
           <h2>6. Base legal e finalidade</h2>
           <p>
             O tratamento de dados pessoais no contexto assistencial tem como bases legais

@@ -68,6 +68,32 @@ const cspNovidades = csp
   )
   .replace("frame-src ", `frame-src ${SORO} `);
 
+/**
+ * CSP da página /cadastro, que carrega o botão "Continuar com Google".
+ *
+ * Liberação restrita a essa rota, pelo mesmo motivo da Soro: um terceiro com
+ * permissão de executar script lê o DOM da página em que roda, e as páginas com
+ * conteúdo médico não têm por que conceder isso.
+ *
+ * Aqui a restrição pesa mais que no caso da Soro, e vale dizer por quê: esta é
+ * a única página do site onde trafegam CPF, data de nascimento e telefone.
+ * O script do Google só é baixado depois que a pessoa aperta o botão — antes
+ * disso, nada dele existe na página — mas o cabeçalho precisa permitir de
+ * antemão, e é por isso que a permissão fica presa a uma rota só.
+ *
+ * São quatro diretivas, e faltar qualquer uma quebra de um jeito diferente:
+ * o `script-src` serve o `gsi/client`; o `style-src` serve a folha de estilo
+ * que ele injeta; o `frame-src` abre o seletor de contas, que é um iframe; e o
+ * `connect-src` é por onde o token volta. Sem o `frame-src`, por exemplo, o
+ * botão aparece, a pessoa clica e não acontece nada visível.
+ */
+const GOOGLE_CONTAS = "https://accounts.google.com";
+const cspCadastro = csp
+  .replace("script-src 'self' 'unsafe-inline'", `script-src 'self' 'unsafe-inline' ${GOOGLE_CONTAS}`)
+  .replace("style-src 'self' 'unsafe-inline'", `style-src 'self' 'unsafe-inline' ${GOOGLE_CONTAS}`)
+  .replace("connect-src 'self'", `connect-src 'self' ${GOOGLE_CONTAS}`)
+  .replace("frame-src ", `frame-src ${GOOGLE_CONTAS} `);
+
 const seguranca = [
   { key: "Content-Security-Policy", value: csp },
   // HSTS: só aceita HTTPS neste domínio pelos próximos 2 anos
@@ -120,6 +146,11 @@ const nextConfig: NextConfig = {
         // para sobrescrever apenas o cabeçalho de CSP
         source: "/novidades",
         headers: [{ key: "Content-Security-Policy", value: cspNovidades }],
+      },
+      {
+        // idem, para o botão "Continuar com Google" do cadastro
+        source: "/cadastro",
+        headers: [{ key: "Content-Security-Policy", value: cspCadastro }],
       },
       {
         // as rotas de API nunca devem ser cacheadas nem indexadas

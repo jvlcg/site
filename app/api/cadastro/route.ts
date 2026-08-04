@@ -13,6 +13,7 @@ import {
   validarFicha,
 } from "@/lib/cadastro";
 import { avisosConfigurados, inscreverEmail } from "@/lib/avisos-email";
+import { verificarIdentidade } from "@/lib/google-identidade";
 
 /**
  * Recebe o cadastro de paciente.
@@ -47,9 +48,32 @@ export async function POST(req: Request) {
     return responde({ erro: "Muitas tentativas. Tente novamente daqui a pouco." }, 429);
   }
 
-  const corpo = await corpoLimitado(req, 4_000);
+  // 6 KB e não 4: o token de identidade do Google sozinho passa de 1 KB, e o
+  // limite antigo deixava pouca folga para uma observação longa junto dele.
+  const corpo = await corpoLimitado(req, 6_000);
   const resultado = validarFicha(corpo);
   if ("erros" in resultado) return responde({ erros: resultado.erros }, 400);
+
+  /**
+   * A marca de e-mail verificado é decidida aqui, nunca pelo navegador.
+   *
+   * Duas condições, e as duas precisam valer: o token tem de ser mesmo do
+   * Google (assinatura conferida em `lib/google-identidade.ts`) e o e-mail
+   * dele tem de ser o que veio no formulário. A segunda existe porque a pessoa
+   * pode se identificar com uma conta e depois trocar o endereço no campo à
+   * mão — nesse caso o endereço gravado não é o que o Google confirmou, e
+   * marcar como verificado seria mentir para quem for ler a ficha depois.
+   *
+   * Token inválido, vencido ou ausente não é erro: a ficha é gravada sem a
+   * marca, e o cadastro segue igual. Ninguém deixa de ser atendido porque uma
+   * verificação opcional falhou.
+   */
+  const identidade = await verificarIdentidade(
+    (corpo as { credencialGoogle?: unknown })?.credencialGoogle
+  );
+  if (identidade && identidade.email === resultado.ficha.email) {
+    resultado.ficha.emailVerificado = true;
+  }
 
   const ok = await gravarFicha(resultado.ficha);
   if (!ok) return responde({ erro: "Não foi possível gravar agora. Tente de novo." }, 503);

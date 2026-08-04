@@ -30,6 +30,15 @@ export type Ficha = {
   origem: string;
   /** Observação livre, opcional. */
   observacao?: string;
+  /**
+   * O e-mail foi confirmado pelo Google, e não só digitado.
+   *
+   * Só fica `true` quando o servidor verificou a assinatura do token de
+   * identidade **e** o endereço bate com o que veio no formulário. Ausente
+   * significa "não sabemos", nunca "é falso": todo cadastro anterior a este
+   * campo, e todo cadastro preenchido à mão, chega sem ele.
+   */
+  emailVerificado?: boolean;
 };
 
 export type FichaGravada = Ficha & { id: string; criadoEm: string };
