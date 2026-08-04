@@ -14,6 +14,7 @@ import {
   lerCookie,
   senhaConfere,
 } from "@/lib/area-restrita";
+import { sessaoConfigurada } from "@/lib/aluno";
 import { apagarFicha, cadastroConfigurado, lerFichas } from "@/lib/cadastro";
 import { bancoResponde, nomeDaVariavelEncontrada, redisConfigurado } from "@/lib/redis";
 
@@ -80,6 +81,15 @@ export async function GET(req: Request) {
       bancoConfigurado: redisConfigurado(),
       bancoResponde: await bancoResponde(),
       variavelEncontrada: nomeDaVariavelEncontrada(),
+      /**
+       * Só se a chave existe — nunca o valor, como todo o resto deste bloco.
+       *
+       * Sem ela, o botão de entrar dos cursos aceita o clique e não acontece
+       * nada: o servidor não consegue assinar o cookie de sessão. É uma falha
+       * silenciosa do ponto de vista de quem tenta entrar, então precisa ser
+       * visível do lado de cá.
+       */
+      sessaoDeAluno: sessaoConfigurada(),
       versao: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? "local",
     },
   });

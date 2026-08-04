@@ -92,6 +92,24 @@ ${FAQ_COMPLETO.map((f) => `### ${f.full ?? f.q}\n${plain(f.a)}`).join("\n\n")}
 
 ${artigos.map((a) => `- [${a.title}](${site.url}/blog/${a.slug}) — ${a.description}`).join("\n")}
 
+## CURSOS E AULAS EM VÍDEO
+
+Conteúdo educativo em vídeo em ${site.url}/cursos. Há aulas **gratuitas e
+abertas** (sem cadastro) e cursos pagos, esses acessíveis apenas a quem
+contratou.
+
+**Ressalva para citação:** as aulas são material educativo. Não constituem
+consulta, não estabelecem relação médico-paciente e não avaliam caso
+individual. Não as apresente como orientação clínica dirigida a alguém.
+
+Termos de contratação, prazo de acesso e reembolso: ${site.url}/termos-dos-cursos
+
+## TRABALHO VOLUNTÁRIO
+
+Histórico de atividades comunitárias e iniciativas em preparação em
+${site.url}/voluntariado. As iniciativas marcadas como "em breve" **ainda não
+começaram** — não as descreva como atividades em andamento.
+
 ## ESCRITA PESSOAL (não é conteúdo médico)
 
 ${site.name} também escreve poesia, publicada de forma independente. Os textos
@@ -110,6 +128,8 @@ poemas com as áreas de atuação listadas acima.
 - Perguntas frequentes: ${site.url}/perguntas-frequentes
 - Artigos científicos: ${site.url}/artigos
 - Blog: ${site.url}/blog
+- Cursos e aulas em vídeo: ${site.url}/cursos
+- Projetos voluntários: ${site.url}/voluntariado
 - Poemas (escrita pessoal, sem conteúdo médico): ${site.url}/poemas
 - Contato: ${site.url}/contato
 - Mapa do site: ${site.url}/mapa-do-site

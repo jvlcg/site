@@ -199,7 +199,59 @@ export default function PrivacidadePage() {
             perfil nem qualquer token de acesso.</strong>
           </p>
 
-          <h2>6. Base legal e finalidade</h2>
+          <h2>6. Conta de aluno dos cursos</h2>
+          <p>
+            Para assistir a cursos que exigem conta, o site guarda apenas{" "}
+            <strong>nome e e-mail</strong>, mais a data em que o acesso foi
+            liberado e a qual curso ele se refere. Não guardamos senha — a
+            identificação é feita pela sua conta do Google, e o site nunca vê
+            nem armazena a sua senha dela.
+          </p>
+          <p>
+            <strong>
+              A conta de aluno é separada do cadastro de paciente, e não dá
+              acesso a nenhum dado clínico.
+            </strong>{" "}
+            São registros diferentes, guardados com chaves diferentes e
+            alcançados por sessões diferentes: entrar como aluno não abre, nem
+            por engano, a ficha de paciente de ninguém — inclusive a sua. Ter uma
+            das duas coisas não implica ter a outra.
+          </p>
+          <p>
+            Também não guardamos o que você assistiu, quanto tempo assistiu nem
+            em que ponto parou. A única informação de progresso que existe é a
+            data da matrícula, e ela serve para uma coisa só: calcular quando as
+            aulas de liberação gradual abrem para você.
+          </p>
+          <p>
+            <strong>Cursos abertos não criam conta nenhuma.</strong> Quem assiste
+            ao conteúdo gratuito não é identificado, não entra em lista alguma e
+            não deixa registro no site.
+          </p>
+          <p>
+            A base legal é a execução do contrato (art. 7º, V da LGPD): sem
+            e-mail não há como liberar o acesso que você contratou. Para apagar
+            sua conta de aluno, escreva para {site.email} — a exclusão é
+            definitiva e encerra o acesso aos cursos.
+          </p>
+          <p>
+            As condições comerciais — prazo de acesso, reembolso e uso do
+            conteúdo — estão nos{" "}
+            <a href="/termos-dos-cursos">termos de uso dos cursos</a>.
+          </p>
+
+          <h2>7. Doações por PIX</h2>
+          <p>
+            O código PIX das aulas gratuitas é gerado dentro do próprio site,
+            sem intermediário. Isso significa que <strong>o site não registra
+            nem recebe informação alguma sobre quem doou</strong>: não há
+            gateway, não há conta de pagamento e não há retorno para cá. A
+            transação acontece inteiramente entre o seu banco e o do
+            destinatário, e o que aparece é o que apareceria em qualquer PIX —
+            no extrato bancário, para as duas partes.
+          </p>
+
+          <h2>8. Base legal e finalidade</h2>
           <p>
             O tratamento de dados pessoais no contexto assistencial tem como bases legais
             a tutela da saúde (art. 11, II, “f” da LGPD) e o cumprimento de obrigação
@@ -207,7 +259,7 @@ export default function PrivacidadePage() {
             Conselho Federal de Medicina.
           </p>
 
-          <h2>7. Seus direitos</h2>
+          <h2>9. Seus direitos</h2>
           <p>
             Você pode solicitar confirmação de tratamento, acesso, correção e demais
             direitos previstos na LGPD pelo e-mail {site.email}. Solicitações que
@@ -215,14 +267,14 @@ export default function PrivacidadePage() {
             acesso a documentos de saúde.
           </p>
 
-          <h2>8. Segurança</h2>
+          <h2>10. Segurança</h2>
           <p>
             Adotamos boas práticas de segurança da informação no armazenamento de
             registros clínicos e na comunicação com pacientes, incluindo canais
             criptografados e controle de acesso.
           </p>
 
-          <h2>9. Atualizações</h2>
+          <h2>11. Atualizações</h2>
           <p>
             Esta política pode ser revisada para refletir mudanças legais ou operacionais.
             A versão vigente estará sempre disponível nesta página.
