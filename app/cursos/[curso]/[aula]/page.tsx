@@ -6,7 +6,8 @@ import { DoacaoPix } from "@/components/cursos/DoacaoPix";
 import { EntrarAluno } from "@/components/cursos/EntrarAluno";
 import { Player } from "@/components/cursos/Player";
 import { alunoAtual, buscarMatricula, matriculasConfiguradas } from "@/lib/aluno";
-import { aulaIndexavel, getAula, getCurso, podeVer, vizinhas } from "@/lib/cursos";
+import { aulaIndexavel, capaDa, duracaoISO, getAula, getCurso, podeVer, vizinhas } from "@/lib/cursos";
+import { JsonLd } from "@/lib/schema";
 import { site } from "@/lib/site-config";
 
 type Props = { params: Promise<{ curso: string; aula: string }> };
@@ -89,7 +90,7 @@ export default async function AulaPage({ params }: Props) {
 
         <div className="mt-7">
           {acesso.tipo === "liberado" ? (
-            <Player video={aula.video} titulo={aula.titulo} />
+            <Player video={aula.video} titulo={aula.titulo} capa={aula.capa} />
           ) : acesso.tipo === "aguardaLiberacao" ? (
             <div className="glass flex aspect-video w-full items-center justify-center rounded-2xl p-8 text-center">
               <div>
@@ -190,6 +191,47 @@ export default async function AulaPage({ params }: Props) {
           (SAMU).
         </p>
       </div>
+
+      {/*
+        Dados estruturados de vídeo — só na aula aberta, e só quando há data de
+        publicação.
+
+        As duas condições existem pelo mesmo motivo. Declarar `VideoObject` numa
+        aula que exige conta faria o Google mostrar a miniatura no resultado de
+        busca e mandar quem clicasse para uma tela de login: promessa quebrada,
+        e é assim que se perde posição. E `uploadDate` é campo obrigatório —
+        sem ele o Google descarta o bloco inteiro, então emitir incompleto é
+        gastar bytes por nada.
+      */}
+      {aulaIndexavel(curso) && aula.publicadaEm && capaDa(aula) && (
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "VideoObject",
+            name: aula.titulo,
+            description: aula.resumo ?? curso.resumo,
+            thumbnailUrl: [capaDa(aula)],
+            uploadDate: aula.publicadaEm,
+            duration: duracaoISO(aula.duracao),
+            embedUrl:
+              aula.video.tipo === "youtube"
+                ? `https://www.youtube-nocookie.com/embed/${aula.video.id}`
+                : undefined,
+            url: `${site.url}/cursos/${curso.slug}/${aula.slug}`,
+            inLanguage: "pt-BR",
+            isFamilyFriendly: true,
+            /** Aberta de verdade: sem login, sem cadastro, sem pagamento. */
+            isAccessibleForFree: true,
+            publisher: { "@id": `${site.url}/#physician` },
+            /** A aula pertence ao curso — é o que liga os dois no índice. */
+            partOfSeries: {
+              "@type": "CreativeWorkSeries",
+              name: curso.titulo,
+              url: `${site.url}/cursos/${curso.slug}`,
+            },
+          }}
+        />
+      )}
     </article>
   );
 }
