@@ -8,7 +8,7 @@ import { Player } from "@/components/cursos/Player";
 import { alunoAtual, buscarMatricula, matriculasConfiguradas } from "@/lib/aluno";
 import { aulaIndexavel, capaDa, duracaoISO, getAula, getCurso, podeVer, vizinhas } from "@/lib/cursos";
 import { JsonLd } from "@/lib/schema";
-import { site } from "@/lib/site-config";
+import { site, whatsappDireto } from "@/lib/site-config";
 
 type Props = { params: Promise<{ curso: string; aula: string }> };
 
@@ -122,9 +122,28 @@ export default async function AulaPage({ params }: Props) {
                 Se já pagou, o acesso é liberado para o e-mail informado no
                 pagamento — se foi outro, entre com ele.
               </p>
-              <Link href={`/cursos/${curso.slug}`} className="btn-ghost mt-5 !py-2.5 text-sm">
-                Ver como participar
-              </Link>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <Link href={`/cursos/${curso.slug}`} className="btn-ghost !py-2.5 text-sm">
+                  Ver como participar
+                </Link>
+                {/*
+                  Quem chega a esta tela já pagou e não está conseguindo
+                  assistir — quase sempre porque entrou com um e-mail diferente
+                  do que informou na compra. É o pior momento para oferecer só
+                  um link de volta: aqui a pessoa precisa falar com alguém.
+                */}
+                <a
+                  href={whatsappDireto(
+                    "cursos",
+                    `Olá! Paguei o curso "${curso.titulo}" e não estou conseguindo acessar. Entrei com o e-mail ${aluno?.email ?? ""}.`
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary !py-2.5 text-sm"
+                >
+                  Falar sobre o acesso
+                </a>
+              </div>
             </div>
           )}
         </div>

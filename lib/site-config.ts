@@ -70,6 +70,24 @@ export const site = {
    * ainda que nenhuma página o exiba.
    */
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP ?? "5562999961365",
+  /**
+   * WhatsApp dos cursos — o número pessoal do médico, e não o da secretaria.
+   *
+   * Ele havia saído do repositório inteiro quando todo o atendimento passou a
+   * cair na secretaria, e volta aqui por um motivo específico: **curso não é
+   * consulta**. Quem pergunta sobre uma videoaula, sobre pagamento ou sobre
+   * acesso não tem assunto com a agenda do consultório, e mandar isso para a
+   * secretária significaria ela repassar tudo — ou, pior, tratar interesse em
+   * curso como pedido de consulta.
+   *
+   * A separação também mantém limpa a medição: contato de curso não é
+   * conversão de agendamento, e misturar os dois inutilizaria o número que
+   * mede o retorno dos anúncios.
+   *
+   * Este número aparece no código-fonte do site, como qualquer outro aqui. É
+   * uma decisão consciente de publicá-lo, não um descuido.
+   */
+  whatsappCursos: process.env.NEXT_PUBLIC_WHATSAPP_CURSOS ?? "5562999758034",
   whatsappMessage:
     "Olá! Encontrei o site do Dr. José Victor e gostaria de agendar uma consulta particular.",
   whatsappMessagePlanos:
@@ -104,10 +122,15 @@ export const site = {
 } as const;
 
 /**
- * O número é um só. Isto seleciona a **mensagem** já preenchida, para que a
- * secretária saiba de onde a pessoa veio antes de responder.
+ * Para onde o contato vai, e com que mensagem.
+ *
+ * `particular` e `planos` caem no mesmo número — o da secretaria — e o que
+ * muda entre eles é só o texto já preenchido, para ela saber de onde a pessoa
+ * veio antes de responder.
+ *
+ * `cursos` é o único que vai para outro número. Ver `site.whatsappCursos`.
  */
-type WhatsAppKind = "particular" | "planos";
+type WhatsAppKind = "particular" | "planos" | "cursos";
 
 /**
  * O endereço real do WhatsApp. Usado pela página `/agendar`, que é quem de
@@ -117,7 +140,7 @@ export function whatsappDireto(
   kind: WhatsAppKind = "particular",
   message?: string
 ): string {
-  const number = site.whatsapp;
+  const number = kind === "cursos" ? site.whatsappCursos : site.whatsapp;
   const text =
     message ??
     (kind === "planos" ? site.whatsappMessagePlanos : site.whatsappMessage);

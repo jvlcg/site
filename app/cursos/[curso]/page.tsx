@@ -143,8 +143,18 @@ export default async function CursoPage({ params }: Props) {
                     para o e-mail que você usar para entrar.
                   </p>
                   <a
+                    /*
+                      Vai direto para o WhatsApp dos cursos, sem passar pela
+                      ponte `/agendar`.
+
+                      A ponte existe para medir agendamento, e dispara a
+                      conversão do Google Ads ao ser aberta. Interesse em curso
+                      não é agendamento: contá-lo ali inflaria o número que
+                      mede o retorno dos anúncios de consulta, e a campanha
+                      passaria a ser otimizada em cima de um sinal falso.
+                    */
                     href={whatsappDireto(
-                      "particular",
+                      "cursos",
                       `Olá! Tenho interesse no curso "${curso.titulo}".`
                     )}
                     target="_blank"
