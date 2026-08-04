@@ -99,7 +99,11 @@ export default function CursosPage() {
           não substituem consulta médica. Nenhuma delas estabelece relação
           médico-paciente, prescreve tratamento ou avalia caso individual. Em
           emergência, procure atendimento imediato ou ligue 192 (SAMU).
-          Conteúdo de responsabilidade de {site.name}, {site.crm}.
+          Conteúdo de responsabilidade de {site.name}, {site.crm}.{" "}
+          <Link href="/termos-dos-cursos" className="underline underline-offset-4">
+            Termos de uso dos cursos
+          </Link>
+          .
         </p>
       </section>
 

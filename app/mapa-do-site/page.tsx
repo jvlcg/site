@@ -47,6 +47,7 @@ const grupos = [
     titulo: "Institucional",
     links: [
       { href: "/politica-de-privacidade", label: "Política de Privacidade", desc: "Tratamento de dados conforme a LGPD." },
+      { href: "/termos-dos-cursos", label: "Termos de uso dos cursos", desc: "Acesso, reembolso em 7 dias e uso do conteúdo em vídeo." },
     ],
   },
 ];

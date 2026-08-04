@@ -43,6 +43,7 @@ type Config = {
   bancoConfigurado: boolean;
   bancoResponde: boolean;
   variavelEncontrada: string | null;
+  sessaoDeAluno: boolean;
   versao: string;
 };
 
@@ -208,7 +209,31 @@ export function PainelRestrito() {
         </button>
       </div>
 
-      {aba === "cursos" && <PainelCursos />}
+      {aba === "cursos" && (
+        <>
+          {config && !config.sessaoDeAluno && (
+            <div className="mb-5 rounded-2xl border border-amber-500/40 bg-amber-500/5 p-5">
+              <p className="font-display font-semibold text-amber-400">
+                Ninguém consegue entrar como aluno
+              </p>
+              <p className="mt-1.5 text-[0.86rem] leading-relaxed text-muted">
+                Falta a variável <strong>SESSAO_CHAVE</strong> na Vercel. Sem ela
+                o servidor não consegue assinar o cookie de sessão: o botão de
+                entrar aceita o clique e não acontece nada — a pessoa não vê
+                erro, só não entra.
+              </p>
+              <p className="mt-3 text-[0.82rem] leading-relaxed text-faint">
+                Gere 64 caracteres no console do navegador (F12), crie a
+                variável em <strong>Settings → Environment Variables</strong>{" "}
+                marcando só <em>Production</em>, e faça um{" "}
+                <strong>Redeploy</strong>. O passo a passo está em{" "}
+                <code className="font-mono-tech">content/plano-cursos.md</code>.
+              </p>
+            </div>
+          )}
+          <PainelCursos />
+        </>
+      )}
 
       <div className={aba === "cadastros" ? "" : "hidden"}>
       <div className="flex flex-wrap items-center gap-3">

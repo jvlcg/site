@@ -154,9 +154,14 @@ export default async function CursoPage({ params }: Props) {
                     Quero este curso <span aria-hidden="true">→</span>
                   </a>
                   <p className="mt-4 text-[0.76rem] leading-relaxed text-faint">
-                    Direito de arrependimento em 7 dias, conforme o art. 49 do
-                    Código de Defesa do Consumidor. Basta pedir por{" "}
-                    {site.email}.
+                    Direito de arrependimento em <strong>7 dias</strong>,
+                    conforme o art. 49 do Código de Defesa do Consumidor — vale
+                    mesmo se você já tiver assistido. Basta pedir por{" "}
+                    {site.email}. Veja os{" "}
+                    <Link href="/termos-dos-cursos" className="underline underline-offset-2">
+                      termos de uso
+                    </Link>
+                    .
                   </p>
                 </div>
               </Reveal>
