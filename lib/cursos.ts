@@ -99,6 +99,33 @@ export function podeVer(
   return { tipo: "liberado" };
 }
 
+// ─────────────────────────────────────────────── dados de vídeo
+
+/**
+ * Converte "12 min" ou "1 h 20 min" no formato que o Google entende: `PT12M`,
+ * `PT1H20M`.
+ *
+ * O campo `duracao` é texto livre porque é ele que aparece na tela, e "12 min"
+ * se lê melhor que "PT12M". O Google, porém, só aceita a norma ISO 8601 — daí
+ * a tradução. Texto que não casa devolve `undefined`, e a duração some do dado
+ * estruturado em vez de entrar errada.
+ */
+export function duracaoISO(texto?: string): string | undefined {
+  if (!texto) return undefined;
+  const horas = texto.match(/(\d+)\s*h/i)?.[1];
+  const minutos = texto.match(/(\d+)\s*m/i)?.[1];
+  if (!horas && !minutos) return undefined;
+  return `PT${horas ? `${horas}H` : ""}${minutos ? `${minutos}M` : ""}`;
+}
+
+/** Endereço da capa: a própria, se houver, senão a miniatura do YouTube. */
+export function capaDa(aula: Aula): string | undefined {
+  if (aula.capa) return aula.capa;
+  return aula.video.tipo === "youtube"
+    ? `https://i.ytimg.com/vi/${aula.video.id}/hqdefault.jpg`
+    : undefined;
+}
+
 /**
  * Uma aula livre pode ser indexada pelo Google; as outras, não.
  *

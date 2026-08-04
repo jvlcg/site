@@ -94,6 +94,30 @@ const cspCadastro = csp
   .replace("connect-src 'self'", `connect-src 'self' ${GOOGLE_CONTAS}`)
   .replace("frame-src ", `frame-src ${GOOGLE_CONTAS} `);
 
+/**
+ * CSP das páginas de curso, que exibem vídeo do YouTube.
+ *
+ * **Sem isto o vídeo não toca.** A CSP geral não tem o YouTube em `frame-src`,
+ * e navegador não avisa em tela: ele bloqueia o iframe e escreve uma linha no
+ * console. Quem estivesse assistindo veria um retângulo em branco sem
+ * explicação nenhuma.
+ *
+ * Duas diretivas, cada uma para uma metade do player: `img-src` serve a capa
+ * (`i.ytimg.com`), que é o que aparece antes do clique, e `frame-src` serve o
+ * player em si, que só entra depois. Faltando a primeira, a capa some e sobra
+ * um quadro preto; faltando a segunda, a capa aparece, a pessoa clica e nada
+ * acontece — que é a pior das duas falhas, porque parece defeito do vídeo.
+ *
+ * `youtube-nocookie.com` e não `youtube.com`: naquele domínio o rastreamento
+ * só começa depois do play. Junto com a capa, isso significa que quem abre a
+ * aula e não assiste não é registrado pelo YouTube.
+ */
+const YOUTUBE = "https://www.youtube-nocookie.com";
+const YOUTUBE_CAPAS = "https://i.ytimg.com";
+const cspCursos = csp
+  .replace("img-src 'self' data: blob:", `img-src 'self' data: blob: ${YOUTUBE_CAPAS}`)
+  .replace("frame-src ", `frame-src ${YOUTUBE} `);
+
 const seguranca = [
   { key: "Content-Security-Policy", value: csp },
   // HSTS: só aceita HTTPS neste domínio pelos próximos 2 anos
@@ -151,6 +175,11 @@ const nextConfig: NextConfig = {
         // idem, para o botão "Continuar com Google" do cadastro
         source: "/cadastro",
         headers: [{ key: "Content-Security-Policy", value: cspCadastro }],
+      },
+      {
+        // as páginas de curso exibem vídeo; sem isto o player fica em branco
+        source: "/cursos/:path*",
+        headers: [{ key: "Content-Security-Policy", value: cspCursos }],
       },
       {
         // as rotas de API nunca devem ser cacheadas nem indexadas

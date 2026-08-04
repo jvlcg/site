@@ -57,6 +57,21 @@ export type Aula = {
   resumo?: string;
   video: Video;
   /**
+   * Data de publicação, no formato `2026-08-04`.
+   *
+   * Sem ela a aula funciona igual — mas **não aparece como vídeo no Google**.
+   * A data de publicação é campo obrigatório do `VideoObject`, e dado
+   * estruturado incompleto o Google simplesmente descarta. Vale a pena
+   * preencher nas aulas gratuitas, que são as que ele indexa.
+   */
+  publicadaEm?: string;
+  /**
+   * Capa própria. Sem ela, usa a miniatura que o YouTube já gera.
+   *
+   * Só vale a pena quando o quadro que o YouTube escolheu ficou ruim.
+   */
+  capa?: string;
+  /**
    * Dias após a matrícula em que a aula abre. Ausente ou `0` = abre na hora.
    *
    * Só tem efeito em curso `cadastro` ou `pago` — liberação gradual precisa de
