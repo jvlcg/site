@@ -109,17 +109,45 @@ export function Header() {
           })}
         </nav>
 
-        <div className="flex items-center gap-3">
+        {/*
+          Espaçamento menor no celular. Com marca, conta, dois alternadores, o
+          botão de agendar e o menu na mesma linha, cada 4 px de folga por
+          intervalo decide se o último elemento cabe — e o último é o menu.
+        */}
+        <div className="flex items-center gap-2 sm:gap-3">
           <ContaAluno />
-          <SoundToggle />
+          {/*
+            O som some abaixo de 360 px.
+
+            É o item de menor uso da barra e o único com equivalente no menu de
+            toque, com rótulo e tudo. Medido: em 320 px a linha terminava em
+            378 e o menu era cortado — num aparelho onde o menu é a única
+            navegação, isso deixa o site sem saída.
+          */}
+          <span className="hidden min-[360px]:flex">
+            <SoundToggle />
+          </span>
           <ThemeToggle />
           <a
             href={whatsappLink()}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary hidden whitespace-nowrap !px-5 !py-2.5 text-sm md:inline-flex"
+            /*
+              Sem `hidden md:inline-flex` aqui, e o motivo é um bug que
+              encontrei: `.btn-primary` define `display: inline-flex` em CSS
+              comum, fora das camadas do Tailwind, e por isso **vence a classe
+              `hidden`**. O botão estava marcado para sumir no celular e
+              aparecia assim mesmo — a classe era uma mentira silenciosa.
+
+              Em vez de forçar a barra com `!hidden`, aceito o comportamento
+              real, que aliás é o desejável: o botão de agendar é o que traz
+              paciente, e escondê-lo no celular era o erro. O que muda é o
+              rótulo, que encurta para caber ao lado dos outros.
+            */
+            className="btn-primary whitespace-nowrap !px-4 !py-2.5 text-sm sm:!px-5"
           >
-            Agendar consulta
+            <span className="sm:hidden">Agendar</span>
+            <span className="hidden sm:inline">Agendar consulta</span>
           </a>
           <button
             type="button"

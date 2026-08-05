@@ -79,7 +79,13 @@ export function ContaAluno({ variant = "topo" }: { variant?: "topo" | "linha" })
         `min-w` fixo reserva o espaço antes de saber quem é. Sem ele, o nome
         chegando depois da resposta empurraria os botões vizinhos.
       */
-      className="glass hidden min-w-[104px] items-center justify-center gap-2 rounded-full px-3.5 py-2 text-[0.78rem] font-medium transition-colors hover:text-[var(--accent)] md:inline-flex"
+      /*
+        No celular ele é só o ícone, num alvo de 40px — o mesmo tamanho dos
+        alternadores ao lado. A partir de `md` entra o nome, e a largura mínima
+        reserva o espaço antes de a resposta chegar, para o nome não empurrar
+        os vizinhos quando aparecer.
+      */
+      className="glass inline-flex h-10 w-10 items-center justify-center gap-2 rounded-full text-[0.78rem] font-medium transition-colors hover:text-[var(--accent)] md:h-auto md:w-auto md:min-w-[104px] md:px-3.5 md:py-2"
       title={aluno ? `Entrou como ${aluno.email}` : "Entrar na área de cursos"}
     >
       <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
@@ -91,7 +97,9 @@ export function ContaAluno({ variant = "topo" }: { variant?: "topo" | "linha" })
         e trocar por um nome meio segundo depois pisca a informação errada na
         cara de quem já está logado.
       */}
-      <span className="truncate">{carregou ? (aluno ? primeiroNome : "Entrar") : ""}</span>
+      <span className="hidden truncate md:inline">
+        {carregou ? (aluno ? primeiroNome : "Entrar") : ""}
+      </span>
     </Link>
   );
 }
