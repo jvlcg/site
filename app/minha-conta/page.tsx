@@ -4,6 +4,7 @@ import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { EntrarAluno } from "@/components/cursos/EntrarAluno";
 import { SairDaConta } from "@/components/cursos/SairDaConta";
+import { MeusPontos } from "@/components/cursos/MeusPontos";
 import { alunoAtual, buscarMatricula, matriculasConfiguradas } from "@/lib/aluno";
 import {
   acessoAgora,
@@ -12,6 +13,7 @@ import {
   fimDoAcesso,
   textoDoAcesso,
 } from "@/lib/cursos";
+import { contaDe, pontosConfigurados } from "@/lib/pontos";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -78,6 +80,14 @@ export default async function MinhaContaPage() {
 
   const abertos = cursos.filter((c) => acessoAgora(c) === "livre");
 
+  /**
+   * A conta de pontos nasce aqui, na primeira visita — não no login.
+   *
+   * É a primeira tela em que ela pode ser vista, e criar registro para quem
+   * entrou uma vez e nunca voltou seria encher o banco de contas mortas.
+   */
+  const pontos = pontosConfigurados() ? await contaDe(aluno.email, aluno.nome) : null;
+
   return (
     <>
       <PageHero
@@ -91,6 +101,12 @@ export default async function MinhaContaPage() {
       />
 
       <section className="mx-auto max-w-3xl px-5 sm:px-8">
+        {pontos && (
+          <div className="mb-12">
+            <MeusPontos conta={pontos} />
+          </div>
+        )}
+
         <h2 className="font-display text-xl font-semibold">Seus cursos</h2>
 
         {meus.length === 0 ? (

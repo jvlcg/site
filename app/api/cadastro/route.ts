@@ -14,6 +14,8 @@ import {
 } from "@/lib/cadastro";
 import { avisosConfigurados, inscreverEmail } from "@/lib/avisos-email";
 import { verificarIdentidade } from "@/lib/google-identidade";
+import { contaDe, creditarIndicacao, lancar, pontosConfigurados } from "@/lib/pontos";
+import { cookies } from "next/headers";
 
 /**
  * Recebe o cadastro de paciente.
@@ -86,6 +88,28 @@ export async function POST(req: Request) {
   */
   if ((corpo as { avisosEmail?: unknown })?.avisosEmail === true && avisosConfigurados()) {
     await inscreverEmail(resultado.ficha.email, resultado.ficha.nome);
+  }
+
+  /**
+   * Pontos e indicação, depois de a ficha estar gravada.
+   *
+   * Tudo aqui é acessório: nada nesta seção pode impedir um cadastro. Se o
+   * banco de pontos estiver fora do ar, a pessoa se cadastra igual e não fica
+   * sabendo de nada — o contrário seria recusar paciente por causa de um
+   * placar.
+   */
+  if (pontosConfigurados()) {
+    try {
+      await contaDe(resultado.ficha.email, resultado.ficha.nome);
+      await lancar(resultado.ficha.email, "cadastroCompleto", undefined, resultado.ficha.nome);
+
+      const codigo = (await cookies()).get("indicacao")?.value;
+      if (codigo) {
+        await creditarIndicacao(codigo, resultado.ficha.email, resultado.ficha.nome);
+      }
+    } catch {
+      /* placar quebrado nunca derruba cadastro */
+    }
   }
 
   return responde({ cadastrado: true });
