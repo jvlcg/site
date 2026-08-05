@@ -95,17 +95,33 @@ export function MeusPontos({ conta }: { conta: Conta }) {
       {/* ---------------------------------------------------- os níveis */}
       <div className="mt-7 border-t hairline pt-6">
         <p className="font-display text-[0.95rem] font-semibold">Os níveis</p>
-        <ul className="mt-3 space-y-2.5">
+        {/*
+          Grade de duas colunas, e não `flex` com largura fixa no rótulo.
+
+          Era `w-16` — 64 px. "CADASTRADO" em maiúsculas, com o espaçamento de
+          letra da fonte técnica, passa disso e vazava por cima do benefício:
+          as duas colunas ficavam escritas uma sobre a outra.
+
+          Aumentar o número resolveria hoje e quebraria de novo no dia em que
+          um nível tiver nome mais comprido — sem aviso, porque nada falha, só
+          fica ilegível. `max-content` mede a própria coluna pelo rótulo mais
+          largo que existir, e continua alinhando todas as linhas.
+
+          O `display: contents` no `<li>` é o que deixa os dois `<span>` serem
+          células da grade do `<ul>`, mantendo a lista como lista para o leitor
+          de tela.
+        */}
+        <ul className="mt-3 grid grid-cols-[max-content_1fr] gap-x-3 gap-y-2.5">
           {NIVEIS.map((n) => (
-            <li key={n.nome} className="flex gap-3 text-[0.84rem] leading-relaxed">
+            <li key={n.nome} className="contents text-[0.84rem] leading-relaxed">
               <span
-                className={`font-mono-tech w-16 shrink-0 text-[0.7rem] uppercase tracking-[0.12em] ${
+                className={`font-mono-tech text-[0.7rem] uppercase leading-relaxed tracking-[0.12em] ${
                   conta.total >= n.minimo ? "text-[var(--accent)]" : "text-faint"
                 }`}
               >
                 {n.nome}
               </span>
-              <span className="text-muted">{n.beneficio}</span>
+              <span className="text-[0.84rem] leading-relaxed text-muted">{n.beneficio}</span>
             </li>
           ))}
         </ul>
