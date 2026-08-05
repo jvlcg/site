@@ -114,9 +114,21 @@ const cspCadastro = csp
  */
 const YOUTUBE = "https://www.youtube-nocookie.com";
 const YOUTUBE_CAPAS = "https://i.ytimg.com";
+/**
+ * As páginas de curso precisam **das duas** liberações, não só a do vídeo.
+ *
+ * A aula fechada mostra o botão "Entrar com o Google" — o mesmo do cadastro —
+ * e sem `accounts.google.com` aqui ele seria bloqueado exatamente onde mais
+ * importa: na tela em que a pessoa precisa entrar para assistir ao que
+ * comprou. O botão apareceria, o toque não faria nada, e o console diria o
+ * motivo para ninguém.
+ */
 const cspCursos = csp
   .replace("img-src 'self' data: blob:", `img-src 'self' data: blob: ${YOUTUBE_CAPAS}`)
-  .replace("frame-src ", `frame-src ${YOUTUBE} `);
+  .replace("script-src 'self' 'unsafe-inline'", `script-src 'self' 'unsafe-inline' ${GOOGLE_CONTAS}`)
+  .replace("style-src 'self' 'unsafe-inline'", `style-src 'self' 'unsafe-inline' ${GOOGLE_CONTAS}`)
+  .replace("connect-src 'self'", `connect-src 'self' ${GOOGLE_CONTAS}`)
+  .replace("frame-src ", `frame-src ${YOUTUBE} ${GOOGLE_CONTAS} `);
 
 const seguranca = [
   { key: "Content-Security-Policy", value: csp },
@@ -177,9 +189,14 @@ const nextConfig: NextConfig = {
         headers: [{ key: "Content-Security-Policy", value: cspCadastro }],
       },
       {
-        // as páginas de curso exibem vídeo; sem isto o player fica em branco
+        // as páginas de curso exibem vídeo e o botão de entrar
         source: "/cursos/:path*",
         headers: [{ key: "Content-Security-Policy", value: cspCursos }],
+      },
+      {
+        // a área do aluno tem o botão de entrar, e nenhum vídeo
+        source: "/minha-conta",
+        headers: [{ key: "Content-Security-Policy", value: cspCadastro }],
       },
       {
         // as rotas de API nunca devem ser cacheadas nem indexadas

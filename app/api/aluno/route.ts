@@ -7,6 +7,7 @@ import {
   mesmaOrigem,
 } from "@/lib/api-guard";
 import {
+  alunoAtual,
   criarSessao,
   matricular,
   matriculasConfiguradas,
@@ -27,6 +28,21 @@ import { verificarIdentidade } from "@/lib/google-identidade";
 
 const responde = (corpo: unknown, status = 200, cabecalhos?: HeadersInit) =>
   Response.json(corpo, { status, headers: { ...CABECALHOS_API, ...cabecalhos } });
+
+/**
+ * Quem está logado agora.
+ *
+ * Devolve `{ aluno: null }` quando não há ninguém — e não 401. Não estar
+ * logado é a resposta normal para a maioria das visitas, não um erro: é o
+ * cabeçalho perguntando se deve mostrar "Entrar" ou o nome da pessoa.
+ *
+ * Só nome e e-mail saem daqui, que é tudo o que a sessão guarda. Não há como
+ * esta rota vazar dado clínico porque a sessão de aluno não alcança nenhum.
+ */
+export async function GET() {
+  const aluno = await alunoAtual();
+  return responde({ aluno });
+}
 
 export async function POST(req: Request) {
   if (!mesmaOrigem(req)) return new Response("Not Found", { status: 404, headers: CABECALHOS_API });
