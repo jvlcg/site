@@ -115,6 +115,25 @@ export function ThreeScene({ kind, className = "" }: { kind: SceneKind; classNam
        * O prazo de dez segundos existe só no celular, onde `pointermove` não
        * acontece sem toque e alguém pode estar apenas lendo.
        */
+      /**
+       * Declarada aqui em cima, e atribuída lá embaixo. Não é estilo — é o
+       * conserto de um bug que derrubava a cena 3D no caso mais comum de
+       * todos.
+       *
+       * `montar` limpa este relógio. Mas quando a pessoa já tinha mexido no
+       * mouse antes de o agendamento acontecer — o que é a regra, não a
+       * exceção, num computador —, o atalho `if (houveGesto) return montar()`
+       * roda **antes** da linha que cria o relógio. Com `const espera`
+       * declarado só lá embaixo, esse acesso caía na zona morta temporal e
+       * levantava "Cannot access 'espera' before initialization".
+       *
+       * E o erro acontecia dentro da callback do IntersectionObserver, onde o
+       * navegador o engole: nada aparecia na tela, nada quebrava visivelmente
+       * — **a cena 3D simplesmente nunca era montada**, e a página ficava com
+       * o degradê de fallback sem que ninguém soubesse por quê.
+       */
+      let espera: number | undefined;
+
       const montar = () => {
         sinais.forEach((s) => window.removeEventListener(s, aoGesto));
         if (espera) clearTimeout(espera);
@@ -137,7 +156,7 @@ export function ThreeScene({ kind, className = "" }: { kind: SceneKind; classNam
        * rolar ou clicar. Isto existe para o caso raro em que o gesto acontece
        * antes de a página terminar de se montar e se perde.
        */
-      const espera = window.setTimeout(montar, noCelular ? 10_000 : 15_000);
+      espera = window.setTimeout(montar, noCelular ? 10_000 : 15_000);
 
       limpar = () => {
         sinais.forEach((s) => window.removeEventListener(s, aoGesto));
@@ -145,10 +164,24 @@ export function ThreeScene({ kind, className = "" }: { kind: SceneKind; classNam
       };
     };
 
-    const io = new IntersectionObserver(
+    /*
+      `let` declarado antes, e não `const io = new IntersectionObserver(...)`.
+
+      A callback é passada para dentro do construtor e pode ser chamada antes
+      de a atribuição terminar — e enquanto isso `io` está na zona morta
+      temporal de um `const`. O acesso levanta "Cannot access 'io' before
+      initialization" **dentro da callback**, onde ninguém vê: o navegador
+      engole o erro, a cena 3D nunca é montada e a página fica sem o efeito,
+      sem nada indicar o motivo.
+
+      Com `let` a ligação já existe (valendo `undefined`) quando a callback
+      roda, e o `?.` cobre esse instante.
+    */
+    let io: IntersectionObserver | null = null;
+    io = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
-        io.disconnect();
+        io?.disconnect();
         if (document.readyState === "complete") agendar();
         else window.addEventListener("load", (aoCarregar = agendar), { once: true });
       },
@@ -157,7 +190,7 @@ export function ThreeScene({ kind, className = "" }: { kind: SceneKind; classNam
     io.observe(el);
 
     return () => {
-      io.disconnect();
+      io?.disconnect();
       if (ocioso) (window.cancelIdleCallback ?? window.clearTimeout)(ocioso);
       if (aoCarregar) window.removeEventListener("load", aoCarregar);
       limpar?.();

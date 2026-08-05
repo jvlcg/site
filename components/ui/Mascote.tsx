@@ -73,6 +73,15 @@ type Props = {
   esperaSegundos?: number;
   /** Avisa o pai que a conversa acabou — ou que a pessoa fechou. */
   aoSair?: () => void;
+  /**
+   * A pessoa disse que não quer: fechou no X ou clicou em "Agora não".
+   *
+   * Separado de `aoSair` de propósito. Terminar de falar e ser recusado são
+   * coisas diferentes: a primeira é o roteiro acabando, a segunda é uma
+   * resposta. Quem clica no botão do convite também sai, e não recusou nada —
+   * esse caminho não passa por aqui.
+   */
+  aoNegar?: () => void;
 };
 
 export function Mascote({
@@ -81,6 +90,7 @@ export function Mascote({
   ativo = true,
   esperaSegundos = 4,
   aoSair,
+  aoNegar,
 }: Props) {
   const caminho = usePathname();
   const { tocar } = useSom();
@@ -126,6 +136,18 @@ export function Mascote({
     avisarSaida();
     setTimeout(() => setVisivel(false), 450);
   }, [avisarSaida]);
+
+  /**
+   * Sair porque a pessoa disse que não quer.
+   *
+   * Além de fechar, registra a recusa — e é o registro que faz este
+   * personagem não voltar nas páginas seguintes. Clicar no botão do convite
+   * chama `encerrar`, não isto: quem aceitou não recusou nada.
+   */
+  const negar = useCallback(() => {
+    aoNegar?.();
+    encerrar();
+  }, [aoNegar, encerrar]);
 
   /** Um toque no balão pula a digitação — esperar texto sair nunca é a graça. */
   const adiantar = useCallback(() => pular.current?.(), []);
@@ -342,7 +364,7 @@ export function Mascote({
         />
         <button
           type="button"
-          onClick={encerrar}
+          onClick={negar}
           aria-label={personagem.fecharRotulo}
           /*
             24 px era pequeno demais: o Lighthouse reprova área de toque abaixo
@@ -402,7 +424,7 @@ export function Mascote({
             )}
             <button
               type="button"
-              onClick={encerrar}
+              onClick={negar}
               className="text-[0.76rem] text-faint underline underline-offset-4 transition-colors hover:text-[var(--fg)] sm:text-[0.8rem]"
             >
               Agora não

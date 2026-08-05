@@ -1,53 +1,80 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ESTETO, TERMO } from "@/content/mascotes";
 import { Estetoscopio } from "./Estetoscopio";
 import { Mascote } from "./Mascote";
 import { Termometro } from "./Termometro";
 
 /**
- * Quem entra em cena, quando, e onde.
+ * Quem entra em cena, quando, e até quando.
  *
- * São dois personagens com o mesmo comportamento, e a única coisa que muda
- * entre computador e celular é **quantos aparecem de uma vez**.
+ * ## A regra que manda em tudo: recusa é resposta
  *
- * ## No computador: os dois, um acima do outro, em fila
+ * Fechar um mascote no X, ou clicar em "Agora não", é uma resposta — e uma
+ * resposta merece ser lembrada. Quem disse não ao Estetô **não vê o Estetô de
+ * novo** nas páginas seguintes; vê o Termô, que ainda não perguntou nada. Quem
+ * disser não aos dois não vê mais nenhum.
  *
- * O Termô fica em cima e o Estetô embaixo, numa coluna ancorada no canto. Mas
- * eles **não falam ao mesmo tempo**: o Termô só entra depois que o Estetô
- * termina de falar (ou é fechado). Dois balões digitando juntos seriam duas
- * vozes sobrepostas — e, do lado técnico, duas digitações concorrendo pela
+ * Sem isso, um convite recusado voltaria a cada página, e um convite que
+ * insiste depois do "não" deixa de ser convite.
+ *
+ * **Clicar no botão do convite não é recusa.** Quem foi ao cadastro ou aos
+ * cursos aceitou; o personagem só sai de cena porque já cumpriu o que tinha a
+ * fazer, e continua disponível depois.
+ *
+ * ## Quanto tempo a recusa dura
+ *
+ * A visita inteira, e não para sempre — `sessionStorage`, que se apaga quando
+ * a aba fecha. É o equilíbrio entre duas coisas legítimas: o pedido do Dr.
+ * José Victor de que eles apareçam em toda visita, e o direito de quem já
+ * disse não de não ser perguntado de novo no mesmo passeio pelo site.
+ *
+ * ## Um de cada vez
+ *
+ * Nunca dois falando junto. Quando um sai — por ter terminado ou por ter sido
+ * recusado — o outro entra em seguida, no mesmo canto. Dois balões digitando
+ * ao mesmo tempo seriam duas vozes sobrepostas, e duas digitações disputando a
  * mesma thread.
  *
- * ## No celular: um de cada vez, revezando
- *
- * Numa tela de telefone, dois balões empilhados cobrem o que a pessoa está
- * lendo — que é justamente o oposto do que um convite deveria fazer. Então
- * aparece **um por carregamento**, no mesmo canto, e eles se revezam: quem
- * apareceu desta vez cede a vez na próxima página.
- *
- * O revezamento é contado fora do React, porque o estado se perde na troca de
- * rota e é exatamente entre uma página e outra que a vez precisa ser lembrada.
+ * Vale para computador e celular igualmente: o comportamento é o mesmo, e a
+ * única diferença entre eles é o tamanho do personagem.
  */
 
-/**
- * De quem é a vez no celular.
- *
- * Guardado no navegador, e não numa variável do módulo. Variável de módulo
- * sobrevive à navegação dentro do site, mas morre em qualquer recarga — e
- * recarga é como a maior parte das visitas de celular começa. Medido: com
- * variável de módulo, dois carregamentos seguidos traziam o Estetô as duas
- * vezes, porque o contador nascia zerado a cada um.
- *
- * `localStorage` porque a alternância deve valer entre visitas, não só dentro
- * de uma. É um número, sem nada que identifique ninguém — não é dado pessoal e
- * não entra na conta da LGPD.
- */
+const CHAVE_NEGADOS = "mascote-negados";
 const CHAVE_VEZ = "mascote-vez";
 
-function proximaVez(): "esteto" | "termo" {
+type Nome = "esteto" | "termo";
+
+function lerNegados(): Nome[] {
+  try {
+    return (sessionStorage.getItem(CHAVE_NEGADOS) ?? "").split(",").filter(Boolean) as Nome[];
+  } catch {
+    // navegação anônima com armazenamento bloqueado: ninguém recusou nada
+    return [];
+  }
+}
+
+function gravarNegados(lista: Nome[]) {
+  try {
+    sessionStorage.setItem(CHAVE_NEGADOS, lista.join(","));
+  } catch {
+    /* sem armazenamento, a recusa vale só até a próxima página */
+  }
+}
+
+/**
+ * De quem é a vez, contado no navegador.
+ *
+ * `localStorage` e não variável de módulo: variável sobrevive à navegação
+ * dentro do site, mas morre em qualquer recarga — e recarga é como a maior
+ * parte das visitas de celular começa. Medido: com variável de módulo, dois
+ * carregamentos seguidos traziam o Estetô as duas vezes.
+ *
+ * É um número, sem nada que identifique ninguém.
+ */
+function proximaVez(): Nome {
   try {
     const anterior = Number(localStorage.getItem(CHAVE_VEZ) ?? "");
     /**
@@ -55,11 +82,13 @@ function proximaVez(): "esteto" | "termo" {
      * Começar sempre no Estetô faria o Termô nunca aparecer para quem visita
      * o site uma vez só — que é a maioria.
      */
-    const n = Number.isFinite(anterior) && anterior > 0 ? anterior + 1 : Math.floor(Math.random() * 2) + 1;
+    const n =
+      Number.isFinite(anterior) && anterior > 0
+        ? anterior + 1
+        : Math.floor(Math.random() * 2) + 1;
     localStorage.setItem(CHAVE_VEZ, String(n));
     return n % 2 === 1 ? "esteto" : "termo";
   } catch {
-    // navegação anônima com armazenamento bloqueado: sorteia e segue
     return Math.random() < 0.5 ? "esteto" : "termo";
   }
 }
@@ -67,69 +96,90 @@ function proximaVez(): "esteto" | "termo" {
 export function Mascotes() {
   const caminho = usePathname();
   /**
-   * `null` enquanto não se sabe. O primeiro desenho no servidor não tem como
-   * saber o tipo de tela, e chutar faria o mascote errado piscar antes de ser
-   * substituído.
+   * `null` enquanto não se sabe. O primeiro desenho acontece antes de o
+   * navegador poder ser consultado, e mostrar alguém nesse instante poderia
+   * exibir justamente quem já foi recusado.
    */
-  const [noCelular, setNoCelular] = useState<boolean | null>(null);
-  const [estetoSaiu, setEstetoSaiu] = useState(false);
-  const [daVez, setDaVez] = useState<"esteto" | "termo">("esteto");
+  const [negados, setNegados] = useState<Nome[] | null>(null);
+  const [emCena, setEmCena] = useState<Nome | null>(null);
 
-  useEffect(() => {
-    const consulta = window.matchMedia("(pointer: coarse)");
-    setNoCelular(consulta.matches);
-    const aoMudar = (e: MediaQueryListEvent) => setNoCelular(e.matches);
-    consulta.addEventListener("change", aoMudar);
-    return () => consulta.removeEventListener("change", aoMudar);
+  const negar = useCallback((quem: Nome) => {
+    setNegados((atual) => {
+      const lista = atual ?? [];
+      if (lista.includes(quem)) return lista;
+      const nova = [...lista, quem];
+      gravarNegados(nova);
+      return nova;
+    });
   }, []);
 
-  /** A cada página, o revezamento anda uma casa e o Estetô volta ao início. */
-  useEffect(() => {
-    setEstetoSaiu(false);
-    setDaVez(proximaVez());
-  }, [caminho]);
+  /** Escolhe quem entra: o da vez, se ainda não foi recusado; senão, o outro. */
+  const escolher = useCallback((recusados: Nome[], preferido?: Nome): Nome | null => {
+    const ordem: Nome[] = preferido
+      ? [preferido, preferido === "esteto" ? "termo" : "esteto"]
+      : [proximaVez(), "esteto", "termo"];
+    return ordem.find((n) => !recusados.includes(n)) ?? null;
+  }, []);
 
-  if (noCelular === null) return null;
+  // ---- a cada página, recomeça
+  useEffect(() => {
+    const recusados = lerNegados();
+    setNegados(recusados);
+    setEmCena(escolher(recusados));
+  }, [caminho, escolher]);
+
+  /**
+   * Quando o que estava em cena sai, o outro entra — se ainda não recusado.
+   *
+   * `sair` é chamado tanto no fim da conversa quanto na recusa. Nos dois casos
+   * a vez passa adiante; o que muda é que na recusa a lista de recusados já
+   * cresceu, então o que saiu não pode ser reescolhido.
+   */
+  const aoSair = useCallback(
+    (quem: Nome) => {
+      setEmCena((atual) => {
+        if (atual !== quem) return atual;
+        const outro: Nome = quem === "esteto" ? "termo" : "esteto";
+        // lê do armazenamento, e não do estado: a recusa pode ter sido
+        // gravada no mesmo instante, e o estado ainda não teria chegado aqui
+        return lerNegados().includes(outro) ? null : outro;
+      });
+    },
+    []
+  );
+
+  if (negados === null || emCena === null) return null;
+
+  /*
+    `key` fica fora deste objeto de propósito: no React 19, espalhar um objeto
+    que contém `key` é erro — ele precisa ser escrito direto no elemento.
+  */
+  const comum = {
+    aoSair: () => aoSair(emCena),
+    aoNegar: () => negar(emCena),
+  };
 
   return (
     /*
-      Uma coluna ancorada no canto, e não dois elementos fixos independentes.
-      Com `fixed` em cada um eu teria de calcular a altura do de baixo para
-      posicionar o de cima — e essa altura muda conforme o texto, o tamanho da
-      fonte e a presença dos botões. Numa coluna, eles se empilham sozinhos.
-
-      Entram pelo canto esquerdo porque o direito já tem WhatsApp, assistente e
+      Ancorado no canto esquerdo porque o direito já tem WhatsApp, assistente e
       o atalho do cadastro — mais um ali viraria uma parede de botões.
+
+      `key` no mascote força a remontagem quando um dá lugar ao outro: sem ela
+      o React reaproveitaria o componente, e o novo personagem herdaria o
+      estado de conversa do anterior — entrando já no meio de uma frase.
     */
-    <div className="pointer-events-none fixed bottom-4 left-4 z-[60] flex flex-col items-start gap-2.5 sm:bottom-6 sm:left-6">
-      <div className="pointer-events-auto contents">
-        {noCelular ? (
-          daVez === "esteto" ? (
-            <Mascote personagem={ESTETO} Desenho={Estetoscopio} />
-          ) : (
-            <Mascote personagem={TERMO} Desenho={Termometro} />
-          )
-        ) : (
-          <>
-            {/*
-              O Termô vem primeiro no HTML e por isso aparece em cima. Ele só é
-              ativado depois que o Estetô sai de cena, e com dois segundos de
-              respiro — entrar no instante seguinte pareceria enxurrada.
-            */}
-            <Mascote
-              personagem={TERMO}
-              Desenho={Termometro}
-              ativo={estetoSaiu}
-              esperaSegundos={2}
-            />
-            <Mascote
-              personagem={ESTETO}
-              Desenho={Estetoscopio}
-              aoSair={() => setEstetoSaiu(true)}
-            />
-          </>
-        )}
-      </div>
+    <div className="fixed bottom-4 left-4 z-[60] sm:bottom-6 sm:left-6">
+      {emCena === "esteto" ? (
+        <Mascote key="esteto" personagem={ESTETO} Desenho={Estetoscopio} {...comum} />
+      ) : (
+        /*
+          Dois segundos para o segundo entrar, em vez dos quatro do primeiro.
+          Quem já viu um balão nesta página não precisa do mesmo tempo de
+          apresentação — mas entrar no instante seguinte ao "não" pareceria
+          insistência.
+        */
+        <Mascote key="termo" personagem={TERMO} Desenho={Termometro} esperaSegundos={2} {...comum} />
+      )}
     </div>
   );
 }
