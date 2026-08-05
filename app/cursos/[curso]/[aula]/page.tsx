@@ -5,10 +5,12 @@ import { Reveal } from "@/components/ui/Reveal";
 import { DoacaoPix } from "@/components/cursos/DoacaoPix";
 import { EntrarAluno } from "@/components/cursos/EntrarAluno";
 import { Player } from "@/components/cursos/Player";
+import { Capa } from "@/components/cursos/Capa";
 import { MarcarAula } from "@/components/cursos/MarcarAula";
 import { alunoAtual, buscarMatricula, matriculasConfiguradas } from "@/lib/aluno";
 import {
   aulaIndexavel,
+  aulasDo,
   capaDa,
   duracaoISO,
   getAula,
@@ -64,6 +66,7 @@ export default async function AulaPage({ params }: Props) {
 
   const acesso = podeVer(curso, aula, aluno, matricula);
   const { anterior, proxima } = vizinhas(curso, aula.slug);
+  const todasAsAulas = aulasDo(curso);
 
   return (
     <article className="relative overflow-hidden pt-28 pb-24 sm:pt-32">
@@ -220,19 +223,95 @@ export default async function AulaPage({ params }: Props) {
         {(anterior || proxima) && (
           <nav aria-label="Outras aulas" className="mt-12 grid gap-4 border-t hairline pt-8 sm:grid-cols-2">
             {anterior ? (
-              <Link href={`/cursos/${curso.slug}/${anterior.slug}`} className="glass card-hover rounded-2xl p-5">
-                <p className="font-mono-tech text-[0.62rem] uppercase tracking-[0.16em] text-faint">Anterior</p>
-                <p className="font-display mt-2 font-semibold leading-snug">{anterior.titulo}</p>
+              <Link href={`/cursos/${curso.slug}/${anterior.slug}`} className="glass card-hover flex items-center gap-3.5 rounded-2xl p-3.5">
+                <Capa
+                  src={capaDa(anterior)}
+                  titulo={anterior.titulo}
+                  className="h-14 w-24 shrink-0 rounded-lg object-cover"
+                />
+                <span className="min-w-0">
+                  <span className="font-mono-tech block text-[0.62rem] uppercase tracking-[0.16em] text-faint">Anterior</span>
+                  <span className="font-display mt-1 block font-semibold leading-snug">{anterior.titulo}</span>
+                </span>
               </Link>
             ) : (
               <span />
             )}
             {proxima && (
-              <Link href={`/cursos/${curso.slug}/${proxima.slug}`} className="glass card-hover rounded-2xl p-5 sm:text-right">
-                <p className="font-mono-tech text-[0.62rem] uppercase tracking-[0.16em] text-faint">Próxima</p>
-                <p className="font-display mt-2 font-semibold leading-snug">{proxima.titulo}</p>
+              <Link href={`/cursos/${curso.slug}/${proxima.slug}`} className="glass card-hover flex items-center gap-3.5 rounded-2xl p-3.5 sm:flex-row-reverse sm:text-right">
+                <Capa
+                  src={capaDa(proxima)}
+                  titulo={proxima.titulo}
+                  className="h-14 w-24 shrink-0 rounded-lg object-cover"
+                />
+                <span className="min-w-0">
+                  <span className="font-mono-tech block text-[0.62rem] uppercase tracking-[0.16em] text-faint">Próxima</span>
+                  <span className="font-display mt-1 block font-semibold leading-snug">{proxima.titulo}</span>
+                </span>
               </Link>
             )}
+          </nav>
+        )}
+
+        {/*
+          A lista completa do curso, com a aula atual marcada.
+
+          "Anterior" e "próxima" bastam para quem segue a ordem e não servem
+          para mais nada: quem quer pular para a quarta aula, ou só ver o que
+          vem pela frente, precisava voltar à página do curso. Numa série em
+          vídeo isso é o mínimo — é a barra lateral que todo player de curso
+          tem, e a falta dela era boa parte do "está muito simples".
+
+          Só aparece com três aulas ou mais. Com duas, os cartões de anterior e
+          próxima já mostram o curso inteiro, e repetir vira ruído.
+        */}
+        {todasAsAulas.length > 2 && (
+          <nav aria-label="Aulas deste curso" className="mt-12 border-t hairline pt-8">
+            <h2 className="font-mono-tech text-[0.68rem] uppercase tracking-[0.16em] text-faint">
+              As {todasAsAulas.length} aulas de {curso.titulo}
+            </h2>
+            <ol className="mt-4 space-y-1.5">
+              {todasAsAulas.map((a, i) => {
+                const atual = a.slug === aula.slug;
+                return (
+                  <li key={a.slug}>
+                    <Link
+                      href={`/cursos/${curso.slug}/${a.slug}`}
+                      aria-current={atual ? "page" : undefined}
+                      className={`flex items-center gap-3.5 rounded-xl p-2.5 transition-colors ${
+                        atual
+                          ? "glass ring-1 ring-[color-mix(in_srgb,var(--accent)_45%,transparent)]"
+                          : "glass card-hover"
+                      }`}
+                    >
+                      <span className="font-mono-tech w-5 shrink-0 text-center text-[0.7rem] text-faint">
+                        {i + 1}
+                      </span>
+                      <Capa
+                        src={capaDa(a)}
+                        titulo={a.titulo}
+                        className="h-[3.25rem] w-[5.75rem] shrink-0 rounded-lg object-cover"
+                      />
+                      <span className="min-w-0 flex-1">
+                        <span
+                          className={`block text-[0.92rem] leading-snug ${atual ? "font-semibold text-[var(--accent)]" : ""}`}
+                        >
+                          {a.titulo}
+                        </span>
+                        {atual && (
+                          <span className="font-mono-tech mt-1 block text-[0.6rem] uppercase tracking-[0.14em] text-[var(--accent)]">
+                            Você está aqui
+                          </span>
+                        )}
+                      </span>
+                      {a.duracao && (
+                        <span className="shrink-0 font-mono-tech text-[0.68rem] text-faint">{a.duracao}</span>
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ol>
           </nav>
         )}
 
