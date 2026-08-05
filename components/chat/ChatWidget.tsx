@@ -147,6 +147,8 @@ export function ChatWidget() {
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Fechar o Estetô, assistente virtual" : "Falar com o Estetô, assistente virtual"}
         aria-expanded={open}
+        /* sai da frente com o menu de toque aberto — ver globals.css */
+        data-flutuante=""
         className="glass fixed bottom-[7.5rem] right-6 z-[70] flex h-14 w-14 items-center justify-center rounded-full shadow-[0_14px_40px_-12px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:scale-105"
       >
         {open ? (
@@ -176,6 +178,8 @@ export function ChatWidget() {
         role="dialog"
         aria-label="Assistente virtual do consultório"
         aria-hidden={!open}
+        /* sai da frente com o menu de toque aberto — ver globals.css */
+        data-flutuante=""
         className={`fixed z-[69] flex flex-col overflow-hidden transition-all duration-400 ${
           open ? "pointer-events-auto opacity-100" : "pointer-events-none translate-y-4 opacity-0"
         } inset-x-0 bottom-0 top-0 sm:inset-auto sm:bottom-40 sm:right-6 sm:top-auto sm:h-[560px] sm:max-h-[75vh] sm:w-[400px] sm:rounded-3xl`}

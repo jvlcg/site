@@ -45,6 +45,8 @@ export function CadastroFab() {
 
   return (
     <div
+      /* sai da frente com o menu de toque aberto — ver globals.css */
+      data-flutuante=""
       className={`fixed bottom-[13.5rem] right-6 z-40 flex items-center gap-3 transition-all duration-500 ${
         visivel ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
       }`}

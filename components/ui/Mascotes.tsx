@@ -168,7 +168,11 @@ export function Mascotes() {
       o React reaproveitaria o componente, e o novo personagem herdaria o
       estado de conversa do anterior — entrando já no meio de uma frase.
     */
-    <div className="fixed bottom-4 left-4 z-[60] sm:bottom-6 sm:left-6">
+    <div
+      /* sai da frente com o menu de toque aberto — ver globals.css */
+      data-flutuante=""
+      className="fixed bottom-4 left-4 z-[60] sm:bottom-6 sm:left-6"
+    >
       {emCena === "esteto" ? (
         <Mascote key="esteto" personagem={ESTETO} Desenho={Estetoscopio} {...comum} />
       ) : (

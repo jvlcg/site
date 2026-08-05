@@ -311,6 +311,34 @@ body {
   transform: translateY(-2px);
 }
 
+/*
+  ---------- Botões flutuantes com o menu de toque aberto ----------
+
+  Com o menu aberto, tudo o que flutua sai da frente: os dois mascotes, o
+  balão de fala, o atalho de cadastro, o assistente e o botão do WhatsApp.
+
+  O motivo é de tela pequena. Esses elementos vivem em camadas acima do menu
+  (`z-60`, `z-70`) porque precisam ficar por cima do conteúdo comum — e com o
+  menu aberto isso se vira contra a navegação: em 390 px o balão do mascote
+  cobria o último item da lista, que é o "Contato". Um item de menu tapado por
+  um balão publicitário é pior que o balão não existir.
+
+  Escondo pelo atributo em `<html>` em vez de passar um `aberto` por props
+  para cada um deles: o cabeçalho não precisa conhecer a existência do
+  assistente nem dos mascotes, e um flutuante novo entra na regra só marcando
+  `data-flutuante`, sem tocar no cabeçalho.
+
+  `visibility` junto com `opacity` porque só a opacidade deixaria o elemento
+  ainda alcançável pelo leitor de tela e pelo Tab — invisível e clicável é a
+  pior combinação das duas.
+*/
+html[data-menu="aberto"] [data-flutuante] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s;
+}
+
 /* ---------- Route transition (template.tsx) ---------- */
 @keyframes route-in {
   from { opacity: 0; transform: translateY(10px); }

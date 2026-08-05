@@ -46,14 +46,43 @@ export function Header() {
     setOpen(false);
   }, [pathname]);
 
+  /*
+    Trava a rolagem e avisa o resto da página que o menu está aberto.
+
+    O atributo é lido só pelo CSS (`html[data-menu="aberto"]` em globals.css),
+    que tira da frente os botões flutuantes — mascotes, assistente, cadastro e
+    WhatsApp. Sem isso, em 390 px o balão do mascote fica por cima do último
+    item da lista e cobre o "Contato".
+  */
   useEffect(() => {
-    document.documentElement.style.overflow = open ? "hidden" : "";
+    const raiz = document.documentElement;
+    raiz.style.overflow = open ? "hidden" : "";
+    if (open) raiz.dataset.menu = "aberto";
+    else delete raiz.dataset.menu;
     return () => {
-      document.documentElement.style.overflow = "";
+      raiz.style.overflow = "";
+      delete raiz.dataset.menu;
     };
   }, [open]);
 
   return (
+    /*
+      Fragmento, e não um só `<header>` envolvendo tudo.
+
+      O menu de toque **precisa** ficar fora do `<header>`, e o motivo é um dos
+      cantos mais escorregadios do CSS: ao rolar, o cabeçalho ganha
+      `backdrop-filter` para o efeito de vidro — e `backdrop-filter` faz o
+      elemento virar **bloco de referência** para todo `position: fixed` que
+      esteja dentro dele.
+
+      Com o menu como filho, ele deixava de se medir pela tela e passava a se
+      medir pela barra de 72 px. `top: 72px` com `bottom: 0` dentro de uma
+      caixa de 72 px dá **altura zero**. Medido: 772 px de altura no topo da
+      página, 0 px depois de rolar.
+
+      Era exatamente o sintoma relatado — o menu "só abre quando estou no topo".
+    */
+    <>
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
         scrolled ? "border-b hairline backdrop-blur-xl" : ""
@@ -165,8 +194,15 @@ export function Header() {
           </button>
         </div>
       </div>
+    </header>
 
-      {/* menu mobile */}
+      {/*
+        Menu de toque — irmão do cabeçalho, nunca filho. Ver a explicação
+        acima; mexer nisto reintroduz o defeito.
+
+        `z-40` contra os `z-50` do cabeçalho: a barra fica por cima, e é o que
+        mantém o botão de fechar alcançável com o menu aberto.
+      */}
       <div
         className={`fixed inset-0 top-[72px] z-40 transition-all duration-500 min-[1500px]:hidden ${
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
@@ -208,6 +244,6 @@ export function Header() {
           </a>
         </nav>
       </div>
-    </header>
+    </>
   );
 }
