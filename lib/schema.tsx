@@ -217,6 +217,8 @@ export function articleSchema(opts: {
   slug: string;
   date: string;
   modified?: string;
+  /** O artigo tem algum bloco `<SoParaAlunos>`? */
+  temTrechoRestrito?: boolean;
 }) {
   return {
     "@context": "https://schema.org",
@@ -230,6 +232,28 @@ export function articleSchema(opts: {
     author: { "@id": `${site.url}/#physician` },
     publisher: { "@id": `${site.url}/#physician` },
     mainEntityOfPage: `${site.url}/blog/${opts.slug}`,
+    /**
+     * Amostragem flexível: o artigo é gratuito, e só um trecho é restrito.
+     *
+     * `isAccessibleForFree: true` no artigo inteiro é o que diz ao Google que
+     * ele continua sendo conteúdo aberto — declarar `false` aqui faria o
+     * artigo inteiro ser tratado como fechado, e ele perderia posição por um
+     * fechamento que não existe.
+     *
+     * O `hasPart` marca **só o pedaço** restrito, pelo seletor CSS. É assim
+     * que jornais publicam matéria com paywall parcial sem serem punidos por
+     * mostrar ao rastreador algo diferente do que o leitor vê.
+     */
+    ...(opts.temTrechoRestrito
+      ? {
+          isAccessibleForFree: true,
+          hasPart: {
+            "@type": "WebPageElement",
+            isAccessibleForFree: false,
+            cssSelector: ".trecho-restrito",
+          },
+        }
+      : { isAccessibleForFree: true }),
   };
 }
 

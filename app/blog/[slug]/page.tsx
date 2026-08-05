@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { SoParaAlunos } from "@/components/blog/SoParaAlunos";
 import { Reveal } from "@/components/ui/Reveal";
 import { ReadingProgress } from "@/components/ui/ReadingProgress";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
@@ -120,6 +121,7 @@ export default async function ArtigoPage({ params }: Props) {
             */}
             <MDXRemote
               source={article.content}
+              components={{ SoParaAlunos }}
               options={{ mdxOptions: { rehypePlugins: [rehypeLinksInternos] } }}
             />
           </div>
@@ -203,6 +205,19 @@ export default async function ArtigoPage({ params }: Props) {
             slug: article.slug,
             date: article.date,
             modified: article.updated,
+            /**
+             * Declara ao Google que parte do artigo é restrita.
+             *
+             * Sem isto, um trecho visível só para quem tem conta seria lido
+             * como conteúdo escondido do rastreador — que é o caso que o
+             * Google pune. Com o `hasPart`, ele sabe que o fechamento é
+             * legítimo, indexa o resto normalmente e não penaliza.
+             *
+             * O seletor precisa bater com a classe usada em
+             * `components/blog/SoParaAlunos.tsx`. É contrato entre os dois
+             * arquivos, não decoração.
+             */
+            temTrechoRestrito: article.content.includes("<SoParaAlunos"),
           }),
           breadcrumbSchema([
             { name: "Início", path: "/" },
