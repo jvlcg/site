@@ -1,4 +1,5 @@
-import { NIVEIS, nivelDe, type Conta } from "@/lib/pontos";
+import { NIVEIS, nivelDe } from "@/lib/niveis";
+import type { Conta } from "@/lib/pontos";
 import { site } from "@/lib/site-config";
 import { CopiarLink } from "./CopiarLink";
 

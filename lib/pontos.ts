@@ -78,26 +78,12 @@ export type Conta = {
 
 // ─────────────────────────────────────────────────────────── níveis
 
-export const NIVEIS = [
-  { nome: "Cadastrado", minimo: 0, beneficio: "Trechos exclusivos nos artigos e cursos gratuitos com conta" },
-  { nome: "Bronze", minimo: 60, beneficio: "Material de apoio extra nos cursos" },
-  { nome: "Prata", minimo: 150, beneficio: "Um curso pago à sua escolha" },
-  { nome: "Ouro", minimo: 350, beneficio: "Acesso a todos os cursos pagos" },
-] as const;
-
-export function nivelDe(total: number) {
-  /**
-   * Percorre de trás para frente e devolve o primeiro que couber. Assim
-   * acrescentar um nível novo no fim da lista não exige mexer nesta função.
-   */
-  const atual = [...NIVEIS].reverse().find((n) => total >= n.minimo) ?? NIVEIS[0];
-  const proximo = NIVEIS.find((n) => n.minimo > total);
-  return {
-    ...atual,
-    proximo,
-    faltam: proximo ? proximo.minimo - total : 0,
-  };
-}
+/**
+ * A tabela vive em `lib/niveis.ts`, sem nada do Node, para que o painel e a
+ * tela do aluno possam usá-la sem arrastar `node:crypto` para o navegador.
+ * Reexportada aqui para quem já importava daqui não precisar saber disso.
+ */
+export { NIVEIS, nivelDe } from "./niveis";
 
 // ─────────────────────────────────────────────────── código de indicação
 
