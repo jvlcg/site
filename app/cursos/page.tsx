@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
+import { Capa } from "@/components/cursos/Capa";
 import type { Curso } from "@/content/cursos";
 import {
+  aulasDo,
+  capaDa,
   cursosPublicados,
   dataPorExtenso,
   naJanelaGratuita,
@@ -48,6 +51,19 @@ function selo(curso: Curso) {
   if (curso.acesso === "cadastro") return { texto: "Gratuito · com conta", classe: DESTAQUE };
   return { texto: "Curso completo", classe: DISCRETO };
 }
+
+
+/**
+ * A capa do cartão é a miniatura da primeira aula.
+ *
+ * Curso não tem imagem própria no catálogo, e criar um campo para isso
+ * obrigaria a produzir uma arte por curso antes de publicar qualquer um. A
+ * primeira aula já tem capa, é representativa e não custa trabalho nenhum.
+ */
+const capaDaPrimeira = (c: Parameters<typeof aulasDo>[0]) => {
+  const primeira = aulasDo(c)[0];
+  return primeira ? capaDa(primeira) : undefined;
+};
 
 export default function CursosPage() {
   const cursos = cursosPublicados();
@@ -100,14 +116,35 @@ export default function CursosPage() {
                 <Reveal key={c.slug} delay={(i % 3) * 70}>
                   <Link
                     href={`/cursos/${c.slug}`}
-                    className="glass card-hover flex h-full flex-col rounded-2xl p-6"
+                    className="glass card-hover flex h-full flex-col overflow-hidden rounded-2xl"
                   >
-                    <span
-                      className={`font-mono-tech w-fit rounded-full border px-2.5 py-1 text-[0.62rem] uppercase tracking-[0.16em] ${marca.classe}`}
-                    >
-                      {marca.texto}
+                    {/*
+                      A capa da primeira aula abre o cartão.
+
+                      Um cartão só de texto não parece um curso em vídeo —
+                      parece um artigo. A imagem faz o formato ficar óbvio
+                      antes de qualquer palavra, e é o que separa uma lista de
+                      links de um catálogo.
+
+                      O selo passa a flutuar sobre a capa, no canto, em vez de
+                      ocupar uma linha própria acima do título.
+                    */}
+                    <span className="relative block aspect-video w-full overflow-hidden bg-[color-mix(in_srgb,var(--fg)_7%,var(--bg))]">
+                      <Capa
+                        src={capaDaPrimeira(c)}
+                        titulo={c.titulo}
+                        className="h-full w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
+                      />
+                      <span
+                        className={`font-mono-tech absolute left-3 top-3 rounded-full border px-2.5 py-1 text-[0.62rem] uppercase tracking-[0.16em] backdrop-blur-md ${marca.classe}`}
+                        style={{ background: "color-mix(in srgb, var(--bg) 78%, transparent)" }}
+                      >
+                        {marca.texto}
+                      </span>
                     </span>
-                    <h2 className="font-display mt-4 text-lg font-semibold leading-snug">
+
+                    <span className="flex flex-1 flex-col p-6 pt-5">
+                    <h2 className="font-display text-lg font-semibold leading-snug">
                       {c.titulo}
                     </h2>
                     <p className="mt-2.5 flex-1 text-[0.9rem] leading-relaxed text-muted">
@@ -123,6 +160,7 @@ export default function CursosPage() {
                       */}
                       {c.acesso === "pago" ? ` · ${textoDoAcesso(c).toLowerCase()}` : ""}
                     </p>
+                    </span>
                   </Link>
                 </Reveal>
               );

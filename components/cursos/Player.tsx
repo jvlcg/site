@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import type { Video } from "@/content/cursos";
+import { Capa } from "./Capa";
 
 /**
  * O quadro do vídeo, em duas etapas: capa primeiro, player só no clique.
@@ -81,8 +82,37 @@ export function Player({ video, titulo, capa }: Props) {
     }
   };
 
+  /**
+   * Saída para quando o quadro do vídeo não abre.
+   *
+   * Bloqueador de anúncios, extensão de privacidade e DNS filtrado barram
+   * `youtube-nocookie.com` — e o navegador troca o vídeo por uma caixa cinza
+   * dizendo "este conteúdo está bloqueado, contacte o proprietário do site".
+   * Quem lê isso conclui que o site está quebrado; não tem como saber que o
+   * bloqueio saiu do próprio aparelho.
+   *
+   * Não dá para detectar esse bloqueio por JavaScript — o navegador não conta.
+   * Então o link fica **sempre** visível, discreto, abaixo do quadro: custa uma
+   * linha e garante que ninguém fique sem assistir por causa de uma extensão.
+   */
+  const escapatoria = (
+    <p className="mt-3 text-[0.78rem] leading-relaxed text-faint">
+      Se o vídeo não abrir — bloqueador de anúncios costuma barrar —{" "}
+      <a
+        href={`https://www.youtube.com/watch?v=${video.id}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[var(--accent)] underline underline-offset-4"
+      >
+        assista direto no YouTube
+      </a>
+      .
+    </p>
+  );
+
   if (tocando) {
     return (
+      <>
       <div className="aspect-video w-full overflow-hidden rounded-2xl border hairline bg-black">
         <iframe
           /*
@@ -97,10 +127,13 @@ export function Player({ video, titulo, capa }: Props) {
           className="h-full w-full border-0"
         />
       </div>
+      {escapatoria}
+      </>
     );
   }
 
   return (
+    <>
     <button
       type="button"
       onClick={() => setTocando(true)}
@@ -108,22 +141,12 @@ export function Player({ video, titulo, capa }: Props) {
       onFocus={aquecer}
       onTouchStart={aquecer}
       aria-label={`Assistir: ${titulo}`}
-      className="group relative block aspect-video w-full overflow-hidden rounded-2xl border hairline bg-black"
+      className="group relative block aspect-video w-full overflow-hidden rounded-2xl border hairline bg-[color-mix(in_srgb,var(--fg)_7%,var(--bg))]"
     >
-      {/*
-        `<img>` puro, e não `next/image`: a miniatura vem de domínio externo e
-        passar pelo otimizador da Vercel custaria uma transformação cobrada por
-        imagem, para reduzir um arquivo que já é pequeno e já vem otimizado da
-        CDN do Google.
-      */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Capa
         src={capa ?? CAPA_PADRAO(video.id)}
-        alt=""
-        loading="lazy"
-        decoding="async"
-        width={480}
-        height={360}
+        titulo={titulo}
+        eager
         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
       />
       <span
@@ -139,5 +162,7 @@ export function Player({ video, titulo, capa }: Props) {
         </svg>
       </span>
     </button>
+    {escapatoria}
+    </>
   );
 }

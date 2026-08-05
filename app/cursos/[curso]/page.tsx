@@ -4,8 +4,10 @@ import { notFound } from "next/navigation";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { DoacaoPix } from "@/components/cursos/DoacaoPix";
+import { Capa } from "@/components/cursos/Capa";
 import {
   aulasDo,
+  capaDa,
   cursosPublicados,
   dataPorExtenso,
   getCurso,
@@ -104,9 +106,21 @@ export default async function CursoPage({ params }: Props) {
                           <li key={a.slug}>
                             <Link
                               href={`/cursos/${curso.slug}/${a.slug}`}
-                              className="glass card-hover flex items-baseline justify-between gap-4 rounded-xl px-4 py-3"
+                              className="glass card-hover flex items-center gap-3.5 rounded-xl p-2.5 sm:gap-4"
                             >
-                              <span className="min-w-0">
+                              {/*
+                                A miniatura na lista, e não só na página da
+                                aula. Uma lista de títulos não diz que ali tem
+                                vídeo — a imagem diz, e é o que faz alguém
+                                clicar. `capaDa` já existia e não estava sendo
+                                usada em lugar nenhum.
+                              */}
+                              <Capa
+                                src={capaDa(a)}
+                                titulo={a.titulo}
+                                className="h-[3.25rem] w-[5.75rem] shrink-0 rounded-lg object-cover sm:h-16 sm:w-28"
+                              />
+                              <span className="min-w-0 flex-1">
                                 <span className="text-[0.94rem]">{a.titulo}</span>
                                 {/*
                                   A espera aparece na lista pública para quem
