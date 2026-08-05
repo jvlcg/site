@@ -38,6 +38,23 @@ export function EntrarAluno({ curso, motivo }: { curso: string; motivo: string }
       <div className="mt-5">
         <EntrarComGoogle
           escuro={resolvedTheme === "dark"}
+          /*
+            Mensagem própria: aqui o Google é o único caminho, e a padrão manda
+            preencher campos que não existem nesta tela. Aponta a causa mais
+            comum, que é bloqueador de anúncio ou extensão de privacidade
+            barrando `accounts.google.com` — e dá duas saídas que a pessoa
+            consegue tentar sozinha.
+          */
+          alternativa={
+            <>
+              O botão do Google não carregou. Quase sempre é{" "}
+              <strong className="text-[var(--fg)]">bloqueador de anúncios ou
+              extensão de privacidade</strong> barrando o acesso ao Google
+              nesta página. Tente desativar a extensão só para este site, ou
+              abrir numa janela anônima. Se continuar, me chame pelo WhatsApp
+              que eu libero seu acesso na mão.
+            </>
+          }
           aoIdentificar={async ({ credencial }) => {
             setEstado("entrando");
             try {
