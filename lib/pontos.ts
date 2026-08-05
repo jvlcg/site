@@ -185,6 +185,27 @@ export async function contaDe(email: string, nome = ""): Promise<Conta | null> {
   return nova;
 }
 
+/**
+ * Lança um evento **só se ele ainda não existir** com a mesma nota.
+ *
+ * Existe por causa de um furo que o download do material abriu: baixar dava
+ * pontos, e nada impedia baixar dez vezes. Qualquer evento que uma pessoa
+ * possa repetir à vontade precisa passar por aqui, não por `lancar`.
+ *
+ * A comparação é por tipo **e** nota, então "Baixou: treino-e-alimentacao"
+ * conta uma vez, e um material diferente conta de novo.
+ */
+export async function lancarUmaVez(
+  email: string,
+  tipo: TipoEvento,
+  nota: string,
+  nome = ""
+): Promise<Conta | null> {
+  const conta = await lerConta(email);
+  if (conta?.eventos.some((e) => e.tipo === tipo && e.nota === nota)) return conta;
+  return lancar(email, tipo, nota, nome);
+}
+
 /** Lança um evento. Devolve a conta atualizada, ou `null` se nada foi gravado. */
 export async function lancar(
   email: string,

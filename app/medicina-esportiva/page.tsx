@@ -5,6 +5,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FaqAccordion, type FaqItem } from "@/components/ui/FaqAccordion";
 import { CtaSection } from "@/components/ui/CtaSection";
 import { PortraitSection } from "@/components/ui/PortraitSection";
+import { MaterialGratuito } from "@/components/ui/MaterialGratuito";
 import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema, serviceSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
@@ -139,6 +140,15 @@ export default function MedicinaEsportivaPage() {
         <div className="mt-12">
           <FaqAccordion items={faq} />
         </div>
+      </section>
+
+      {/*
+        O material vem depois das perguntas frequentes e antes do convite para
+        agendar. Quem chegou até aqui leu a página inteira — é o ponto em que
+        oferecer algo de graça soa como continuação, e não como pedágio.
+      */}
+      <section className="mx-auto mt-24 max-w-4xl px-5 sm:px-8">
+        <MaterialGratuito />
       </section>
 
       <CtaSection
