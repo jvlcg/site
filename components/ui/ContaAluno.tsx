@@ -7,10 +7,15 @@ import { useEffect, useState } from "react";
 /**
  * A entrada da conta de aluno, no cabeçalho.
  *
- * Enquanto ninguém está logado, é um link discreto para os cursos, que é onde
- * a conta faz sentido — não adianta oferecer "Entrar" a quem não tem nada para
- * ver do lado de dentro. Depois de logado, vira o primeiro nome da pessoa,
- * levando à área dela.
+ * Leva sempre a `/minha-conta`, logado ou não. Quem está logado vê a área dele;
+ * quem não está vê a tela de entrar, que é o que essa página mostra por si.
+ *
+ * Já apontou para `/cursos` enquanto ninguém estivesse logado, com a ideia de
+ * levar a pessoa a ver antes o que existe do lado de dentro. Era errado pelo
+ * motivo mais simples: o botão diz **"Entrar"**, e botão tem de fazer o que
+ * está escrito nele. Quem toca ali quer a tela de login, não uma vitrine — e
+ * quem quer a vitrine tem "Cursos" no menu, além do link que a própria tela de
+ * entrar oferece logo abaixo do botão do Google.
  *
  * ## Por que busca no cliente, e não no servidor
  *
@@ -64,7 +69,7 @@ export function ContaAluno({ variant = "topo" }: { variant?: "topo" | "linha" })
     /* Dentro do menu de toque, onde há espaço e o rótulo pode ser inteiro. */
     return (
       <Link
-        href={aluno ? "/minha-conta" : "/cursos"}
+        href="/minha-conta"
         className="border-b hairline py-4 font-display text-2xl font-medium"
       >
         {aluno ? `Minha conta · ${primeiroNome}` : "Entrar"}
@@ -74,7 +79,7 @@ export function ContaAluno({ variant = "topo" }: { variant?: "topo" | "linha" })
 
   return (
     <Link
-      href={aluno ? "/minha-conta" : "/cursos"}
+      href="/minha-conta"
       /*
         `min-w` fixo reserva o espaço antes de saber quem é. Sem ele, o nome
         chegando depois da resposta empurraria os botões vizinhos.
@@ -86,7 +91,7 @@ export function ContaAluno({ variant = "topo" }: { variant?: "topo" | "linha" })
         os vizinhos quando aparecer.
       */
       className="glass inline-flex h-10 w-10 items-center justify-center gap-2 rounded-full text-[0.78rem] font-medium transition-colors hover:text-[var(--accent)] md:h-auto md:w-auto md:min-w-[104px] md:px-3.5 md:py-2"
-      title={aluno ? `Entrou como ${aluno.email}` : "Entrar na área de cursos"}
+      title={aluno ? `Entrou como ${aluno.email}` : "Entrar na sua conta"}
     >
       <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
         <circle cx="12" cy="8" r="3.4" />
