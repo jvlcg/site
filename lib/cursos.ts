@@ -1,4 +1,5 @@
 import { CURSOS, type Aula, type Curso, type Modulo } from "@/content/cursos";
+import { CAPAS_LOCAIS } from "@/content/capas-locais";
 
 /**
  * Regras de acesso aos cursos.
@@ -199,12 +200,32 @@ export function duracaoISO(texto?: string): string | undefined {
   return `PT${horas ? `${horas}H` : ""}${minutos ? `${minutos}M` : ""}`;
 }
 
-/** Endereço da capa: a própria, se houver, senão a miniatura do YouTube. */
+/**
+ * Endereço da capa da aula.
+ *
+ * Ordem: a capa própria, se houver; senão a que o site guarda em `public/capas`;
+ * e o YouTube só como último recurso.
+ *
+ * **A do próprio site vem antes de propósito.** Apontar para `i.ytimg.com`
+ * funciona para a maioria e falha calado para uma parte que não é pequena:
+ * bloqueador de anúncios, extensão de privacidade e DNS filtrado barram aquele
+ * domínio junto com o resto do Google, e quem tem qualquer um dos três via um
+ * retângulo vazio no lugar do convite para assistir.
+ *
+ * Servida daqui, a imagem não tem terceiro envolvido — não há o que bloquear. E
+ * some uma requisição ao Google em toda visita ao catálogo, o que combina com o
+ * resto: aqui o YouTube só entra depois que a pessoa clica em assistir.
+ *
+ * As imagens são geradas por `scripts/baixar-capas.mjs` e versionadas junto do
+ * código. O caminho é montado pelo identificador do vídeo, então publicar uma
+ * aula nova é rodar o script e fazer o commit da imagem.
+ */
 export function capaDa(aula: Aula): string | undefined {
   if (aula.capa) return aula.capa;
-  return aula.video.tipo === "youtube"
-    ? `https://i.ytimg.com/vi/${aula.video.id}/hqdefault.jpg`
-    : undefined;
+  if (aula.video.tipo !== "youtube") return undefined;
+  return CAPAS_LOCAIS.has(aula.video.id)
+    ? `/capas/${aula.video.id}.webp`
+    : `https://i.ytimg.com/vi/${aula.video.id}/hqdefault.jpg`;
 }
 
 /**
