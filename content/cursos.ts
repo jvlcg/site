@@ -173,6 +173,118 @@ export type Curso = {
 };
 
 export const CURSOS: Curso[] = [
+  /*
+    ────────────────────────────────────────────────────────────────
+    SÉRIES DO CANAL — vídeos públicos do YouTube (@jvlcg)
+    ────────────────────────────────────────────────────────────────
+
+    Os seis vídeos longos do canal, agrupados por assunto. Os nove #shorts
+    ficaram de fora a pedido: são verticais e de poucos segundos, e o player
+    do site é horizontal — cada um viraria uma página quase vazia.
+
+    **Os títulos e as datas são os do YouTube, sem alteração.** Não escrevi
+    `resumo` nas aulas porque a página de cada vídeo está protegida por
+    verificação anti-robô e eu não consegui ler as descrições — e resumo de
+    vídeo que não assisti seria invenção apresentada como informação. Quando
+    quiser, me mande uma frase por aula e eu preencho.
+
+    Duas observações que valem registro, porque as decisões foram suas:
+
+    1. Estes vídeos são pessoais — filosofia, poesia, diário — e não aulas
+       clínicas. O texto de cada série diz isso com todas as letras, para que
+       ninguém chegue esperando orientação médica e encontre reflexão.
+    2. O aviso de conteúdo educativo que já existe no rodapé da página de
+       cursos continua valendo e cobre estes também.
+  */
+  {
+    slug: "reflexoes",
+    titulo: "Reflexões sobre viver",
+    resumo:
+      "Conversas em vídeo sobre escolhas, sentido e as ideias que mudam o jeito de olhar o dia.",
+    descricao: [
+      "Uma série pessoal, gravada fora do consultório. Aqui o Dr. José Victor fala como leitor e escritor, não como médico: são reflexões sobre filosofia, comportamento e as perguntas que a gente evita fazer.",
+      "Não há orientação clínica nesta série, e nada aqui substitui uma consulta. Se você procura informação sobre um sintoma ou um tratamento, as páginas de atuação e o blog são o lugar certo.",
+      "Assista na ordem que quiser — cada vídeo se sustenta sozinho.",
+    ],
+    acesso: "livre",
+    publicado: true,
+    paraQuem: [
+      "Quem gosta de filosofia e de conversa sem pressa",
+      "Quem acompanha o canal e quer tudo reunido em um lugar",
+    ],
+    modulos: [
+      {
+        titulo: "Os vídeos",
+        aulas: [
+          {
+            slug: "o-mundo-como-ele-e",
+            titulo: "O mundo como ele é — verdades duras que gostaria de ter aprendido antes",
+            video: { tipo: "youtube", id: "69NKVX8ALn4" },
+            publicadaEm: "2026-07-01",
+          },
+          {
+            slug: "let-it-happen",
+            titulo: "Let it happen: mesmo que doa muito",
+            video: { tipo: "youtube", id: "3JTXmfecV4Y" },
+            publicadaEm: "2026-05-28",
+          },
+          {
+            /*
+              O vídeo se chama só "🫆" no YouTube. Mantive o emoji no título
+              para não inventar um nome que o autor não deu, mas o endereço
+              precisa de letras — daí o slug descritivo. Se quiser um título
+              escrito, é só me dizer qual.
+            */
+            slug: "digital",
+            titulo: "🫆",
+            video: { tipo: "youtube", id: "XSMOuo9wqVQ" },
+            publicadaEm: "2026-04-29",
+          },
+          {
+            slug: "sindrome-de-deus",
+            titulo: "Você também é um NPC? O perigo da síndrome de Deus",
+            video: { tipo: "youtube", id: "NMv4Ijlzr2Y" },
+            publicadaEm: "2026-04-24",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "leituras",
+    titulo: "Leituras autorais",
+    resumo:
+      "O Dr. José Victor lendo o que escreveu — poemas e páginas de diário, na própria voz.",
+    descricao: [
+      "Leituras em voz alta de textos autorais: os poemas do audiobook e trechos do diário escrito durante a formação médica.",
+      "É a mesma produção literária que está reunida na página de Poemas, agora em áudio e vídeo. Conteúdo autoral, sem finalidade clínica.",
+    ],
+    acesso: "livre",
+    publicado: true,
+    paraQuem: [
+      "Quem leu os poemas e quer ouvir na voz do autor",
+      "Quem prefere ouvir a ler",
+    ],
+    modulos: [
+      {
+        titulo: "As leituras",
+        aulas: [
+          {
+            slug: "poemas-mortos",
+            titulo: "Poemas Mortos — leitura do audiobook autoral",
+            video: { tipo: "youtube", id: "L4_ngHcE5tY" },
+            publicadaEm: "2026-04-25",
+          },
+          {
+            slug: "med-e-ibiza",
+            titulo: "Minha jornada: Med & Ibiza — leitura do meu diário",
+            video: { tipo: "youtube", id: "vTnb696lPKo" },
+            publicadaEm: "2026-04-16",
+          },
+        ],
+      },
+    ],
+  },
   // ────────────────────────────────────────────────────────────────
   // MODELO — copie este bloco, cole acima e troque o conteúdo.
   //

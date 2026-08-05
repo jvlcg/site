@@ -85,15 +85,27 @@ export function ContaAluno({ variant = "topo" }: { variant?: "topo" | "linha" })
         chegando depois da resposta empurraria os botões vizinhos.
       */
       /*
-        No celular ele é só o ícone, num alvo de 40px — o mesmo tamanho dos
-        alternadores ao lado. A partir de `md` entra o nome, e a largura mínima
-        reserva o espaço antes de a resposta chegar, para o nome não empurrar
-        os vizinhos quando aparecer.
+        O rótulo aparece **em toda tela**, inclusive no celular.
+
+        Era só o ícone abaixo de `md`, e um bonequinho sozinho não diz que ali
+        se entra na conta — quem não conhece o site não clica. Escrito, o botão
+        se explica.
+
+        A largura mínima reserva o espaço antes de a resposta do servidor
+        chegar, para o nome não empurrar os vizinhos quando aparecer. No
+        celular ela é menor porque "Entrar" é curto e o nome vem truncado.
       */
-      className="glass inline-flex h-10 w-10 items-center justify-center gap-2 rounded-full text-[0.78rem] font-medium transition-colors hover:text-[var(--accent)] md:h-auto md:w-auto md:min-w-[104px] md:px-3.5 md:py-2"
+      className="glass inline-flex h-10 min-w-[4.25rem] items-center justify-center gap-1.5 rounded-full px-2.5 text-[0.78rem] font-medium transition-colors hover:text-[var(--accent)] sm:gap-2 md:h-auto md:min-w-[104px] md:px-3.5 md:py-2"
       title={aluno ? `Entrou como ${aluno.email}` : "Entrar na sua conta"}
     >
-      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+      {/*
+        O bonequinho some no celular e o rótulo fica.
+
+        Trocar o ícone pela palavra é o melhor negócio possível na barra mais
+        disputada do site: "Entrar" diz o que o desenho só sugeria, e ainda
+        devolve 22 px — que é parte do que faltava para tudo caber.
+      */}
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="hidden h-4 w-4 shrink-0 md:block" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
         <circle cx="12" cy="8" r="3.4" />
         <path d="M5 20c0-3.4 3.1-5.5 7-5.5s7 2.1 7 5.5" />
       </svg>
@@ -102,7 +114,13 @@ export function ContaAluno({ variant = "topo" }: { variant?: "topo" | "linha" })
         e trocar por um nome meio segundo depois pisca a informação errada na
         cara de quem já está logado.
       */}
-      <span className="hidden truncate md:inline">
+      {/*
+        No celular o nome de quem entrou é cortado em 4,5rem: ali disputa
+        espaço com a marca, dois alternadores, o botão de agendar e o menu.
+        "Entrar" cabe inteiro, e é o rótulo que importa para quem ainda não
+        entrou — que é quem precisa do botão.
+      */}
+      <span className="max-w-[4.5rem] truncate md:max-w-none">
         {carregou ? (aluno ? primeiroNome : "Entrar") : ""}
       </span>
     </Link>

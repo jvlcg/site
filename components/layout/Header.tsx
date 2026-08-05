@@ -99,7 +99,11 @@ export function Header() {
         corrigido antes. Cabeçalho mais largo que o texto é comum e não
         atrapalha a leitura: ninguém lê o menu como parágrafo.
       */}
-      <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-4 px-5 sm:px-8 min-[1500px]:max-w-[1440px]">
+      {/*
+        Margem lateral menor no celular (16 px em vez de 20 px). São 8 px de
+        largura útil, e nesta barra 8 px decidem se o menu cabe.
+      */}
+      <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-8 min-[1500px]:max-w-[1440px]">
         <Link href="/" aria-label="Página inicial — Dr. José Victor Lisboa Cardoso Gomes">
           <LogoLockup compact />
         </Link>
@@ -143,7 +147,7 @@ export function Header() {
           botão de agendar e o menu na mesma linha, cada 4 px de folga por
           intervalo decide se o último elemento cabe — e o último é o menu.
         */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1 sm:gap-3">
           <ContaAluno />
           {/*
             O som some abaixo de 360 px.
@@ -173,10 +177,17 @@ export function Header() {
               paciente, e escondê-lo no celular era o erro. O que muda é o
               rótulo, que encurta para caber ao lado dos outros.
             */
-            className="btn-primary whitespace-nowrap !px-4 !py-2.5 text-sm sm:!px-5"
+            className="btn-primary whitespace-nowrap !px-3 !py-2.5 text-sm sm:!px-5"
           >
-            <span className="sm:hidden">Agendar</span>
-            <span className="hidden sm:inline">Agendar consulta</span>
+            {/*
+              O rótulo curto vai até 768 px, e não até 640.
+
+              Medido: em 640 px a linha terminava em 695 — "Agendar consulta"
+              inteiro não cabe ali junto do resto. O ponto de corte estava
+              otimista.
+            */}
+            <span className="md:hidden">Agendar</span>
+            <span className="hidden md:inline">Agendar consulta</span>
           </a>
           <button
             type="button"
