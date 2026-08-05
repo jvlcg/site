@@ -22,6 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/cursos",
     "/voluntariado",
     "/poemas",
+    "/aplicativos",
     "/mapa-do-site",
     /*
       Fora daqui de propósito, e não por esquecimento: a política de

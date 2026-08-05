@@ -83,6 +83,15 @@ export function Footer() {
                   Poemas
                 </Link>
               </li>
+              {/* Mesmo motivo: catálogo pessoal, alcançável sem ocupar o menu. */}
+              <li>
+                <Link
+                  href="/aplicativos"
+                  className="text-faint transition-colors hover:text-[var(--accent)]"
+                >
+                  Aplicativos
+                </Link>
+              </li>
             </ul>
           </nav>
 
