@@ -25,10 +25,14 @@ export function Counter({ value, className = "" }: { value: string; className?: 
     }
 
     let raf = 0;
-    const io = new IntersectionObserver(
+    // Ver a explicação em `components/three/ThreeScene.tsx`: `const` aqui põe
+    // `io` na zona morta temporal enquanto a callback pode já estar rodando, e
+    // o erro resultante é engolido — o contador simplesmente nunca anima.
+    let io: IntersectionObserver | null = null;
+    io = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
-        io.disconnect();
+        io?.disconnect();
         const duration = 1100;
         const start = performance.now();
         const tick = (now: number) => {

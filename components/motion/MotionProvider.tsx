@@ -59,12 +59,18 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
     const els = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
     if (els.length === 0) return;
 
-    const io = new IntersectionObserver(
+    /*
+      Mesmo motivo do `ThreeScene` — e aqui o estrago seria o maior dos três:
+      é esta callback que revela o conteúdo ao rolar. Se ela levanta na
+      primeira entrada, o laço para e as seções seguintes **ficam invisíveis**.
+    */
+    let io: IntersectionObserver | null = null;
+    io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
             entry.target.classList.add("is-visible");
-            io.unobserve(entry.target);
+            io?.unobserve(entry.target);
           }
         }
       },
