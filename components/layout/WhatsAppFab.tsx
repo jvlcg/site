@@ -20,6 +20,8 @@ export function WhatsAppFab() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Agendar consulta pelo WhatsApp"
+      /* sai da frente com o menu de toque aberto — ver globals.css */
+      data-flutuante=""
       className={`fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-accent-400)] to-[var(--color-teal-flow)] text-[#06231d] shadow-[0_16px_40px_-12px_rgba(16,185,129,0.6)] transition-all duration-500 hover:scale-110 ${
         visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
       }`}
