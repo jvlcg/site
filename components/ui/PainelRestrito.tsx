@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { PainelCursos } from "./PainelCursos";
+import { PainelPontos } from "./PainelPontos";
 
 /**
  * Painel da área restrita: entrar, ver as fichas, exportar e apagar.
@@ -61,7 +62,7 @@ export function PainelRestrito() {
    * de curso carregam só e-mail e nome. Abas separadas evitam o descuido de
    * deixar a lista de pacientes aberta enquanto se libera um curso.
    */
-  const [aba, setAba] = useState<"cadastros" | "cursos">("cadastros");
+  const [aba, setAba] = useState<"cadastros" | "cursos" | "pontos">("cadastros");
 
   const carregar = useCallback(async () => {
     const r = await fetch("/api/area-restrita", { cache: "no-store" });
@@ -203,11 +204,16 @@ export function PainelRestrito() {
           <button type="button" onClick={() => setAba("cursos")} className={classeAba("cursos")}>
             Cursos
           </button>
+          <button type="button" onClick={() => setAba("pontos")} className={classeAba("pontos")}>
+            Pontos
+          </button>
         </div>
         <button type="button" onClick={sair} className="btn-ghost !py-2.5 text-sm">
           Sair
         </button>
       </div>
+
+      {aba === "pontos" && <PainelPontos />}
 
       {aba === "cursos" && (
         <>
