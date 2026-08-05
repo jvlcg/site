@@ -63,6 +63,15 @@ const PAUSA = 900;
  */
 const vezes = new Map<string, number>();
 
+/**
+ * Espera padrão da **primeira** entrada da página, em segundos.
+ *
+ * É constante, e não o literal `4` no valor padrão, porque o efeito precisa
+ * distinguir "ninguém passou espera" de "o pai pediu uma espera curta". Ver o
+ * cálculo do atraso, mais abaixo.
+ */
+const PADRAO_ESPERA = 4;
+
 type Props = {
   personagem: Personagem;
   /** O desenho. Recebe humor e tamanho — os dois têm a mesma assinatura. */
@@ -88,7 +97,7 @@ export function Mascote({
   personagem,
   Desenho,
   ativo = true,
-  esperaSegundos = 4,
+  esperaSegundos = PADRAO_ESPERA,
   aoSair,
   aoNegar,
 }: Props) {
@@ -228,7 +237,22 @@ export function Mascote({
       sinais.forEach((s) => window.addEventListener(s, soltarGesto!, { once: true, passive: true }));
     }
 
-    const porTempo = setTimeout(mostrar, noCelular ? 10_000 : esperaSegundos * 1000);
+    /**
+     * Os dez segundos do celular valem para quem **abre a página**, e não para
+     * quem entra depois de outro personagem já ter falado.
+     *
+     * A razão dos dez segundos é não disputar a thread com o carregamento e a
+     * leitura do título. Quando o segundo entra, a página está assentada há
+     * muito tempo e essa razão não existe mais — aplicá-la ali só produzia dez
+     * segundos de canto vazio entre um e outro, que é o que fazia parecer que
+     * só o primeiro aparecia.
+     *
+     * `esperaSegundos` explícito é o sinal de que é uma troca, e não a
+     * primeira entrada. O padrão de 4 s continua virando 10 s no celular.
+     */
+    const primeiraEntrada = esperaSegundos === PADRAO_ESPERA;
+    const atraso = noCelular && primeiraEntrada ? 10_000 : esperaSegundos * 1000;
+    const porTempo = setTimeout(mostrar, atraso);
 
     return () => {
       window.removeEventListener("scroll", porRolagem);
@@ -302,13 +326,30 @@ export function Mascote({
     };
   }, [visivel, indice, conversa, falaAtual.texto, semAnimacao, tocar]);
 
-  // ---- se ninguém responder, ele mesmo se retira
+  /**
+   * Se ninguém responder, ele mesmo se retira — depois de 30 segundos.
+   *
+   * O aviso ao pai vai no **fim** desses 30 segundos, e não no instante em que
+   * a fala termina. Esta linha já esteve no começo do efeito, com a ideia de
+   * deixar o outro entrar sem esperar, e o efeito era o oposto do pretendido:
+   * avisar o pai faz ele trocar quem está em cena, e a troca **desmonta este
+   * componente na hora**.
+   *
+   * Na prática o personagem sumia no exato instante em que parava de digitar,
+   * levando junto os botões de cadastrar e de ver os cursos — que aparecem só
+   * quando a fala acaba. O convite ficava visível por zero segundo.
+   *
+   * Sair por fechar ou por recusar continua avisando na hora, por `encerrar`:
+   * ali a pessoa pediu para ele sair, e o outro entrar em seguida é o
+   * comportamento combinado.
+   */
   useEffect(() => {
     if (!terminou) return;
-    // avisa o pai assim que termina, para o outro poder entrar sem esperar
-    avisarSaida();
     const some = setTimeout(() => setSaindo(true), 30_000);
-    const fim = setTimeout(() => setVisivel(false), 30_450);
+    const fim = setTimeout(() => {
+      setVisivel(false);
+      avisarSaida();
+    }, 30_450);
     return () => {
       clearTimeout(some);
       clearTimeout(fim);
