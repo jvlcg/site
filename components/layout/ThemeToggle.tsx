@@ -63,7 +63,7 @@ export function ThemeToggle({ variant = "icon" }: { variant?: "icon" | "row" }) 
         <span>{mounted && isDark ? "Modo claro" : "Modo escuro"}</span>
         <span
           aria-hidden="true"
-          className="glass relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+          className="glass relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full sm:h-10 sm:w-10"
         >
           {icones}
         </span>
