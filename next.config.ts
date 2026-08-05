@@ -130,6 +130,30 @@ const cspCursos = csp
   .replace("connect-src 'self'", `connect-src 'self' ${GOOGLE_CONTAS}`)
   .replace("frame-src ", `frame-src ${YOUTUBE} ${GOOGLE_CONTAS} `);
 
+/**
+ * O botão do Google abre um **popup**, e `Cross-Origin-Opener-Policy:
+ * same-origin` quebra popup de outra origem.
+ *
+ * `same-origin` corta a ligação entre a nossa janela e qualquer janela de
+ * outra origem que a gente abra: dentro do popup, `window.opener` vira `null`.
+ * O popup do Google depende justamente do `opener` para devolver a credencial
+ * quando a pessoa escolhe a conta. Sem ele o popup abre, carrega
+ * `accounts.google.com/gsi/transform` e **fica em branco para sempre** — sem
+ * mensagem de erro, porque do ponto de vista do navegador nada falhou.
+ *
+ * `same-origin-allow-popups` mantém a proteção que interessa — outro site
+ * continua sem conseguir uma referência à nossa janela — e devolve o `opener`
+ * aos popups que **nós** abrimos. É o valor que a própria documentação do
+ * Sign in with Google pede.
+ *
+ * Vale só nas três rotas que têm o botão. No resto do site continua
+ * `same-origin`, que é mais restrito: não há popup nenhum para preservar.
+ */
+const COOP_POPUP = {
+  key: "Cross-Origin-Opener-Policy",
+  value: "same-origin-allow-popups",
+};
+
 const seguranca = [
   { key: "Content-Security-Policy", value: csp },
   // HSTS: só aceita HTTPS neste domínio pelos próximos 2 anos
@@ -186,17 +210,17 @@ const nextConfig: NextConfig = {
       {
         // idem, para o botão "Continuar com Google" do cadastro
         source: "/cadastro",
-        headers: [{ key: "Content-Security-Policy", value: cspCadastro }],
+        headers: [{ key: "Content-Security-Policy", value: cspCadastro }, COOP_POPUP],
       },
       {
         // as páginas de curso exibem vídeo e o botão de entrar
         source: "/cursos/:path*",
-        headers: [{ key: "Content-Security-Policy", value: cspCursos }],
+        headers: [{ key: "Content-Security-Policy", value: cspCursos }, COOP_POPUP],
       },
       {
         // a área do aluno tem o botão de entrar, e nenhum vídeo
         source: "/minha-conta",
-        headers: [{ key: "Content-Security-Policy", value: cspCadastro }],
+        headers: [{ key: "Content-Security-Policy", value: cspCadastro }, COOP_POPUP],
       },
       {
         // as rotas de API nunca devem ser cacheadas nem indexadas
