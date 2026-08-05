@@ -91,22 +91,33 @@ export function Player({ video, titulo, capa }: Props) {
    * Quem lê isso conclui que o site está quebrado; não tem como saber que o
    * bloqueio saiu do próprio aparelho.
    *
-   * Não dá para detectar esse bloqueio por JavaScript — o navegador não conta.
-   * Então o link fica **sempre** visível, discreto, abaixo do quadro: custa uma
-   * linha e garante que ninguém fique sem assistir por causa de uma extensão.
+   * **Tentei detectar o bloqueio e não consegui.** A ideia era ler o
+   * `contentDocument` do quadro: em iframe de outra origem o acesso lança, e a
+   * ausência da exceção denunciaria a página de erro. Medido nos dois cenários,
+   * o Chrome mantém a origem do alvo mesmo com o pedido abortado, e o teste não
+   * distinguiu vídeo tocando de vídeo barrado.
+   *
+   * Detecção que erra é pior que nenhuma: um falso positivo esconderia atrás de
+   * um aviso de erro um vídeo que está tocando. Então o caminho é o que não
+   * depende de adivinhar — o link fica **sempre** visível, com peso suficiente
+   * para ser achado por quem está olhando para um quadro que não abriu.
    */
   const escapatoria = (
-    <p className="mt-3 text-[0.78rem] leading-relaxed text-faint">
-      Se o vídeo não abrir — bloqueador de anúncios costuma barrar —{" "}
+    <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.82rem] leading-relaxed text-muted">
       <a
         href={`https://www.youtube.com/watch?v=${video.id}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-[var(--accent)] underline underline-offset-4"
+        className="btn-ghost !py-1.5 !px-3.5 text-[0.8rem]"
       >
-        assista direto no YouTube
+        <svg viewBox="0 0 24 24" aria-hidden="true" className="mr-1.5 h-4 w-4 fill-current">
+          <path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8ZM10 15V9l5.2 3L10 15Z" />
+        </svg>
+        Assistir no YouTube
       </a>
-      .
+      <span className="text-[0.78rem] text-faint">
+        se o quadro acima não abrir — bloqueador de anúncios costuma barrar.
+      </span>
     </p>
   );
 
