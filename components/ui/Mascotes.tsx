@@ -31,15 +31,20 @@ import { Termometro } from "./Termometro";
  * José Victor de que eles apareçam em toda visita, e o direito de quem já
  * disse não de não ser perguntado de novo no mesmo passeio pelo site.
  *
- * ## Um de cada vez
+ * ## Quantos aparecem: depende do tamanho da tela
  *
- * Nunca dois falando junto. Quando um sai — por ter terminado ou por ter sido
- * recusado — o outro entra em seguida, no mesmo canto. Dois balões digitando
- * ao mesmo tempo seriam duas vozes sobrepostas, e duas digitações disputando a
- * mesma thread.
+ * **No computador, os dois juntos**, empilhados no canto, em toda página. Cabe
+ * folgado e é o que o Dr. José Victor quer: quem chega vê as duas ofertas — a
+ * consulta e os cursos — sem depender de ficar meio minuto na mesma página.
  *
- * Vale para computador e celular igualmente: o comportamento é o mesmo, e a
- * única diferença entre eles é o tamanho do personagem.
+ * **No celular, um de cada vez**, alternando o tempo de tela no mesmo canto.
+ * Ali um balão já ocupa boa parte da largura; dois seriam uma parede na frente
+ * do conteúdo, e é justamente o que se pediu para evitar.
+ *
+ * As entradas são **escalonadas** mesmo no computador — o segundo entra alguns
+ * segundos depois do primeiro. Os dois digitando ao mesmo tempo seriam duas
+ * vozes sobrepostas, e ninguém lê duas frases sendo escritas em paralelo. Com
+ * o intervalo, os dois ficam na tela juntos e cada um fala na sua vez.
  */
 
 const CHAVE_NEGADOS = "mascote-negados";
@@ -102,6 +107,27 @@ export function Mascotes() {
    */
   const [negados, setNegados] = useState<Nome[] | null>(null);
   const [emCena, setEmCena] = useState<Nome | null>(null);
+  /**
+   * Cabem os dois na tela ao mesmo tempo? `null` enquanto não se sabe.
+   *
+   * A pergunta é de espaço, não de aparelho: o que decide é a largura útil.
+   * Um tablet deitado comporta os dois; o mesmo tablet em pé, não. Por isso a
+   * consulta é por `min-width` e não por `pointer`.
+   *
+   * Fica em estado, e não lido direto na renderização, porque o servidor não
+   * tem tela — decidir na hora do HTML entregaria uma resposta chutada, que o
+   * navegador teria de desmentir depois.
+   */
+  const [cabemOsDois, setCabemOsDois] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const consulta = window.matchMedia("(min-width: 1024px)");
+    const aplicar = () => setCabemOsDois(consulta.matches);
+    aplicar();
+    // girar o aparelho muda a resposta
+    consulta.addEventListener("change", aplicar);
+    return () => consulta.removeEventListener("change", aplicar);
+  }, []);
 
   const negar = useCallback((quem: Nome) => {
     setNegados((atual) => {
@@ -148,7 +174,52 @@ export function Mascotes() {
     []
   );
 
-  if (negados === null || emCena === null) return null;
+  if (negados === null || cabemOsDois === null) return null;
+
+  /*
+    Ancorado no canto esquerdo porque o direito já tem WhatsApp, assistente e
+    o atalho do cadastro — mais um ali viraria uma parede de botões.
+
+    `items-start` para os dois balões alinharem pela esquerda em vez de
+    esticarem: cada um tem a largura do próprio texto.
+  */
+  const canto = "fixed bottom-4 left-4 z-[60] flex flex-col items-start gap-3 sm:bottom-6 sm:left-6";
+
+  // ---------------------------------------------- computador: os dois juntos
+  if (cabemOsDois) {
+    const mostrar = (["esteto", "termo"] as Nome[]).filter((n) => !negados.includes(n));
+    if (mostrar.length === 0) return null;
+
+    return (
+      <div data-flutuante="" className={canto}>
+        {mostrar.map((nome, i) => {
+          const eEsteto = nome === "esteto";
+          return (
+            <Mascote
+              key={nome}
+              personagem={eEsteto ? ESTETO : TERMO}
+              Desenho={eEsteto ? Estetoscopio : Termometro}
+              /*
+                Escalonado: o segundo entra sete segundos depois do primeiro.
+
+                Os dois ficam na tela juntos, que é o pedido, mas não digitam
+                ao mesmo tempo — duas frases sendo escritas em paralelo não se
+                leem, e as duas animações disputariam a mesma thread.
+
+                Quando só um sobrou (o outro foi recusado), ele entra no tempo
+                normal em vez de esperar a vez de alguém que não vem.
+              */
+              esperaSegundos={i === 0 ? 4 : 11}
+              aoNegar={() => negar(nome)}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+
+  // ------------------------------------------------- celular: um de cada vez
+  if (emCena === null) return null;
 
   /*
     `key` fica fora deste objeto de propósito: no React 19, espalhar um objeto
@@ -161,18 +232,11 @@ export function Mascotes() {
 
   return (
     /*
-      Ancorado no canto esquerdo porque o direito já tem WhatsApp, assistente e
-      o atalho do cadastro — mais um ali viraria uma parede de botões.
-
       `key` no mascote força a remontagem quando um dá lugar ao outro: sem ela
       o React reaproveitaria o componente, e o novo personagem herdaria o
       estado de conversa do anterior — entrando já no meio de uma frase.
     */
-    <div
-      /* sai da frente com o menu de toque aberto — ver globals.css */
-      data-flutuante=""
-      className="fixed bottom-4 left-4 z-[60] sm:bottom-6 sm:left-6"
-    >
+    <div data-flutuante="" className={canto}>
       {emCena === "esteto" ? (
         <Mascote key="esteto" personagem={ESTETO} Desenho={Estetoscopio} {...comum} />
       ) : (
