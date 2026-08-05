@@ -39,6 +39,69 @@ export function vizinhas(curso: Curso, slug: string) {
 
 export const totalDeAulas = (curso: Curso) => aulasDo(curso).length;
 
+// ─────────────────────────────────────────────────────────── tempo
+
+/**
+ * Uma data escrita como "2026-09-30" vale até o fim daquele dia.
+ *
+ * `new Date("2026-09-30")` é meia-noite **em UTC**, o que no Brasil é 21h do
+ * dia 29. Uma promoção "até 30 de setembro" acabaria três horas antes do dia
+ * 30 começar — e o erro só apareceria na virada, com a pessoa reclamando de
+ * ter perdido um prazo que ainda não tinha vencido.
+ */
+function fimDoDia(data: string): Date {
+  const [ano, mes, dia] = data.split("-").map(Number);
+  // -03:00 é o fuso de Goiânia; o site é para pacientes daqui.
+  return new Date(Date.UTC(ano, mes - 1, dia, 23 + 3, 59, 59));
+}
+
+/** A janela de lançamento gratuito ainda está aberta? */
+export function naJanelaGratuita(curso: Curso, agora = new Date()): boolean {
+  return !!curso.gratuitoAte && fimDoDia(curso.gratuitoAte) >= agora;
+}
+
+/**
+ * O nível de acesso que vale **agora**, considerando a janela de lançamento.
+ *
+ * Durante a janela, um curso pago se comporta como `cadastro`: de graça, mas
+ * com conta. A conta não é obstáculo — é o que cria a matrícula, e é a
+ * matrícula que faz quem entrou de graça continuar tendo acesso depois que a
+ * janela fecha.
+ */
+export function acessoAgora(curso: Curso, agora = new Date()): Curso["acesso"] {
+  if (curso.acesso === "livre") return "livre";
+  return naJanelaGratuita(curso, agora) ? "cadastro" : curso.acesso;
+}
+
+/** Quando o acesso deste aluno termina. `null` = vitalício. */
+export function fimDoAcesso(curso: Curso, matricula: { criadoEm: string }): Date | null {
+  if (!curso.acessoPor) return null;
+  const fim = new Date(matricula.criadoEm);
+  fim.setDate(fim.getDate() + curso.acessoPor);
+  return fim;
+}
+
+/** "acesso vitalício" ou "acesso por 12 meses" — o texto que vai na página. */
+export function textoDoAcesso(curso: Curso): string {
+  if (!curso.acessoPor) return "Acesso vitalício";
+  const meses = Math.round(curso.acessoPor / 30);
+  if (curso.acessoPor >= 365 && curso.acessoPor % 365 === 0) {
+    const anos = curso.acessoPor / 365;
+    return `Acesso por ${anos} ano${anos === 1 ? "" : "s"}`;
+  }
+  return meses >= 1
+    ? `Acesso por ${meses} ${meses === 1 ? "mês" : "meses"}`
+    : `Acesso por ${curso.acessoPor} dias`;
+}
+
+/** "30 de setembro" — para dizer até quando a promoção vale. */
+export const dataPorExtenso = (data: string) =>
+  fimDoDia(data).toLocaleDateString("pt-BR", {
+    day: "numeric",
+    month: "long",
+    timeZone: "America/Sao_Paulo",
+  });
+
 // ─────────────────────────────────────────────────────────── acesso
 
 /** Por que a aula está trancada, quando está. */
@@ -49,7 +112,9 @@ export type Bloqueio =
   /** Entrou, mas não tem a matrícula deste curso. */
   | { tipo: "precisaMatricula" }
   /** Tem tudo, mas a aula ainda não abriu. */
-  | { tipo: "aguardaLiberacao"; dias: number; abreEm: Date };
+  | { tipo: "aguardaLiberacao"; dias: number; abreEm: Date }
+  /** Teve acesso, e o prazo acabou. */
+  | { tipo: "expirado"; expirouEm: Date };
 
 export type Aluno = { email: string; nome: string } | null;
 /** Data em que a matrícula foi criada, ou `null` se não houver matrícula. */
@@ -70,7 +135,13 @@ export function podeVer(
   aluno: Aluno,
   matricula: Matricula
 ): Bloqueio {
-  if (curso.acesso === "livre") return { tipo: "liberado" };
+  /**
+   * O nível considerado é o de agora, não o do arquivo: um curso pago dentro
+   * da janela de lançamento vale como gratuito com conta.
+   */
+  const nivel = acessoAgora(curso);
+
+  if (nivel === "livre") return { tipo: "liberado" };
 
   if (!aluno) return { tipo: "precisaEntrar" };
 
@@ -82,9 +153,19 @@ export function podeVer(
    * uma falha nossa.
    */
   const inscricao =
-    matricula ?? (curso.acesso === "cadastro" ? { criadoEm: new Date().toISOString() } : null);
+    matricula ?? (nivel === "cadastro" ? { criadoEm: new Date().toISOString() } : null);
 
   if (!inscricao) return { tipo: "precisaMatricula" };
+
+  /**
+   * O prazo é conferido antes da liberação gradual, e não depois.
+   *
+   * Quem teve o acesso encerrado não deve receber "esta aula abre em 5 dias":
+   * é informação de aluno ativo, e prometeria uma abertura que não vai
+   * acontecer.
+   */
+  const fim = fimDoAcesso(curso, inscricao);
+  if (fim && fim < new Date()) return { tipo: "expirado", expirouEm: fim };
 
   const espera = aula.liberaApos ?? 0;
   if (espera > 0) {

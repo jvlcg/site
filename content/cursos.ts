@@ -27,6 +27,36 @@
  *               liberação gradual precisa de uma data de início, e essa data é
  *               a da matrícula.
  * `pago`      — exige entrar e ter a matrícula liberada.
+ *
+ * ────────────────────────────────────────────────────────────────────
+ * AS QUATRO COMBINAÇÕES DE TEMPO
+ * ────────────────────────────────────────────────────────────────────
+ *
+ * Dois campos independentes controlam tempo, e cada um responde a uma
+ * pergunta diferente. `gratuitoAte` responde "até quando é de graça"; e
+ * `acessoPor` responde "por quanto tempo o aluno mantém o curso".
+ *
+ *   1. GRATUITO PARA SEMPRE
+ *      acesso: "livre"
+ *      Aberto a qualquer pessoa, sem entrar em nada. É o único formato que
+ *      aparece no Google.
+ *
+ *   2. PAGO, ACESSO VITALÍCIO
+ *      acesso: "pago", preco: 149
+ *      Quem compra fica com o curso para sempre.
+ *
+ *   3. GRATUITO POR TEMPO LIMITADO (lançamento)
+ *      acesso: "pago", preco: 149, gratuitoAte: "2026-09-30"
+ *      Até 30/09 qualquer pessoa entra de graça — com a conta, para a
+ *      matrícula existir. Depois disso passa a custar R$ 149. **Quem pegou
+ *      durante a janela continua com acesso**, porque a matrícula ficou.
+ *
+ *   4. PAGO, ACESSO POR TEMPO LIMITADO
+ *      acesso: "pago", preco: 149, acessoPor: 365
+ *      Um ano de acesso a partir da matrícula de cada aluno.
+ *
+ * Os dois campos podem andar juntos: um lançamento gratuito que dá um ano de
+ * acesso é `gratuitoAte` + `acessoPor`.
  */
 
 /** De onde vem o vídeo da aula. */
@@ -106,6 +136,33 @@ export type Curso = {
    * de consulta, e curso é outra coisa, mas a separação evita confusão.
    */
   preco?: number;
+  /**
+   * **Janela de lançamento:** até esta data (`"2026-09-30"`), o curso é
+   * gratuito. Depois dela, passa a valer o que `acesso` e `preco` dizem.
+   *
+   * Durante a janela o curso é grátis **mas exige entrar com a conta**. Isso
+   * não é atrito à toa: é o que cria a matrícula — e é a matrícula que garante
+   * que **quem pegou de graça continua tendo acesso depois que a janela
+   * fecha**. Sem ela, a promessa do lançamento não teria como ser cumprida.
+   *
+   * Também é o que permite saber quem entrou, que costuma ser o motivo de
+   * fazer um lançamento gratuito.
+   */
+  gratuitoAte?: string;
+  /**
+   * **Duração do acesso:** dias que o aluno mantém o curso depois de se
+   * matricular. Ausente = **acesso vitalício**.
+   *
+   * `365` para um ano, `180` para seis meses. O relógio começa na matrícula de
+   * cada pessoa, não numa data fixa — quem entrou depois tem os mesmos dias
+   * que quem entrou antes.
+   *
+   * Um número aqui precisa aparecer na página de venda antes da compra, e
+   * aparece: o cartão do catálogo e a página do curso dizem "acesso por N
+   * meses" ou "acesso vitalício". Vender acesso limitado sem dizer é problema
+   * de Código de Defesa do Consumidor, não de interface.
+   */
+  acessoPor?: number;
   /** Enquanto `false`, o curso não existe para ninguém — nem no catálogo, nem por URL direta. */
   publicado: boolean;
   /** Para quem é o curso. Vira lista na página. */

@@ -23,7 +23,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/voluntariado",
     "/poemas",
     "/mapa-do-site",
-    "/politica-de-privacidade",
+    /*
+      Fora daqui de propósito, e não por esquecimento: a política de
+      privacidade e os termos dos cursos são `noindex`. Listar no sitemap uma
+      página marcada como "não indexe" manda dois sinais contrários ao mesmo
+      rastreador — ele obedece ao `noindex`, mas gasta orçamento de rastreio
+      voltando numa página que nunca vai indexar. Os dois documentos continuam
+      alcançáveis pelo rodapé e pelo mapa do site, que é o que importa para
+      quem precisa lê-los.
+
+      - /politica-de-privacidade
+      - /termos-dos-cursos
+    */
   ].map((path) => ({
     url: `${site.url}${path}`,
     lastModified: new Date(),
