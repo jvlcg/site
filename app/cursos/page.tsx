@@ -2,7 +2,24 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
-import { cursosPublicados, totalDeAulas } from "@/lib/cursos";
+import type { Curso } from "@/content/cursos";
+import {
+  cursosPublicados,
+  dataPorExtenso,
+  naJanelaGratuita,
+  textoDoAcesso,
+  totalDeAulas,
+} from "@/lib/cursos";
+
+/**
+ * O catálogo se regenera de hora em hora.
+ *
+ * Sem isso, uma janela de lançamento que fechasse às 23h59 continuaria
+ * anunciando "grátis" até alguém fazer uma publicação nova — e o site estaria
+ * oferecendo de graça algo que já voltou a ser pago. Uma hora de atraso é
+ * aceitável; uma semana não é.
+ */
+export const revalidate = 3600;
 import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 import { site } from "@/lib/site-config";
 
@@ -13,11 +30,24 @@ export const metadata: Metadata = {
   alternates: { canonical: "/cursos" },
 };
 
-const SELO = {
-  livre: { texto: "Gratuito", classe: "text-[var(--accent)] border-[color-mix(in_oklab,var(--accent)_45%,transparent)]" },
-  cadastro: { texto: "Gratuito · com conta", classe: "text-[var(--accent)] border-[color-mix(in_oklab,var(--accent)_45%,transparent)]" },
-  pago: { texto: "Curso completo", classe: "text-faint border-[color-mix(in_oklab,var(--fg)_18%,transparent)]" },
-} as const;
+const DESTAQUE = "text-[var(--accent)] border-[color-mix(in_oklab,var(--accent)_45%,transparent)]";
+const DISCRETO = "text-faint border-[color-mix(in_oklab,var(--fg)_18%,transparent)]";
+
+/**
+ * O selo do cartão diz a coisa mais decisiva sobre o curso.
+ *
+ * A janela de lançamento vem antes de tudo, e com a data: "Grátis até 30 de
+ * setembro" é o que faz alguém clicar hoje em vez de amanhã, e omitir a data
+ * transformaria uma informação em pressão vazia.
+ */
+function selo(curso: Curso) {
+  if (naJanelaGratuita(curso)) {
+    return { texto: `Grátis até ${dataPorExtenso(curso.gratuitoAte!)}`, classe: DESTAQUE };
+  }
+  if (curso.acesso === "livre") return { texto: "Gratuito", classe: DESTAQUE };
+  if (curso.acesso === "cadastro") return { texto: "Gratuito · com conta", classe: DESTAQUE };
+  return { texto: "Curso completo", classe: DISCRETO };
+}
 
 export default function CursosPage() {
   const cursos = cursosPublicados();
@@ -65,7 +95,7 @@ export default function CursosPage() {
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {cursos.map((c, i) => {
-              const selo = SELO[c.acesso];
+              const marca = selo(c);
               return (
                 <Reveal key={c.slug} delay={(i % 3) * 70}>
                   <Link
@@ -73,9 +103,9 @@ export default function CursosPage() {
                     className="glass card-hover flex h-full flex-col rounded-2xl p-6"
                   >
                     <span
-                      className={`font-mono-tech w-fit rounded-full border px-2.5 py-1 text-[0.62rem] uppercase tracking-[0.16em] ${selo.classe}`}
+                      className={`font-mono-tech w-fit rounded-full border px-2.5 py-1 text-[0.62rem] uppercase tracking-[0.16em] ${marca.classe}`}
                     >
-                      {selo.texto}
+                      {marca.texto}
                     </span>
                     <h2 className="font-display mt-4 text-lg font-semibold leading-snug">
                       {c.titulo}
@@ -86,6 +116,12 @@ export default function CursosPage() {
                     <p className="mt-4 font-mono-tech text-[0.68rem] uppercase tracking-[0.14em] text-faint">
                       {totalDeAulas(c)} aula{totalDeAulas(c) === 1 ? "" : "s"}
                       {c.cargaHoraria ? ` · ${c.cargaHoraria}` : ""}
+                      {/*
+                        A duração do acesso aparece já no cartão, antes de
+                        qualquer clique. Vender acesso limitado sem dizer que é
+                        limitado é problema de Código de Defesa do Consumidor.
+                      */}
+                      {c.acesso === "pago" ? ` · ${textoDoAcesso(c).toLowerCase()}` : ""}
                     </p>
                   </Link>
                 </Reveal>

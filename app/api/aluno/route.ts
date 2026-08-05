@@ -13,7 +13,7 @@ import {
   opcoesCookie,
   sessaoConfigurada,
 } from "@/lib/aluno";
-import { getCurso } from "@/lib/cursos";
+import { acessoAgora, getCurso } from "@/lib/cursos";
 import { verificarIdentidade } from "@/lib/google-identidade";
 
 /**
@@ -55,7 +55,16 @@ export async function POST(req: Request) {
   const slug = typeof corpo?.curso === "string" ? corpo.curso : null;
   if (slug && matriculasConfiguradas()) {
     const curso = getCurso(slug);
-    if (curso?.acesso === "cadastro") {
+    /**
+     * `acessoAgora` e não `curso.acesso`: durante a janela de lançamento, um
+     * curso pago vale como gratuito com conta, e é **aqui** que a matrícula do
+     * lançamento é criada.
+     *
+     * É a linha que cumpre a promessa da promoção. Quem entra hoje, de graça,
+     * fica com um registro de matrícula que não vence quando a janela fecha —
+     * e `podeVer`, daí em diante, olha para a matrícula, não para a data.
+     */
+    if (curso && acessoAgora(curso) === "cadastro") {
       await matricular({ ...identidade, curso: slug, origem: "cadastro" });
     }
   }

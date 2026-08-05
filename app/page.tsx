@@ -140,7 +140,16 @@ export default function HomePage() {
                 Conhecer o Dr. José Victor
               </Link>
             </Reveal>
-            <Reveal delay={340} className="mt-12 flex flex-wrap gap-x-8 gap-y-3 text-[0.8rem] text-faint">
+            {/*
+              Sobe de `faint` para `muted`.
+
+              Esta linha é a prova de credencial do hero — CRM, formação,
+              produção científica. É o que sustenta a confiança de quem chega
+              pela primeira vez, e estava no tom mais apagado da página, abaixo
+              até das legendas decorativas. Detalhe secundário pode ser
+              discreto; credencial de médico, não.
+            */}
+            <Reveal delay={340} className="mt-12 flex flex-wrap gap-x-8 gap-y-3 text-[0.82rem] text-muted">
               <span>{site.crm}</span>
               <span>Formação PUC-GO · Magna Cum Laude</span>
               <span>Pesquisador com publicações em dor e intervenção</span>
@@ -165,15 +174,15 @@ export default function HomePage() {
                   className="rounded-[1.4rem] object-cover"
                 />
               </div>
-              <div className="glass absolute -left-6 bottom-10 hidden rounded-2xl px-5 py-4 sm:block">
+              <div className="glass-solido absolute -left-6 bottom-10 hidden rounded-2xl px-5 py-4 sm:block">
                 <p className="font-display text-sm font-semibold">{site.crm}</p>
-                <p className="mt-0.5 text-xs text-faint">Registro ativo · Goiás</p>
+                <p className="mt-0.5 text-xs text-muted">Registro ativo · Goiás</p>
               </div>
-              <div className="glass absolute -right-4 top-10 hidden rounded-2xl px-5 py-4 sm:block">
+              <div className="glass-solido absolute -right-4 top-10 hidden rounded-2xl px-5 py-4 sm:block">
                 <p className="font-display text-sm font-semibold text-[var(--accent)]">
                   Telemedicina
                 </p>
-                <p className="mt-0.5 text-xs text-faint">Todo o Brasil</p>
+                <p className="mt-0.5 text-xs text-muted">Todo o Brasil</p>
               </div>
             </div>
           </Reveal>

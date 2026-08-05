@@ -27,7 +27,7 @@ const GyroPrompt = dynamic(() => import("@/components/three/GyroPrompt").then((m
 const CadastroFab = dynamic(() => import("./CadastroFab").then((m) => m.CadastroFab), {
   ssr: false,
 });
-const Mascote = dynamic(() => import("@/components/ui/Mascote").then((m) => m.Mascote), {
+const Mascotes = dynamic(() => import("@/components/ui/Mascotes").then((m) => m.Mascotes), {
   ssr: false,
 });
 
@@ -65,7 +65,7 @@ export function ExtrasAdiados() {
     <>
       {temCursor && <CursorGlow />}
       <CadastroFab />
-      <Mascote />
+      <Mascotes />
       <GyroPrompt />
     </>
   );

@@ -111,6 +111,24 @@ body {
   -webkit-backdrop-filter: blur(18px);
 }
 
+/**
+ * Vidro opaco — para painel que flutua **sobre foto**.
+ *
+ * O `.glass` normal tem 4,5% de branco no modo escuro, o que é praticamente
+ * transparente. Sobre um fundo escuro isso funciona: o texto claro tem o
+ * contraste do fundo inteiro. Sobre a foto do jaleco, não — metade do painel
+ * cai em cima de branco, e texto claro sobre branco não se lê de jeito nenhum.
+ *
+ * Aqui o fundo é quase sólido, e o desfoque fica só pelo acabamento. É a mesma
+ * lição do balão do mascote: sobre imagem ou texto, a leitura ganha do efeito.
+ */
+.glass-solido {
+  background: color-mix(in oklab, var(--bg) 92%, transparent);
+  border: 1px solid var(--glass-line);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
 .hairline { border-color: var(--line); }
 
 .text-gradient {

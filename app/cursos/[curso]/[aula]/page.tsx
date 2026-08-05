@@ -6,7 +6,16 @@ import { DoacaoPix } from "@/components/cursos/DoacaoPix";
 import { EntrarAluno } from "@/components/cursos/EntrarAluno";
 import { Player } from "@/components/cursos/Player";
 import { alunoAtual, buscarMatricula, matriculasConfiguradas } from "@/lib/aluno";
-import { aulaIndexavel, capaDa, duracaoISO, getAula, getCurso, podeVer, vizinhas } from "@/lib/cursos";
+import {
+  aulaIndexavel,
+  capaDa,
+  duracaoISO,
+  getAula,
+  getCurso,
+  podeVer,
+  textoDoAcesso,
+  vizinhas,
+} from "@/lib/cursos";
 import { JsonLd } from "@/lib/schema";
 import { site, whatsappDireto } from "@/lib/site-config";
 
@@ -106,6 +115,31 @@ export default async function AulaPage({ params }: Props) {
                   {acesso.abreEm.toLocaleDateString("pt-BR")}.
                 </p>
               </div>
+            </div>
+          ) : acesso.tipo === "expirado" ? (
+            <div className="glass rounded-2xl p-6 sm:p-7">
+              <p className="font-mono-tech text-[0.68rem] uppercase tracking-[0.16em] text-faint">
+                Acesso encerrado
+              </p>
+              <h2 className="font-display mt-2.5 text-xl font-semibold">
+                Seu prazo de acesso terminou
+              </h2>
+              <p className="mt-2.5 text-[0.92rem] leading-relaxed text-muted">
+                Este curso dá {textoDoAcesso(curso).toLowerCase()}, e o seu venceu
+                em {acesso.expirouEm.toLocaleDateString("pt-BR")}. Dá para
+                renovar — é só falar com o consultório.
+              </p>
+              <a
+                href={whatsappDireto(
+                  "cursos",
+                  `Olá! Meu acesso ao curso "${curso.titulo}" venceu e gostaria de renovar.`
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary mt-5 !py-2.5 text-sm"
+              >
+                Renovar acesso
+              </a>
             </div>
           ) : acesso.tipo === "precisaEntrar" ? (
             <EntrarAluno curso={curso.slug} motivo="Entre para assistir" />

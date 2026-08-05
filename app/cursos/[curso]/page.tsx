@@ -4,7 +4,18 @@ import { notFound } from "next/navigation";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { DoacaoPix } from "@/components/cursos/DoacaoPix";
-import { cursosPublicados, getCurso, totalDeAulas } from "@/lib/cursos";
+import {
+  aulasDo,
+  cursosPublicados,
+  dataPorExtenso,
+  getCurso,
+  naJanelaGratuita,
+  textoDoAcesso,
+  totalDeAulas,
+} from "@/lib/cursos";
+
+/** Mesma razão do catálogo: a janela de lançamento precisa fechar sozinha. */
+export const revalidate = 3600;
 import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 import { site, whatsappDireto } from "@/lib/site-config";
 
@@ -32,6 +43,7 @@ export default async function CursoPage({ params }: Props) {
   if (!curso) notFound();
 
   const total = totalDeAulas(curso);
+  const primeiraAula = aulasDo(curso)[0];
 
   return (
     <>
@@ -131,38 +143,94 @@ export default async function CursoPage({ params }: Props) {
               <Reveal>
                 <div className="glass rounded-2xl p-6">
                   <p className="font-mono-tech text-[0.66rem] uppercase tracking-[0.16em] text-faint">
-                    Acesso ao curso
+                    {naJanelaGratuita(curso) ? "Lançamento" : "Acesso ao curso"}
                   </p>
-                  {curso.preco !== undefined && (
-                    <p className="font-display mt-2 text-3xl font-semibold">
-                      R$ {curso.preco.toFixed(2).replace(".", ",")}
-                    </p>
-                  )}
-                  <p className="mt-3 text-[0.88rem] leading-relaxed text-muted">
-                    Pagamento por PIX. Depois de confirmado, o acesso é liberado
-                    para o e-mail que você usar para entrar.
-                  </p>
-                  <a
-                    /*
-                      Vai direto para o WhatsApp dos cursos, sem passar pela
-                      ponte `/agendar`.
 
-                      A ponte existe para medir agendamento, e dispara a
-                      conversão do Google Ads ao ser aberta. Interesse em curso
-                      não é agendamento: contá-lo ali inflaria o número que
-                      mede o retorno dos anúncios de consulta, e a campanha
-                      passaria a ser otimizada em cima de um sinal falso.
+                  {naJanelaGratuita(curso) ? (
+                    <>
+                      <p className="font-display mt-2 text-3xl font-semibold text-[var(--accent)]">
+                        Gratuito
+                      </p>
+                      <p className="mt-1 text-[0.86rem] text-faint">
+                        até {dataPorExtenso(curso.gratuitoAte!)}
+                        {curso.preco !== undefined && (
+                          <>
+                            {" · depois "}
+                            <span className="line-through">
+                              R$ {curso.preco.toFixed(2).replace(".", ",")}
+                            </span>
+                          </>
+                        )}
+                      </p>
+                      {/*
+                        A frase que faz a promoção valer a pena para quem entra:
+                        entrar agora não é acesso temporário, é ficar com o
+                        curso. Sem dizer isso, "grátis até dia 30" se lê como
+                        "você perde no dia 30".
+                      */}
+                      <p className="mt-3 text-[0.88rem] leading-relaxed text-muted">
+                        Entre com sua conta e o curso é seu — quem se matricula
+                        durante o lançamento{" "}
+                        <strong className="text-[var(--fg)]">
+                          continua com acesso depois que a promoção acabar
+                        </strong>
+                        .
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      {curso.preco !== undefined && (
+                        <p className="font-display mt-2 text-3xl font-semibold">
+                          R$ {curso.preco.toFixed(2).replace(".", ",")}
+                        </p>
+                      )}
+                      <p className="mt-3 text-[0.88rem] leading-relaxed text-muted">
+                        Pagamento por PIX. Depois de confirmado, o acesso é
+                        liberado para o e-mail que você usar para entrar.
+                      </p>
+                    </>
+                  )}
+
+                  <p className="font-mono-tech mt-4 text-[0.68rem] uppercase tracking-[0.14em] text-faint">
+                    {textoDoAcesso(curso)}
+                  </p>
+                  {naJanelaGratuita(curso) && primeiraAula ? (
+                    /*
+                      Durante o lançamento não há nada a negociar: a pessoa
+                      entra com a conta e assiste. Mandá-la ao WhatsApp para
+                      pedir algo que é de graça criaria uma fila para nada — e
+                      cada passo a mais é gente que desiste no meio.
                     */
-                    href={whatsappDireto(
-                      "cursos",
-                      `Olá! Tenho interesse no curso "${curso.titulo}".`
-                    )}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-primary mt-5 w-full justify-center"
-                  >
-                    Quero este curso <span aria-hidden="true">→</span>
-                  </a>
+                    <Link
+                      href={`/cursos/${curso.slug}/${primeiraAula.slug}`}
+                      className="btn-primary mt-5 w-full justify-center"
+                    >
+                      Começar agora <span aria-hidden="true">→</span>
+                    </Link>
+                  ) : (
+                    <a
+                      /*
+                        Vai direto para o WhatsApp dos cursos, sem passar pela
+                        ponte `/agendar`.
+
+                        A ponte existe para medir agendamento, e dispara a
+                        conversão do Google Ads ao ser aberta. Interesse em
+                        curso não é agendamento: contá-lo ali inflaria o número
+                        que mede o retorno dos anúncios de consulta, e a
+                        campanha passaria a ser otimizada em cima de um sinal
+                        falso.
+                      */
+                      href={whatsappDireto(
+                        "cursos",
+                        `Olá! Tenho interesse no curso "${curso.titulo}".`
+                      )}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary mt-5 w-full justify-center"
+                    >
+                      Quero este curso <span aria-hidden="true">→</span>
+                    </a>
+                  )}
                   <p className="mt-4 text-[0.76rem] leading-relaxed text-faint">
                     Direito de arrependimento em <strong>7 dias</strong>,
                     conforme o art. 49 do Código de Defesa do Consumidor — vale
