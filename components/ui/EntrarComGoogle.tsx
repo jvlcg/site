@@ -73,6 +73,15 @@ type Props = {
   aoIdentificar: (dados: { nome: string; email: string; credencial: string }) => void;
   /** Escuro ou claro — o botão do Google não herda o tema do site sozinho. */
   escuro: boolean;
+  /**
+   * O que dizer quando o botão não carrega, e **por que isto é uma prop**.
+   *
+   * O texto padrão manda preencher os campos abaixo, que é a saída certa no
+   * cadastro de paciente — lá o Google só adianta o preenchimento. Na tela de
+   * entrar não há campo nenhum abaixo: o Google é o único caminho, e mandar a
+   * pessoa preencher o que não existe é pior que não dizer nada.
+   */
+  alternativa?: React.ReactNode;
 };
 
 /**
@@ -95,7 +104,7 @@ function lerCarga(token: string): { name?: string; email?: string } | null {
   }
 }
 
-export function EntrarComGoogle({ aoIdentificar, escuro }: Props) {
+export function EntrarComGoogle({ aoIdentificar, escuro, alternativa }: Props) {
   const [fase, setFase] = useState<"convite" | "carregando" | "pronto" | "erro">("convite");
   /**
    * Script do Google disponível — separado de `fase` de propósito.
@@ -204,6 +213,24 @@ export function EntrarComGoogle({ aoIdentificar, escuro }: Props) {
     desenhar();
   }, [fase, scriptPronto, desenhar]);
 
+  /**
+   * Desiste depois de 10 segundos.
+   *
+   * `onerror` cobre o pedido que falha, e não cobre o pedido que **fica
+   * pendurado** — que é justamente o que bloqueador de anúncio e extensão de
+   * privacidade costumam fazer com `accounts.google.com`. Sem prazo, a tela
+   * fica em "Carregando…" indefinidamente e a pessoa não descobre que precisa
+   * fazer alguma coisa.
+   *
+   * Dez segundos é folgado para 4G ruim e curto o bastante para não parecer
+   * travamento.
+   */
+  useEffect(() => {
+    if (fase !== "carregando") return;
+    const prazo = setTimeout(() => setFase((f) => (f === "carregando" ? "erro" : f)), 10_000);
+    return () => clearTimeout(prazo);
+  }, [fase]);
+
   // Se o tema mudar depois de o botão já estar na tela, redesenha — o botão do
   // Google é pintado uma vez e não acompanha a troca sozinho.
   useEffect(() => {
@@ -220,8 +247,12 @@ export function EntrarComGoogle({ aoIdentificar, escuro }: Props) {
   if (fase === "erro") {
     return (
       <p className="rounded-2xl border hairline p-4 text-[0.84rem] leading-relaxed text-faint">
-        Não foi possível carregar o botão do Google agora. Sem problema — é só
-        preencher os campos abaixo normalmente.
+        {alternativa ?? (
+          <>
+            Não foi possível carregar o botão do Google agora. Sem problema — é
+            só preencher os campos abaixo normalmente.
+          </>
+        )}
       </p>
     );
   }
