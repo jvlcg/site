@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { LogoLockup } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
 import { SoundToggle } from "./SoundToggle";
+import { ContaAluno } from "@/components/ui/ContaAluno";
 import { whatsappLink } from "@/lib/site-config";
 
 const headerLinks = [
@@ -59,7 +60,17 @@ export function Header() {
       }`}
       style={{ background: scrolled ? "var(--header-bg)" : "transparent" }}
     >
-      <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
+      {/*
+        A faixa do cabeçalho passa de 1280 para 1440 px onde o menu horizontal
+        aparece — o conteúdo das páginas continua em 1280.
+
+        Não é capricho: com doze itens de menu, a marca e o botão de agendar, o
+        cabeçalho tinha 7 px de folga. Qualquer coisa nova ali empurraria de
+        novo o botão de agendar para fora, que foi exatamente o defeito
+        corrigido antes. Cabeçalho mais largo que o texto é comum e não
+        atrapalha a leitura: ninguém lê o menu como parágrafo.
+      */}
+      <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-4 px-5 sm:px-8 min-[1500px]:max-w-[1440px]">
         <Link href="/" aria-label="Página inicial — Dr. José Victor Lisboa Cardoso Gomes">
           <LogoLockup compact />
         </Link>
@@ -99,6 +110,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <ContaAluno />
           <SoundToggle />
           <ThemeToggle />
           <a
@@ -154,6 +166,7 @@ export function Header() {
             <ThemeToggle variant="row" />
             <SoundToggle variant="row" />
           </div>
+          <ContaAluno variant="linha" />
           <a
             href={whatsappLink()}
             target="_blank"
