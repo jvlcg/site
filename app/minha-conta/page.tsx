@@ -5,6 +5,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { EntrarAluno } from "@/components/cursos/EntrarAluno";
 import { SairDaConta } from "@/components/cursos/SairDaConta";
 import { MeusPontos } from "@/components/cursos/MeusPontos";
+import { Resgatar } from "@/components/cursos/Resgatar";
 import { alunoAtual, buscarMatricula, matriculasConfiguradas } from "@/lib/aluno";
 import {
   acessoAgora,
@@ -13,7 +14,7 @@ import {
   fimDoAcesso,
   textoDoAcesso,
 } from "@/lib/cursos";
-import { contaDe, pontosConfigurados } from "@/lib/pontos";
+import { contaDe, podeResgatar, pontosConfigurados } from "@/lib/pontos";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -66,7 +67,13 @@ export default async function MinhaContaPage() {
    * conta de quem se matriculou — prometendo um conteúdo que não existe mais.
    */
   const cursos = cursosPublicados();
-  const meus = [];
+  /** Tipado à mão: o array nasce vazio, e o TypeScript não teria de onde inferir. */
+  const meus: {
+    curso: (typeof cursos)[number];
+    matricula: { criadoEm: string };
+    fim: Date | null;
+    vencido: boolean;
+  }[] = [];
   for (const curso of cursos) {
     const nivel = acessoAgora(curso);
     if (nivel === "livre") continue;
@@ -88,6 +95,19 @@ export default async function MinhaContaPage() {
    */
   const pontos = pontosConfigurados() ? await contaDe(aluno.email, aluno.nome) : null;
 
+  /**
+   * Os cursos pagos que ela ainda não tem — a lista do resgate.
+   *
+   * Oferecer um curso que a pessoa já possui gastaria o direito dela por nada,
+   * e a rota recusaria depois. Melhor não mostrar.
+   */
+  const elegivel = pontos ? await podeResgatar(aluno.email, pontos.total) : null;
+  const resgataveis = elegivel?.pode
+    ? cursos
+        .filter((c) => acessoAgora(c) === "pago" && !meus.some((m) => m.curso.slug === c.slug))
+        .map((c) => ({ slug: c.slug, titulo: c.titulo }))
+    : [];
+
   return (
     <>
       <PageHero
@@ -104,6 +124,11 @@ export default async function MinhaContaPage() {
         {pontos && (
           <div className="mb-12">
             <MeusPontos conta={pontos} />
+            {elegivel?.pode && resgataveis.length > 0 && (
+              <div className="glass mt-4 rounded-2xl p-6 sm:p-7">
+                <Resgatar cursos={resgataveis} restantes={elegivel.restantes} />
+              </div>
+            )}
           </div>
         )}
 

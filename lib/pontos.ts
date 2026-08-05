@@ -303,3 +303,115 @@ export async function listarContas(): Promise<Conta[]> {
   }
   return lista.sort((a, b) => b.total - a.total);
 }
+
+// ────────────────────────────────────────────────── progresso nas aulas
+
+const CHAVE_PROGRESSO = "progresso";
+
+export type Progresso = {
+  /** Slugs das aulas já assistidas. */
+  aulas: string[];
+  /** Quando o curso foi concluído. Ausente = ainda não. */
+  concluidoEm?: string;
+};
+
+const campoProgresso = (email: string, curso: string) => `${resumo(email)}:${curso}`;
+
+export async function lerProgresso(email: string, curso: string): Promise<Progresso> {
+  const bruto = await comandoRedis<string>("HGET", CHAVE_PROGRESSO, campoProgresso(email, curso));
+  return (bruto && decifrar<Progresso>(bruto)) || { aulas: [] };
+}
+
+/**
+ * Marca uma aula como assistida e devolve o progresso novo.
+ *
+ * `totalDeAulas` chega por parâmetro em vez de ser buscado aqui: este arquivo
+ * não sabe nada sobre cursos, e é bom que continue assim — quem conhece o
+ * catálogo é `lib/cursos.ts`, e cruzar os dois criaria uma dependência
+ * circular entre pontos e conteúdo.
+ *
+ * O ponto de conclusão é lançado **uma vez**, na transição. `concluidoEm`
+ * existe justamente para marcar que já passou por aqui: sem ele, desmarcar e
+ * remarcar a última aula renderia pontos toda vez.
+ */
+export async function marcarAula(
+  email: string,
+  curso: string,
+  aula: string,
+  totalDeAulas: number,
+  tituloDoCurso = "",
+  nome = ""
+): Promise<Progresso | null> {
+  if (!pontosConfigurados()) return null;
+
+  const atual = await lerProgresso(email, curso);
+  if (atual.aulas.includes(aula)) return atual;
+
+  const aulas = [...atual.aulas, aula];
+  const completou = aulas.length >= totalDeAulas && !atual.concluidoEm;
+  const novo: Progresso = {
+    aulas,
+    ...(completou ? { concluidoEm: new Date().toISOString() } : atual.concluidoEm ? { concluidoEm: atual.concluidoEm } : {}),
+  };
+
+  const pacote = cifrar(novo);
+  if (!pacote) return null;
+  await comandoRedis("HSET", CHAVE_PROGRESSO, campoProgresso(email, curso), pacote);
+
+  if (completou) {
+    await lancar(email, "cursoConcluido", tituloDoCurso || curso, nome);
+  }
+  return novo;
+}
+
+// ─────────────────────────────────────────────────────────── resgates
+
+/**
+ * Está ligado o resgate de curso como prêmio?
+ *
+ * Desligado por padrão, e é decisão de negócio, não técnica: curso dado como
+ * prêmio tem tratamento contábil próprio, e ligar antes de o contador dizer
+ * como declarar cria passivo retroativo — o tipo de coisa que só aparece na
+ * fiscalização, com multa.
+ *
+ * Para ligar: `RESGATE_ATIVO=1` na Vercel, e um Redeploy.
+ */
+export const resgateAtivo = () => process.env.RESGATE_ATIVO === "1";
+
+/** Cursos que esta pessoa já resgatou. */
+export async function resgatesDe(email: string): Promise<string[]> {
+  const conta = await lerConta(email);
+  return (
+    conta?.eventos.filter((e) => e.tipo === "reconhecimento" && e.nota?.startsWith("Resgate: "))
+      .map((e) => e.nota!.replace("Resgate: ", "")) ?? []
+  );
+}
+
+export type Elegibilidade =
+  | { pode: true; restantes: number | "todos" }
+  | { pode: false; motivo: "desligado" | "nivel" | "jaResgatou" };
+
+/**
+ * Esta pessoa pode resgatar mais um curso?
+ *
+ * Prata dá **um** curso; Ouro dá todos. A contagem sai do próprio extrato, e
+ * não de um contador à parte: um número guardado em separado pode divergir do
+ * histórico, e aí não há como saber qual dos dois está certo.
+ */
+export async function podeResgatar(email: string, total: number): Promise<Elegibilidade> {
+  if (!resgateAtivo()) return { pode: false, motivo: "desligado" };
+
+  const jaResgatou = (await resgatesDe(email)).length;
+  const ouro = total >= 350;
+  const prata = total >= 150;
+
+  if (ouro) return { pode: true, restantes: "todos" };
+  if (!prata) return { pode: false, motivo: "nivel" };
+  if (jaResgatou >= 1) return { pode: false, motivo: "jaResgatou" };
+  return { pode: true, restantes: 1 };
+}
+
+/** Registra o resgate no extrato. Quem cria a matrícula é a rota. */
+export async function registrarResgate(email: string, curso: string, nome = "") {
+  return lancarUmaVez(email, "reconhecimento", `Resgate: ${curso}`, nome);
+}

@@ -118,6 +118,7 @@ recolhimento retroativo tem multa.
 | Ver contas e lançar reconhecimento | `/area-restrita` → **Pontos** |
 | PDF de treino e alimentação | `/medicina-esportiva` |
 | Trecho exclusivo em artigo | `<SoParaAlunos>` no `.mdx` |
+| Marcar aula como assistida (+40 ao concluir) | dentro da aula, em curso com conta |
 | Vender por PIX, sem contratar nada | botão do curso → seu WhatsApp |
 | Doação por PIX no conteúdo aberto | páginas de curso gratuito |
 
@@ -144,11 +145,24 @@ perceber sozinho.
 
 ---
 
+## Ligar o resgate de curso como prêmio
+
+Já está construído e **desligado por padrão**. Depois de falar com o contador,
+para ligar:
+
+Vercel → **Settings → Environment Variables → Add New**
+nome `RESGATE_ATIVO`, valor `1`, **só Production** → **Redeploy**.
+
+A partir daí, quem estiver no nível Prata vê na conta um seletor para escolher
+um curso pago; quem estiver no Ouro pode liberar todos, um a um.
+
+Para desligar de novo, apague a variável e faça Redeploy — quem já resgatou
+mantém o acesso, porque a matrícula é real.
+
+---
+
 ## O que eu ainda faço, quando você destravar
 
-- **Pontos por curso concluído** — depende de existir curso com aulas
-- **Resgate de recompensa** (Prata dá um curso, Ouro dá todos) — depende da
-  resposta do contador
 - **Player protegido** — depende da escolha do serviço de vídeo
 - **Webhook de pagamento** — só vale a pena depois de umas 20 vendas; até lá o
   manual é mais barato e mais rápido

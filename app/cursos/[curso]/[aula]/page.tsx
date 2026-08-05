@@ -5,6 +5,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { DoacaoPix } from "@/components/cursos/DoacaoPix";
 import { EntrarAluno } from "@/components/cursos/EntrarAluno";
 import { Player } from "@/components/cursos/Player";
+import { MarcarAula } from "@/components/cursos/MarcarAula";
 import { alunoAtual, buscarMatricula, matriculasConfiguradas } from "@/lib/aluno";
 import {
   aulaIndexavel,
@@ -184,6 +185,14 @@ export default async function AulaPage({ params }: Props) {
 
         {aula.resumo && (
           <p className="mt-7 text-[0.98rem] leading-relaxed text-muted">{aula.resumo}</p>
+        )}
+
+        {/*
+          Só faz sentido em curso com matrícula: sem conta não há onde guardar
+          o progresso, e o botão apareceria prometendo algo que não acontece.
+        */}
+        {acesso.tipo === "liberado" && !livre && (
+          <MarcarAula curso={curso.slug} aula={aula.slug} />
         )}
 
         {acesso.tipo === "liberado" && aula.anexos && aula.anexos.length > 0 && (
