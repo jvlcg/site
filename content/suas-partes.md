@@ -40,7 +40,57 @@ cliente OAuth. Em **Origens JavaScript autorizadas** precisa constar
 Sem isso, o botão "Entrar com o Google" não funciona em produção — e funciona
 em teste, o que torna a falha confusa.
 
-### 3. Apagar a chave de API antiga do Google
+### 3. Trocar o segredo do cliente OAuth (o arquivo que você me mandou)
+
+Você enviou aqui no chat o `client_secret_….json` baixado do Google. Ele traz
+o segredo do cliente OAuth em texto puro, e tudo que passa por uma conversa
+deve ser tratado como exposto.
+
+**Antes de tudo, o que NÃO fazer: não apague o cliente OAuth.** O `client_id`
+dele está dentro do site (`lib/site-config.ts`) e é o que faz o botão
+"Continuar com Google" existir. Apagar o cliente derruba o botão. O que sai é
+só o segredo.
+
+**O site nunca usou esse segredo.** Ele serve ao fluxo de acesso continuado à
+conta da pessoa — ler agenda, mandar e-mail em nome dela —, coisa que este
+site não faz. Aqui o Google entrega a identidade já assinada, e conferir
+assinatura usa a chave **pública** dele. Está explicado em
+`lib/google-identidade.ts`. Ou seja: trocar o segredo não quebra nada, e você
+pode fazer sem medo e sem pressa de testar depois.
+
+**Passo a passo:**
+
+1. `console.cloud.google.com/apis/credentials`
+2. Confira o **projeto** na barra de cima — se tiver mais de um, é fácil mexer
+   no errado
+3. Em **IDs do cliente OAuth 2.0**, clique no cliente cujo ID começa com
+   `148201884967-0s8mrmv85h0…`
+4. Na seção **Secrets do cliente** (ou "Chaves secretas do cliente"):
+   - clique em **Adicionar secret**
+   - depois apague o antigo no ícone de lixeira
+   - se aparecer só o botão **Redefinir secret**, ele já faz as duas coisas
+
+   A ordem importa: o Google costuma não deixar apagar o único segredo
+   existente. Criar o novo primeiro contorna isso.
+5. O segredo novo **não vai para lugar nenhum.** Nem Vercel, nem GitHub, nem
+   este chat. O projeto não tem onde usá-lo.
+
+**Depois, apague o arquivo baixado:**
+
+- **Computador:** pasta **Downloads**, apague o `client_secret_….json` — e
+  **esvazie a lixeira**, senão ele continua lá
+- **iPhone/Android:** app **Arquivos** → Downloads → apagar → abrir
+  **Excluídos recentemente** e apagar de vez
+- Confira se a pasta Downloads é sincronizada com **iCloud, Google Drive ou
+  OneDrive**. Se for, o arquivo também está na nuvem e some de lá junto — mas
+  vale conferir na lixeira do serviço
+
+**O risco que isso fecha:** com `client_id` + segredo, alguém consegue montar
+uma tela de consentimento do Google que aparece para a vítima **com o nome do
+seu site**. Não dá acesso ao seu banco de pacientes nem à sua conta Google;
+o problema é o seu nome servindo de fachada para pedir dados a terceiros.
+
+### 4. Apagar a chave de API antiga do Google
 
 Na mesma tela, seção **Chaves de API**: apague a que começa com `AIzaSy…`.
 **Apagar, não editar** — restringir domínio não invalida o valor antigo.
@@ -48,7 +98,7 @@ Na mesma tela, seção **Chaves de API**: apague a que começa com `AIzaSy…`.
 Search Console, Analytics, Ads e Perfil da Empresa **não usam chave de API**.
 Você não vai quebrar nada.
 
-### 4. Rotacionar o token do Upstash
+### 5. Rotacionar o token do Upstash
 
 `console.upstash.com` → seu banco → **Details** → **REST API** → **Reset
 password**. Depois cole o novo na Vercel e faça **Redeploy**.

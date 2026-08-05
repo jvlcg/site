@@ -97,6 +97,18 @@ function lerCarga(token: string): { name?: string; email?: string } | null {
 
 export function EntrarComGoogle({ aoIdentificar, escuro }: Props) {
   const [fase, setFase] = useState<"convite" | "carregando" | "pronto" | "erro">("convite");
+  /**
+   * Script do Google disponível — separado de `fase` de propósito.
+   *
+   * O desenho do botão depende de **duas** coisas que ficam prontas em ordens
+   * diferentes: o script do Google e o `<div>` que recebe o botão. O `<div>` só
+   * entra na árvore quando `fase` sai de "convite", e `setFase` não é imediato.
+   *
+   * Guardar as duas condições em estado e desenhar num efeito é o que garante
+   * que o desenho aconteça quando as duas valerem, em qualquer ordem. Ver o
+   * comentário do `carregar` para o defeito que isso corrige.
+   */
+  const [scriptPronto, setScriptPronto] = useState(false);
   const caixa = useRef<HTMLDivElement>(null);
   // guardado em ref, e não em state: o callback do Google é registrado uma vez
   // e não deve ser recriado a cada render do formulário
@@ -107,44 +119,90 @@ export function EntrarComGoogle({ aoIdentificar, escuro }: Props) {
     const g = window.google;
     if (!g || !caixa.current) return setFase("erro");
 
-    g.accounts.id.initialize({
-      client_id: site.googleClientId,
-      // sem seleção automática: a pessoa escolhe a conta toda vez
-      auto_select: false,
-      callback: ({ credential }) => {
-        if (!credential) return;
-        const carga = lerCarga(credential);
-        if (!carga?.email) return setFase("erro");
-        avisar.current({
-          nome: carga.name ?? "",
-          email: carga.email,
-          credencial: credential,
-        });
-      },
-    });
+    /*
+      `try` porque o Google avisa de configuração errada **lançando**: origem
+      fora da lista de autorizadas, cliente apagado, id trocado. Sem isto a
+      exceção sobe do efeito, `fase` fica presa em "carregando" e a tela mostra
+      "Carregando…" para sempre — pior que o aviso de erro, porque parece
+      internet lenta e a pessoa fica esperando.
+    */
+    try {
+      g.accounts.id.initialize({
+        client_id: site.googleClientId,
+        // sem seleção automática: a pessoa escolhe a conta toda vez
+        auto_select: false,
+        callback: ({ credential }) => {
+          if (!credential) return;
+          const carga = lerCarga(credential);
+          if (!carga?.email) return setFase("erro");
+          avisar.current({
+            nome: carga.name ?? "",
+            email: carga.email,
+            credencial: credential,
+          });
+        },
+      });
 
-    g.accounts.id.renderButton(caixa.current, {
-      type: "standard",
-      theme: escuro ? "filled_black" : "outline",
-      size: "large",
-      text: "continue_with",
-      shape: "pill",
-      locale: "pt-BR",
-    });
-    setFase("pronto");
+      g.accounts.id.renderButton(caixa.current, {
+        type: "standard",
+        theme: escuro ? "filled_black" : "outline",
+        size: "large",
+        text: "continue_with",
+        shape: "pill",
+        locale: "pt-BR",
+      });
+      setFase("pronto");
+    } catch {
+      setFase("erro");
+    }
   }, [escuro]);
 
+  /**
+   * Baixa o script do Google. **Não desenha nada** — quem desenha é o efeito
+   * abaixo.
+   *
+   * O defeito que isso corrige: antes, `carregar` chamava `desenhar()` na hora
+   * quando `window.google` já existia. Só que `setFase("carregando")` não muda
+   * a tela na mesma linha — o React re-renderiza depois. Então `desenhar()`
+   * rodava enquanto a fase ainda era "convite", e nessa fase o `<div>` que
+   * recebe o botão **não está na tela**: `caixa.current` valia `null` e o
+   * componente caía direto na mensagem de erro.
+   *
+   * Aparecia sempre que o script já estivesse carregado — ou seja, para quem
+   * usou o botão numa página e navegou para outra pelo próprio site, que é o
+   * caminho normal entre o cadastro, a conta e uma aula. Na primeira visita
+   * funcionava, o que fazia o defeito parecer instabilidade do Google.
+   */
   const carregar = useCallback(() => {
     setFase("carregando");
-    if (window.google) return desenhar();
+    if (window.google) return setScriptPronto(true);
 
-    const script = document.createElement("script");
-    script.src = SCRIPT;
-    script.async = true;
-    script.onload = desenhar;
-    script.onerror = () => setFase("erro");
-    document.head.appendChild(script);
-  }, [desenhar]);
+    /*
+      Reaproveita a tag que já estiver na página. Dois destes componentes na
+      mesma tela — o do cadastro e o de uma aula — pediriam o mesmo arquivo
+      duas vezes, e a segunda cópia reinicializaria o cliente do Google por
+      baixo da primeira.
+    */
+    const existente = document.querySelector<HTMLScriptElement>(`script[src="${SCRIPT}"]`);
+    const script = existente ?? document.createElement("script");
+    script.addEventListener("load", () => setScriptPronto(true), { once: true });
+    script.addEventListener("error", () => setFase("erro"), { once: true });
+    if (!existente) {
+      script.src = SCRIPT;
+      script.async = true;
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  /**
+   * Desenha quando as duas condições valerem, em qualquer ordem: script
+   * disponível e `<div>` já na tela. É o efeito que roda depois do render, e é
+   * justamente por isso que aqui o `caixa.current` existe.
+   */
+  useEffect(() => {
+    if (fase !== "carregando" || !scriptPronto || !caixa.current) return;
+    desenhar();
+  }, [fase, scriptPronto, desenhar]);
 
   // Se o tema mudar depois de o botão já estar na tela, redesenha — o botão do
   // Google é pintado uma vez e não acompanha a troca sozinho.
