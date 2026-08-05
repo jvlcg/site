@@ -118,6 +118,22 @@ export function EntrarComGoogle({ aoIdentificar, escuro, alternativa }: Props) {
    * comentário do `carregar` para o defeito que isso corrige.
    */
   const [scriptPronto, setScriptPronto] = useState(false);
+  /**
+   * Por que falhou, em uma linha curta mostrada na tela.
+   *
+   * Existe porque as três causas possíveis são indistinguíveis para quem
+   * está olhando — e também eram para mim, a distância. "Não carregou" manda
+   * a pessoa (e quem for ajudar) adivinhar entre bloqueador, configuração do
+   * Google e rede lenta, que pedem coisas diferentes.
+   *
+   * Vai também para o console, para quem souber abrir.
+   */
+  const [motivo, setMotivo] = useState("");
+  const falhar = useCallback((porque: string) => {
+    setMotivo(porque);
+    console.error("[EntrarComGoogle]", porque);
+    setFase("erro");
+  }, []);
   const caixa = useRef<HTMLDivElement>(null);
   // guardado em ref, e não em state: o callback do Google é registrado uma vez
   // e não deve ser recriado a cada render do formulário
@@ -126,7 +142,8 @@ export function EntrarComGoogle({ aoIdentificar, escuro, alternativa }: Props) {
 
   const desenhar = useCallback(() => {
     const g = window.google;
-    if (!g || !caixa.current) return setFase("erro");
+    if (!g) return falhar("o arquivo do Google carregou mas não se instalou");
+    if (!caixa.current) return falhar("a área do botão não estava pronta");
 
     /*
       `try` porque o Google avisa de configuração errada **lançando**: origem
@@ -143,7 +160,7 @@ export function EntrarComGoogle({ aoIdentificar, escuro, alternativa }: Props) {
         callback: ({ credential }) => {
           if (!credential) return;
           const carga = lerCarga(credential);
-          if (!carga?.email) return setFase("erro");
+          if (!carga?.email) return falhar("o Google respondeu sem e-mail");
           avisar.current({
             nome: carga.name ?? "",
             email: carga.email,
@@ -161,10 +178,11 @@ export function EntrarComGoogle({ aoIdentificar, escuro, alternativa }: Props) {
         locale: "pt-BR",
       });
       setFase("pronto");
-    } catch {
-      setFase("erro");
+    } catch (e) {
+      // a mensagem do Google diz qual é o problema de configuração
+      falhar(`o Google recusou: ${String((e as Error)?.message ?? e).slice(0, 120)}`);
     }
-  }, [escuro]);
+  }, [escuro, falhar]);
 
   /**
    * Baixa o script do Google. **Não desenha nada** — quem desenha é o efeito
@@ -192,16 +210,35 @@ export function EntrarComGoogle({ aoIdentificar, escuro, alternativa }: Props) {
       duas vezes, e a segunda cópia reinicializaria o cliente do Google por
       baixo da primeira.
     */
+    /*
+      Uma tag que já falhou é **descartada**, não reaproveitada.
+
+      `load` e `error` disparam uma vez só. Pendurar um ouvinte novo numa tag
+      morta é esperar por um evento que nunca mais vem: a falha virava
+      permanente até a pessoa recarregar a página inteira — e navegar pelo
+      site não recarrega, porque `document.head` sobrevive à troca de rota.
+      Quem tentasse de novo depois de um tropeço de rede ficava preso no erro.
+    */
     const existente = document.querySelector<HTMLScriptElement>(`script[src="${SCRIPT}"]`);
-    const script = existente ?? document.createElement("script");
+    if (existente?.dataset.falhou) existente.remove();
+
+    const reusar = existente && !existente.dataset.falhou ? existente : null;
+    const script = reusar ?? document.createElement("script");
     script.addEventListener("load", () => setScriptPronto(true), { once: true });
-    script.addEventListener("error", () => setFase("erro"), { once: true });
-    if (!existente) {
+    script.addEventListener(
+      "error",
+      () => {
+        script.dataset.falhou = "1";
+        falhar("o navegador não conseguiu baixar accounts.google.com/gsi/client");
+      },
+      { once: true }
+    );
+    if (!reusar) {
       script.src = SCRIPT;
       script.async = true;
       document.head.appendChild(script);
     }
-  }, []);
+  }, [falhar]);
 
   /**
    * Desenha quando as duas condições valerem, em qualquer ordem: script
@@ -227,9 +264,12 @@ export function EntrarComGoogle({ aoIdentificar, escuro, alternativa }: Props) {
    */
   useEffect(() => {
     if (fase !== "carregando") return;
-    const prazo = setTimeout(() => setFase((f) => (f === "carregando" ? "erro" : f)), 10_000);
+    const prazo = setTimeout(
+      () => falhar("o pedido ao Google ficou 10 s sem resposta e sem erro"),
+      10_000
+    );
     return () => clearTimeout(prazo);
-  }, [fase]);
+  }, [fase, falhar]);
 
   // Se o tema mudar depois de o botão já estar na tela, redesenha — o botão do
   // Google é pintado uma vez e não acompanha a troca sozinho.
@@ -246,14 +286,30 @@ export function EntrarComGoogle({ aoIdentificar, escuro, alternativa }: Props) {
 
   if (fase === "erro") {
     return (
-      <p className="rounded-2xl border hairline p-4 text-[0.84rem] leading-relaxed text-faint">
-        {alternativa ?? (
-          <>
-            Não foi possível carregar o botão do Google agora. Sem problema — é
-            só preencher os campos abaixo normalmente.
-          </>
+      <div className="rounded-2xl border hairline p-4 text-[0.84rem] leading-relaxed text-faint">
+        <p>
+          {alternativa ?? (
+            <>
+              Não foi possível carregar o botão do Google agora. Sem problema —
+              é só preencher os campos abaixo normalmente.
+            </>
+          )}
+        </p>
+        {/*
+          O motivo técnico fica visível, em letra pequena.
+
+          Poluir a tela com jargão não é bonito, e a alternativa é pior: sem
+          isto, "não carregou" é tudo o que a pessoa consegue relatar, e as
+          três causas possíveis — bloqueador, configuração do Google, rede
+          pendurada — pedem soluções diferentes. Uma linha aqui é a diferença
+          entre um relato que resolve e um que só repete o sintoma.
+        */}
+        {motivo && (
+          <p className="font-mono-tech mt-3 border-t hairline pt-2.5 text-[0.68rem] leading-relaxed opacity-70">
+            Detalhe técnico: {motivo}
+          </p>
         )}
-      </p>
+      </div>
     );
   }
 
