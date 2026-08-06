@@ -31,10 +31,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!curso || !aula) return {};
 
   const indexavel = aulaIndexavel(curso);
+  /* Ver a nota na página do curso: só a capa servida daqui. */
+  const capa = capaDa(aula);
+  const capaLocal = capa?.startsWith("/") ? capa : undefined;
   return {
     title: `${aula.titulo} — ${curso.titulo}`,
     description: aula.resumo ?? curso.resumo,
     alternates: { canonical: `/cursos/${curso.slug}/${aula.slug}` },
+    /*
+      A miniatura do próprio vídeo no link compartilhado — é a aula que costuma
+      ser mandada no WhatsApp, mais que a página do curso.
+    */
+    openGraph: {
+      title: aula.titulo,
+      description: aula.resumo ?? curso.resumo,
+      ...(capaLocal
+        ? { images: [{ url: `${site.url}${capaLocal}`, width: 960, height: 540, alt: aula.titulo }] }
+        : {}),
+    },
     /**
      * Aula que exige conta não entra no índice do Google.
      *

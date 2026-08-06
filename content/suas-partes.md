@@ -107,6 +107,44 @@ Passo a passo detalhado em `content/passo-a-passo-operacional.md`.
 
 ---
 
+## Para os cursos ficarem completos
+
+Os seis vídeos do canal já estão no ar em `/cursos`. Faltam três coisas que
+só você pode dar — e as três eu tentei obter sozinho, sem sucesso.
+
+### Duração de cada aula
+
+Aparece na lista e nos dados que o Google usa para mostrar o vídeo na busca.
+
+Tentei quatro caminhos: a página do canal, a do vídeo, a do embed e o
+oEmbed. As duas primeiras estão protegidas por verificação anti-robô; as
+outras duas não trazem duração.
+
+O jeito rápido é você me mandar assim, uma linha por vídeo:
+
+```
+69NKVX8ALn4  12 min
+3JTXmfecV4Y  8 min
+```
+
+O jeito automático é criar uma chave da **YouTube Data API v3** no console
+do Google (grátis, cota de sobra para isto) e me dizer só o nome da
+variável — aí o script busca duração e descrição sozinho, e as próximas
+aulas entram completas sem você digitar nada.
+
+### Uma frase por aula
+
+Nenhuma aula tem resumo, e foi decisão consciente: eu não assisti aos
+vídeos, e resumo inventado seria informação falsa apresentada como
+verdadeira. Uma frase por aula resolve.
+
+### O vídeo chamado 🫆
+
+Está com o emoji como título, que foi o nome que você deu no YouTube. Se
+quiser um título escrito, me diga qual.
+
+---
+
 ## Quando tiver o primeiro vídeo
 
 Suba no YouTube como **não listado** e me mande:

@@ -31,11 +31,36 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { curso: slug } = await params;
   const curso = getCurso(slug);
   if (!curso) return {};
+  /**
+   * Só a capa **local** vira imagem de compartilhamento.
+   *
+   * A do YouTube funcionaria para o robô do WhatsApp, e não vale o risco: se
+   * ela sumir ou mudar, o link quebra num lugar onde ninguém vai perceber —
+   * pré-visualização de link não tem quem reclame.
+   */
+  const primeira = aulasDo(curso)[0];
+  const capa = primeira ? capaDa(primeira) : undefined;
+  const capaLocal = capa?.startsWith("/") ? capa : undefined;
   return {
     title: curso.titulo,
     description: curso.resumo,
     alternates: { canonical: `/cursos/${slug}` },
-    openGraph: { title: curso.titulo, description: curso.resumo },
+    /*
+      A capa da primeira aula vira a imagem do link compartilhado.
+
+      Sem ela, um curso mandado no WhatsApp chega como texto puro ou com a
+      imagem genérica do site — e link com miniatura é clicado muito mais que
+      link sem. Como a imagem agora é servida daqui, ela não depende do YouTube
+      estar acessível para o robô que gera a pré-visualização.
+
+      Endereço absoluto porque quem lê isto é outro servidor, e caminho
+      relativo não significa nada fora do nosso domínio.
+    */
+    openGraph: {
+      title: curso.titulo,
+      description: curso.resumo,
+      ...(capaLocal ? { images: [{ url: `${site.url}${capaLocal}`, width: 960, height: 540, alt: curso.titulo }] } : {}),
+    },
   };
 }
 
