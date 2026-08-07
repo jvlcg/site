@@ -143,4 +143,4 @@ direto do conteúdo do site e não dependem de IA._
 
 Toda resposta publicada precisa continuar respeitando as regras de publicidade médica:
 sem promessa de resultado, sem diagnóstico ou conduta, sem preço, sem superlativo, e
-medicina endocanabinoide sempre como **área de atuação** — nunca como especialidade.
+cannabis medicinal sempre como **área de atuação** — nunca como especialidade.

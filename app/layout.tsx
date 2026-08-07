@@ -36,12 +36,12 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.shortName} — Medicina Endocanabinoide e Clínica Médica em Goiânia`,
+    default: `${site.shortName} — Cannabis Medicinal e Clínica Médica em Goiânia`,
     template: `%s | ${site.shortName}`,
   },
   description: site.description,
   keywords: [
-    "medicina endocanabinoide Goiânia",
+    "cannabis medicinal Goiânia",
     "clínica médica Goiânia",
     "médico particular Goiânia",
     "telemedicina",
@@ -56,12 +56,12 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     url: site.url,
     siteName: site.shortName,
-    title: `${site.shortName} — Medicina Endocanabinoide e Clínica Médica`,
+    title: `${site.shortName} — Cannabis Medicinal e Clínica Médica`,
     description: site.description,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${site.shortName} — Medicina Endocanabinoide e Clínica Médica`,
+    title: `${site.shortName} — Cannabis Medicinal e Clínica Médica`,
     description: site.description,
   },
   robots: {

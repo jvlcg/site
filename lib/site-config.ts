@@ -14,7 +14,7 @@ export const site = {
   crm: "CRM-GO 38508",
   tagline: "Medicina de precisão, do consultório à telemedicina",
   description:
-    "Dr. José Victor Lisboa Cardoso Gomes (CRM-GO 38508) — clínica médica, medicina endocanabinoide e medicina esportiva em Goiânia-GO, com atendimento presencial e por telemedicina.",
+    "Dr. José Victor Lisboa Cardoso Gomes (CRM-GO 38508) — clínica médica, cannabis medicinal e medicina esportiva em Goiânia-GO, com atendimento presencial e por telemedicina.",
   email: "jvlcg.work@gmail.com",
   /**
    * Chave PIX das doações do conteúdo gratuito.
@@ -173,7 +173,7 @@ export function whatsappLink(
 
 export const navLinks = [
   { href: "/sobre", label: "Sobre" },
-  { href: "/medicina-endocanabinoide", label: "Medicina Endocanabinoide" },
+  { href: "/cannabis-medicinal", label: "Cannabis Medicinal" },
   { href: "/clinica-medica", label: "Clínica Médica" },
   { href: "/medicina-esportiva", label: "Medicina Esportiva" },
   { href: "/telemedicina", label: "Telemedicina" },

@@ -174,7 +174,26 @@ const nextConfig: NextConfig = {
    * o paciente está.
    */
   async redirects() {
-    return [{ source: "/artigos/:slug", destination: "/blog/:slug", permanent: true }];
+    return [
+      { source: "/artigos/:slug", destination: "/blog/:slug", permanent: true },
+      /*
+        O endereço antigo da página de cannabis medicinal.
+
+        **Sem isto, o trabalho de SEO daquela página ia para o lixo.** Ela está
+        indexada em `/medicina-endocanabinoide`, é a mais disputada do site, e
+        já foi compartilhada em conversa e em rede social. Trocar o endereço
+        sem redirecionar transformaria cada um desses links num 404 e faria o
+        Google recomeçar a página do zero.
+
+        `permanent: true` emite 301, que é o que manda o Google **transferir**
+        a posição para o endereço novo em vez de tratá-lo como página nova.
+      */
+      {
+        source: "/medicina-endocanabinoide",
+        destination: "/cannabis-medicinal",
+        permanent: true,
+      },
+    ];
   },
   async headers() {
     return [

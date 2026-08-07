@@ -4,7 +4,7 @@ Site institucional de alto padrão para consultório médico, com experiência i
 WebGL/3D, SEO técnico avançado e conformidade com a publicidade médica do CFM
 (Resolução nº 2.336/2023).
 
-Áreas de atuação: **Clínica Médica & Check-up**, **Medicina Endocanabinoide** e
+Áreas de atuação: **Clínica Médica & Check-up**, **Cannabis Medicinal** e
 **Medicina Esportiva & Performance**. Atendimento presencial em Goiânia-GO
 (Clínica Fisiogyn) e por telemedicina para todo o Brasil.
 
@@ -234,8 +234,8 @@ apontado e com alguns meses de dados.
 
 ## Hiperlinks internos automáticos
 
-Quando um texto do site cita um assunto que tem página própria — "medicina
-endocanabinoide", "telemedicina", "check-up" —, a **primeira menção vira link**
+Quando um texto do site cita um assunto que tem página própria — "cannabis
+medicinal", "telemedicina", "check-up" —, a **primeira menção vira link**
 para aquela página. Ninguém precisa escrever o link à mão, e artigo novo
 (inclusive os que chegam sozinhos da Soro) já nasce com os links no lugar.
 
@@ -648,7 +648,7 @@ e WhatsApp Business.
 | `dr-jaleco-classico.jpg` | Clínica Médica |
 | `dr-casual-camisa.jpg` | Medicina Esportiva |
 | `dr-terno-punho.jpg` | Telemedicina |
-| `dr-poltrona-pensativo.jpg` | Medicina Endocanabinoide |
+| `dr-poltrona-pensativo.jpg` | Cannabis Medicinal |
 | `dr-jose-victor-perfil-pb.jpg` | Sobre — faixa editorial |
 | `dr-jose-victor-perfil-sorriso.jpg` | Sobre — fechamento humano |
 | `dr-jose-victor-jaleco-2.jpg` | Sobre — biografia |
@@ -691,7 +691,7 @@ Crie um arquivo `.mdx` em `content/artigos/` com o frontmatter:
 title: "Título do artigo"
 description: "Resumo para busca e redes (1–2 frases)."
 date: "2026-03-10"
-category: "Medicina Endocanabinoide"   # ou Clínica Médica / Medicina Esportiva
+category: "Cannabis Medicinal"   # ou Clínica Médica / Medicina Esportiva
 tags: ["tag1", "tag2"]
 faq:
   - question: "Pergunta?"

@@ -76,7 +76,7 @@ export default function OgImage() {
             Lisboa Cardoso Gomes
           </div>
           <div style={{ marginTop: 26, fontSize: 30, color: "#9fb0bf", maxWidth: 900 }}>
-            Medicina Endocanabinoide · Clínica Médica · Medicina Esportiva
+            Cannabis Medicinal · Clínica Médica · Medicina Esportiva
           </div>
         </div>
 

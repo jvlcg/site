@@ -47,7 +47,7 @@ export function physicianSchema() {
      * de atuação/conhecimento, não títulos de especialista.
      */
     knowsAbout: [
-      "Medicina endocanabinoide",
+      "Cannabis medicinal",
       "Sistema endocanabinoide",
       "Clínica médica",
       "Check-up e medicina preventiva",
@@ -111,7 +111,7 @@ export function medicalClinicSchema() {
     hasMap: site.address.mapsUrl,
     areaServed: site.areaServed.map((name) => ({ "@type": "AdministrativeArea", name })),
     availableService: [
-      { "@type": "MedicalProcedure", name: "Medicina endocanabinoide" },
+      { "@type": "MedicalProcedure", name: "Cannabis medicinal" },
       { "@type": "MedicalProcedure", name: "Clínica médica e check-up" },
       { "@type": "MedicalProcedure", name: "Medicina esportiva" },
       { "@type": "MedicalProcedure", name: "Telemedicina" },

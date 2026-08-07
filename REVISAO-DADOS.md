@@ -78,7 +78,7 @@ falha ética grave.
 A Resolução CFM nº 2.336/2023 **proíbe anunciar especialidade sem Registro de
 Qualificação de Especialista (RQE)**.
 
-O site foi ajustado para tratar clínica médica, medicina endocanabinoide e medicina
+O site foi ajustado para tratar clínica médica, cannabis medicinal e medicina
 esportiva como **áreas de atuação**, não como especialidades:
 
 - removida a declaração `medicalSpecialty` dos dados estruturados;

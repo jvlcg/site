@@ -16,7 +16,7 @@ export function Footer() {
               </div>
             </div>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted">
-              Clínica médica, medicina endocanabinoide e medicina esportiva com base em
+              Clínica médica, cannabis medicinal e medicina esportiva com base em
               evidências científicas. Atendimento presencial em Goiânia-GO e por
               telemedicina para todo o Brasil.
             </p>
@@ -176,7 +176,7 @@ export function Footer() {
               Católica de Goiás.
             </p>
             <p>
-              As áreas citadas neste site (clínica médica, medicina endocanabinoide e
+              As áreas citadas neste site (clínica médica, cannabis medicinal e
               medicina esportiva) referem-se a <strong>campos de atuação clínica</strong>,
               não a títulos de especialista. Atendimento realizado por médico devidamente
               inscrito no Conselho Regional de Medicina do Estado de Goiás.

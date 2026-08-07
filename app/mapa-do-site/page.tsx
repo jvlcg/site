@@ -18,7 +18,7 @@ const grupos = [
     titulo: "Atendimento",
     links: [
       { href: "/clinica-medica", label: "Clínica Médica e Check-up", desc: "Consultas aprofundadas, prevenção e acompanhamento contínuo." },
-      { href: "/medicina-endocanabinoide", label: "Medicina Endocanabinoide", desc: "Avaliação criteriosa, prescrição regulamentada e laudo para cultivo." },
+      { href: "/cannabis-medicinal", label: "Cannabis Medicinal", desc: "Avaliação criteriosa, prescrição regulamentada e laudo para cultivo." },
       { href: "/medicina-esportiva", label: "Medicina Esportiva e Performance", desc: "Manejo de dor, retorno ao esporte e saúde de quem treina." },
       { href: "/telemedicina", label: "Telemedicina", desc: "Consulta por vídeo para todo o Brasil, com prescrição digital." },
     ],

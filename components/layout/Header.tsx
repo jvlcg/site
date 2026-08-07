@@ -11,7 +11,9 @@ import { whatsappLink } from "@/lib/site-config";
 
 const headerLinks = [
   { href: "/sobre", label: "Sobre" },
-  { href: "/medicina-endocanabinoide", label: "Endocanabinoide" },
+  /* Rótulo curto no topo: "Cannabis Medicinal" inteiro não cabe entre os doze
+     itens, e a página se identifica sozinha assim que abre. */
+  { href: "/cannabis-medicinal", label: "Cannabis" },
   { href: "/clinica-medica", label: "Clínica Médica" },
   { href: "/medicina-esportiva", label: "Esportiva" },
   { href: "/telemedicina", label: "Telemedicina" },

@@ -13,7 +13,7 @@ import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema } from "@/lib
 export const metadata: Metadata = {
   title: "Perguntas frequentes — consultas, telemedicina e agendamento",
   description:
-    "Respostas diretas sobre agendamento, valores, convênios, telemedicina, consultório em Goiânia e medicina endocanabinoide. Dr. José Victor Lisboa Cardoso Gomes — CRM-GO 38508.",
+    "Respostas diretas sobre agendamento, valores, convênios, telemedicina, consultório em Goiânia e cannabis medicinal. Dr. José Victor Lisboa Cardoso Gomes — CRM-GO 38508.",
   alternates: { canonical: "/perguntas-frequentes" },
 };
 
@@ -162,7 +162,7 @@ export default function PerguntasFrequentesPage() {
           {[
             { href: "/consultorio", t: "Consultório em Goiânia", d: "Fotos da estrutura, mapa e como chegar." },
             { href: "/telemedicina", t: "Telemedicina", d: "Passo a passo da consulta por vídeo." },
-            { href: "/medicina-endocanabinoide", t: "Medicina endocanabinoide", d: "O que é, para quem e como funciona." },
+            { href: "/cannabis-medicinal", t: "Cannabis medicinal", d: "O que é, para quem e como funciona." },
             { href: "/artigos", t: "Artigos científicos", d: "Produção publicada em periódicos e congressos." },
           ].map((l, i) => (
             <Reveal key={l.href} delay={(i % 2) * 70}>

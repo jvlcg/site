@@ -116,10 +116,10 @@ Se em algum momento o seu caso exigir exame físico, você será orientado com h
   // ---------------- Tratamentos ----------------
   {
     categoria: "Tratamentos",
-    q: "O que é medicina endocanabinoide?",
+    q: "O que é cannabis medicinal?",
     a: `O sistema endocanabinoide é uma rede de sinalização natural do corpo humano, que participa da regulação de **dor, sono, apetite, humor e resposta imune**. Ele existe em todos nós, independentemente de qualquer uso de cannabis.
 
-A medicina endocanabinoide estuda como esse sistema se comporta na saúde e na doença, e em quais situações intervenções sobre ele têm respaldo científico.
+A cannabis medicinal estuda como esse sistema se comporta na saúde e na doença, e em quais situações intervenções sobre ele têm respaldo científico.
 
 Na prática do consultório, isso significa **avaliação criteriosa caso a caso**: analisar indicação, segurança, interações e alternativas já estabelecidas. Quando há indicação, a prescrição segue as normas da Anvisa e do CFM, com acompanhamento e ajustes.
 
@@ -164,7 +164,7 @@ Para saber se o seu caso se encaixa, o melhor caminho é uma avaliação — cad
 
 Tem produção científica publicada — **6 artigos em periódicos** sobre dor, anestesia e intervenção guiada por imagem, além de livro organizado, capítulo e trabalhos apresentados em congressos. Atua também como revisor de periódico científico e tem certificação **ACLS** (suporte avançado de vida).
 
-Atende em clínica médica, medicina endocanabinoide e medicina esportiva — **áreas de atuação clínica**, não títulos de especialista.
+Atende em clínica médica, cannabis medicinal e medicina esportiva — **áreas de atuação clínica**, não títulos de especialista.
 
 Na página "Sobre" você encontra a trajetória completa, e em "Artigos" a produção científica.`,
     cta: true,
@@ -227,7 +227,7 @@ Essa avaliação de segurança é parte central da consulta e do acompanhamento:
     q: "O Dr. José Victor é especialista?",
     a: `Ele é médico regularmente inscrito no **${site.crm}**, graduado pela PUC Goiás com honraria Magna Cum Laude.
 
-As áreas citadas no site — clínica médica, medicina endocanabinoide e medicina esportiva — são **campos de atuação clínica**, não títulos de especialista. Anunciar especialidade exige Registro de Qualificação de Especialista (RQE) no Conselho Federal de Medicina, e o site segue rigorosamente essa distinção.
+As áreas citadas no site — clínica médica, cannabis medicinal e medicina esportiva — são **campos de atuação clínica**, não títulos de especialista. Anunciar especialidade exige Registro de Qualificação de Especialista (RQE) no Conselho Federal de Medicina, e o site segue rigorosamente essa distinção.
 
 O que sustenta a prática é a formação continuada e a produção científica: 6 artigos publicados em periódicos, livro, capítulo e trabalhos em congressos, além de atuação como revisor de periódico.`,
     cta: true,
@@ -386,7 +386,7 @@ Quando útil, é possível emitir relatório para comunicação entre os profiss
   },
   {
     categoria: "Tratamentos",
-    q: "Existe cura pela medicina endocanabinoide?",
+    q: "Existe cura pela cannabis medicinal?",
     a: `Não é assim que a coisa funciona, e é importante ser direto: **não há promessa de cura**.
 
 O que a literatura descreve, para condições específicas, é possibilidade de melhora de sintomas — com evidência que varia muito de uma condição para outra, sendo mais consistente em algumas e ainda preliminar em outras.
