@@ -25,14 +25,56 @@ import type { NextConfig } from "next";
 const GA_SCRIPT = "https://www.googletagmanager.com";
 const GA_DADOS = "https://*.google-analytics.com https://*.analytics.google.com";
 
+/**
+ * ────────────────────────────────────────────────────────────────────
+ * A CSP vale por DOCUMENTO, e não por rota — e este site é uma SPA.
+ * ────────────────────────────────────────────────────────────────────
+ *
+ * Este é o erro mais caro que cometi neste projeto, e vale deixar escrito para
+ * ninguém repetir.
+ *
+ * A liberação do Google e do YouTube ficava só nas rotas que precisam dela:
+ * `/cadastro`, `/minha-conta`, `/cursos`. Parecia certo — conceder permissão
+ * onde há motivo, e não no site inteiro.
+ *
+ * Só que o Next navega **sem recarregar o documento**. Quem entra pela página
+ * de esportes e clica para entrar na conta continua com a CSP da página de
+ * esportes — que não libera o Google. O navegador então recusa o script, e a
+ * pessoa vê "o botão não carregou" numa página cuja CSP, se você conferir com
+ * `curl`, está perfeita.
+ *
+ * Medido, com as palavras do próprio navegador:
+ *
+ *   documento aberto direto em /minha-conta      botão desenha
+ *   chegando pela pagina de esportes             "Refused to load the script
+ *                                                 'accounts.google.com/gsi/client'
+ *                                                 because it violates the following
+ *                                                 Content Security Policy directive"
+ *
+ * O mesmo valia para o vídeo das aulas e para as miniaturas: quem entrava pela
+ * home e navegava até um curso carregava a CSP da home, sem YouTube.
+ *
+ * Passei três rodadas culpando bloqueador de anúncios do visitante por causa
+ * disso. O sintoma era idêntico, e a CSP servida na URL final estava correta —
+ * conferir o cabeçalho da página de destino nunca ia mostrar o problema.
+ *
+ * **Por isso tudo o que o site usa em qualquer rota alcançável por navegação
+ * mora aqui.** Uma exceção sobrevive: `/novidades`, que não é linkada de lugar
+ * nenhum e só é alcançada por URL direta — ali a CSP por rota funciona, porque
+ * sempre há documento novo.
+ */
+const GOOGLE_CONTAS = "https://accounts.google.com";
+const YOUTUBE = "https://www.youtube-nocookie.com";
+const YOUTUBE_CAPAS = "https://i.ytimg.com";
+
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' ${GA_SCRIPT}`,
-  "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' data: blob: https://*.googleusercontent.com https://*.ggpht.com https://maps.gstatic.com https://places.googleapis.com ${GA_DADOS}`,
+  `script-src 'self' 'unsafe-inline' ${GA_SCRIPT} ${GOOGLE_CONTAS}`,
+  `style-src 'self' 'unsafe-inline' ${GOOGLE_CONTAS}`,
+  `img-src 'self' data: blob: ${YOUTUBE_CAPAS} https://*.googleusercontent.com https://*.ggpht.com https://maps.gstatic.com https://places.googleapis.com ${GA_DADOS}`,
   "font-src 'self' data:",
-  `connect-src 'self' ${GA_SCRIPT} ${GA_DADOS}`,
-  "frame-src https://www.google.com https://maps.google.com",
+  `connect-src 'self' ${GOOGLE_CONTAS} ${GA_SCRIPT} ${GA_DADOS}`,
+  `frame-src ${YOUTUBE} ${GOOGLE_CONTAS} https://www.google.com https://maps.google.com`,
   "media-src 'self'",
   "worker-src 'self' blob:",
   "manifest-src 'self'",
@@ -69,68 +111,6 @@ const cspNovidades = csp
   .replace("frame-src ", `frame-src ${SORO} `);
 
 /**
- * CSP da página /cadastro, que carrega o botão "Continuar com Google".
- *
- * Liberação restrita a essa rota, pelo mesmo motivo da Soro: um terceiro com
- * permissão de executar script lê o DOM da página em que roda, e as páginas com
- * conteúdo médico não têm por que conceder isso.
- *
- * Aqui a restrição pesa mais que no caso da Soro, e vale dizer por quê: esta é
- * a única página do site onde trafegam CPF, data de nascimento e telefone.
- * O script do Google só é baixado depois que a pessoa aperta o botão — antes
- * disso, nada dele existe na página — mas o cabeçalho precisa permitir de
- * antemão, e é por isso que a permissão fica presa a uma rota só.
- *
- * São quatro diretivas, e faltar qualquer uma quebra de um jeito diferente:
- * o `script-src` serve o `gsi/client`; o `style-src` serve a folha de estilo
- * que ele injeta; o `frame-src` abre o seletor de contas, que é um iframe; e o
- * `connect-src` é por onde o token volta. Sem o `frame-src`, por exemplo, o
- * botão aparece, a pessoa clica e não acontece nada visível.
- */
-const GOOGLE_CONTAS = "https://accounts.google.com";
-const cspCadastro = csp
-  .replace("script-src 'self' 'unsafe-inline'", `script-src 'self' 'unsafe-inline' ${GOOGLE_CONTAS}`)
-  .replace("style-src 'self' 'unsafe-inline'", `style-src 'self' 'unsafe-inline' ${GOOGLE_CONTAS}`)
-  .replace("connect-src 'self'", `connect-src 'self' ${GOOGLE_CONTAS}`)
-  .replace("frame-src ", `frame-src ${GOOGLE_CONTAS} `);
-
-/**
- * CSP das páginas de curso, que exibem vídeo do YouTube.
- *
- * **Sem isto o vídeo não toca.** A CSP geral não tem o YouTube em `frame-src`,
- * e navegador não avisa em tela: ele bloqueia o iframe e escreve uma linha no
- * console. Quem estivesse assistindo veria um retângulo em branco sem
- * explicação nenhuma.
- *
- * Duas diretivas, cada uma para uma metade do player: `img-src` serve a capa
- * (`i.ytimg.com`), que é o que aparece antes do clique, e `frame-src` serve o
- * player em si, que só entra depois. Faltando a primeira, a capa some e sobra
- * um quadro preto; faltando a segunda, a capa aparece, a pessoa clica e nada
- * acontece — que é a pior das duas falhas, porque parece defeito do vídeo.
- *
- * `youtube-nocookie.com` e não `youtube.com`: naquele domínio o rastreamento
- * só começa depois do play. Junto com a capa, isso significa que quem abre a
- * aula e não assiste não é registrado pelo YouTube.
- */
-const YOUTUBE = "https://www.youtube-nocookie.com";
-const YOUTUBE_CAPAS = "https://i.ytimg.com";
-/**
- * As páginas de curso precisam **das duas** liberações, não só a do vídeo.
- *
- * A aula fechada mostra o botão "Entrar com o Google" — o mesmo do cadastro —
- * e sem `accounts.google.com` aqui ele seria bloqueado exatamente onde mais
- * importa: na tela em que a pessoa precisa entrar para assistir ao que
- * comprou. O botão apareceria, o toque não faria nada, e o console diria o
- * motivo para ninguém.
- */
-const cspCursos = csp
-  .replace("img-src 'self' data: blob:", `img-src 'self' data: blob: ${YOUTUBE_CAPAS}`)
-  .replace("script-src 'self' 'unsafe-inline'", `script-src 'self' 'unsafe-inline' ${GOOGLE_CONTAS}`)
-  .replace("style-src 'self' 'unsafe-inline'", `style-src 'self' 'unsafe-inline' ${GOOGLE_CONTAS}`)
-  .replace("connect-src 'self'", `connect-src 'self' ${GOOGLE_CONTAS}`)
-  .replace("frame-src ", `frame-src ${YOUTUBE} ${GOOGLE_CONTAS} `);
-
-/**
  * O botão do Google abre um **popup**, e `Cross-Origin-Opener-Policy:
  * same-origin` quebra popup de outra origem.
  *
@@ -146,13 +126,11 @@ const cspCursos = csp
  * aos popups que **nós** abrimos. É o valor que a própria documentação do
  * Sign in with Google pede.
  *
- * Vale só nas três rotas que têm o botão. No resto do site continua
- * `same-origin`, que é mais restrito: não há popup nenhum para preservar.
+ * **Vale no site inteiro, e não só nas rotas do botão** — pela mesma razão da
+ * CSP acima: este cabeçalho também é por documento. Restrito a três rotas, ele
+ * protegeria apenas quem abrisse uma delas direto; quem chegasse navegando
+ * carregaria o `same-origin` da página de entrada e veria o popup em branco.
  */
-const COOP_POPUP = {
-  key: "Cross-Origin-Opener-Policy",
-  value: "same-origin-allow-popups",
-};
 
 const seguranca = [
   { key: "Content-Security-Policy", value: csp },
@@ -166,7 +144,7 @@ const seguranca = [
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()",
   },
-  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
   { key: "X-DNS-Prefetch-Control", value: "on" },
 ];
 
@@ -206,21 +184,6 @@ const nextConfig: NextConfig = {
         // para sobrescrever apenas o cabeçalho de CSP
         source: "/novidades",
         headers: [{ key: "Content-Security-Policy", value: cspNovidades }],
-      },
-      {
-        // idem, para o botão "Continuar com Google" do cadastro
-        source: "/cadastro",
-        headers: [{ key: "Content-Security-Policy", value: cspCadastro }, COOP_POPUP],
-      },
-      {
-        // as páginas de curso exibem vídeo e o botão de entrar
-        source: "/cursos/:path*",
-        headers: [{ key: "Content-Security-Policy", value: cspCursos }, COOP_POPUP],
-      },
-      {
-        // a área do aluno tem o botão de entrar, e nenhum vídeo
-        source: "/minha-conta",
-        headers: [{ key: "Content-Security-Policy", value: cspCadastro }, COOP_POPUP],
       },
       {
         // as rotas de API nunca devem ser cacheadas nem indexadas
