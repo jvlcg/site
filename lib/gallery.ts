@@ -120,7 +120,7 @@ export const doctorPhotos: Photo[] = [
   },
   {
     src: "/images/dr-poltrona-autoridade.jpg",
-    alt: `${site.name} sentado, em traje social — clínica médica e medicina endocanabinoide em ${L}`,
+    alt: `${site.name} sentado, em traje social — clínica médica e cannabis medicinal em ${L}`,
     caption: "Consultas aprofundadas",
     width: 1300,
     height: 1950,

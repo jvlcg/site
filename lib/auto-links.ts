@@ -40,9 +40,9 @@ export const MAX_LINKS = 6;
 
 export const DESTINOS: Destino[] = [
   {
-    href: "/medicina-endocanabinoide",
+    href: "/cannabis-medicinal",
     termos: [
-      "medicina endocanabinoide",
+      "cannabis medicinal",
       "medicina canabinoide",
       "sistema endocanabinoide",
       "canabidiol",

@@ -40,7 +40,7 @@ const timeline = [
   {
     period: "Hoje",
     title: "Prática clínica integrada",
-    text: "Atendimento em clínica médica, medicina endocanabinoide e medicina esportiva na Clínica Fisiogyn, em Goiânia, e por telemedicina para todo o Brasil — unindo tecnologia, dados e medicina baseada em evidências.",
+    text: "Atendimento em clínica médica, cannabis medicinal e medicina esportiva na Clínica Fisiogyn, em Goiânia, e por telemedicina para todo o Brasil — unindo tecnologia, dados e medicina baseada em evidências.",
   },
 ];
 
@@ -117,7 +117,7 @@ export default function SobrePage() {
             <span className="text-gradient">Lisboa Cardoso Gomes</span>
           </>
         }
-        lede="Médico pela PUC Goiás (Magna Cum Laude), pesquisador com publicações em dor, intervenção guiada por imagem e trauma. Clínica médica, medicina endocanabinoide e medicina esportiva — em Goiânia e por telemedicina."
+        lede="Médico pela PUC Goiás (Magna Cum Laude), pesquisador com publicações em dor, intervenção guiada por imagem e trauma. Clínica médica, cannabis medicinal e medicina esportiva — em Goiânia e por telemedicina."
         breadcrumbs={[
           { name: "Início", path: "/" },
           { name: "Sobre", path: "/sobre" },
@@ -176,8 +176,8 @@ export default function SobrePage() {
             </Reveal>
             <Reveal as="p" delay={80}>
               Essa base científica define como atendo hoje: leitura crítica da
-              literatura, protocolos claros e decisões compartilhadas. Na medicina
-              endocanabinoide, aplico esse mesmo rigor a um campo em rápida evolução —
+              literatura, protocolos claros e decisões compartilhadas. Na cannabis
+              medicinal, aplico esse mesmo rigor a um campo em rápida evolução —
               avaliando indicação, segurança e evidência caso a caso, sem promessas e
               sem modismos.
             </Reveal>

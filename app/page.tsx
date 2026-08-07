@@ -19,8 +19,8 @@ import { JsonLd, breadcrumbSchema, faqSchema } from "@/lib/schema";
 
 const areas = [
   {
-    href: "/medicina-endocanabinoide",
-    title: "Medicina Endocanabinoide",
+    href: "/cannabis-medicinal",
+    title: "Cannabis Medicinal",
     text: "Abordagem científica do sistema endocanabinoide no cuidado de condições crônicas, com prescrição criteriosa, individualizada e dentro das normas regulatórias.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-7 w-7">
@@ -119,7 +119,7 @@ export default function HomePage() {
               contexto.
             </Reveal>
             <Reveal imediato as="p" delay={170} className="mt-7 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
-              Clínica médica, medicina endocanabinoide e medicina esportiva em um
+              Clínica médica, cannabis medicinal e medicina esportiva em um
               cuidado integrado: consultas aprofundadas, plano terapêutico
               individualizado e acompanhamento próximo — no consultório ou onde você
               estiver.

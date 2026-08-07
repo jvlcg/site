@@ -50,12 +50,12 @@ o título de "especialista em" nenhuma área.
    individualizado por risco, acompanhamento longitudinal, condições crônicas,
    emagrecimento com acompanhamento clínico. Faixa etária: 14 anos a idosos.
    ${site.url}/clinica-medica
-2. **Medicina endocanabinoide** — avaliação do sistema endocanabinoide,
+2. **Cannabis medicinal** — avaliação do sistema endocanabinoide,
    indicação individualizada, prescrição conforme normas da Anvisa e do CFM,
    titulação e acompanhamento. Também emite laudo médico fundamentado que pode
    subsidiar ação judicial (habeas corpus) para cultivo domiciliar — atuação
    estritamente clínica, sem participação na condução jurídica.
-   ${site.url}/medicina-endocanabinoide
+   ${site.url}/cannabis-medicinal
 3. **Medicina esportiva e performance** — avaliação pré-participação, manejo
    clínico da dor, retorno ao esporte com critérios objetivos.
    ${site.url}/medicina-esportiva

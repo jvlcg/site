@@ -17,7 +17,7 @@ export function buildKnowledgeBase(): string {
 # QUEM É
 ${site.name} — médico inscrito no ${site.crm}.
 Graduado em Medicina pela Pontifícia Universidade Católica de Goiás.
-Atua em: clínica médica e check-up, medicina endocanabinoide e medicina esportiva.
+Atua em: clínica médica e check-up, cannabis medicinal e medicina esportiva.
 IMPORTANTE: essas são ÁREAS DE ATUAÇÃO, não títulos de especialista.
 Perfis: Instagram ${site.instagramHandle} · Lattes e ORCID no rodapé do site.
 
@@ -39,13 +39,13 @@ Não há agendamento automático pelo site; o contato é humano.
    risco, acompanhamento longitudinal, condições crônicas, emagrecimento com
    acompanhamento clínico. Atende de adolescentes (14+) a idosos.
    ${site.url}/clinica-medica
-2. Medicina endocanabinoide — avaliação do sistema endocanabinoide, indicação
+2. Cannabis medicinal — avaliação do sistema endocanabinoide, indicação
    individualizada, prescrição dentro das normas da Anvisa e do CFM,
    acompanhamento e titulação. Temas frequentes: dor crônica, insônia, ansiedade.
    Inclui emissão de laudo médico fundamentado que pode subsidiar ação judicial
    (habeas corpus) para cultivo domiciliar — o papel do médico é estritamente
    clínico; a condução jurídica é do advogado do paciente.
-   ${site.url}/medicina-endocanabinoide
+   ${site.url}/cannabis-medicinal
 3. Medicina esportiva e performance — avaliação pré-participação, manejo clínico
    da dor, retorno ao esporte com critérios objetivos, saúde de base para
    performance. Não há prescrição de anabolizantes ou hormônios sem indicação.

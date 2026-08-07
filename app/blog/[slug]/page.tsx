@@ -150,7 +150,7 @@ export default async function ArtigoPage({ params }: Props) {
               <p className="font-display font-semibold">{site.name}</p>
               <p className="mt-0.5 text-sm text-faint">{site.crm} · Médico pela PUC-GO</p>
               <p className="mt-2 text-sm leading-relaxed text-muted">
-                Clínica médica, medicina endocanabinoide e medicina esportiva, em
+                Clínica médica, cannabis medicinal e medicina esportiva, em
                 Goiânia e por telemedicina. Autor de publicações científicas em dor e
                 intervenção guiada por imagem.
               </p>

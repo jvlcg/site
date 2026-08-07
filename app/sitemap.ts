@@ -9,7 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     "",
     "/sobre",
-    "/medicina-endocanabinoide",
+    "/cannabis-medicinal",
     "/clinica-medica",
     "/medicina-esportiva",
     "/telemedicina",

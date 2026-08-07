@@ -13,7 +13,7 @@ caractere do Google Ads — nenhum será cortado no meio.
 
 O Performance Max, por padrão, manda tráfego para **qualquer página do site** que
 ele julgue relevante. O site tem artigos sobre canabidiol e uma página inteira de
-medicina endocanabinoide.
+cannabis medicinal.
 
 O Google Ads **proíbe anunciar cannabis e derivados**, e a punição não é reprovar
 o anúncio: é **suspender a conta**. Com a expansão ligada, o próprio Google

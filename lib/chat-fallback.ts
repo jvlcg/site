@@ -32,7 +32,7 @@ const RULES: { match: RegExp; reply: string }[] = [
   },
   {
     match: /canabi|cannabis|cbd|thc|endocanabinoid|[óo]leo|maconha/i,
-    reply: `A medicina endocanabinoide é conduzida com avaliação criteriosa e prescrição dentro das normas da Anvisa e do CFM. Se há indicação para o seu caso, isso só pode ser definido em consulta — a página sobre o tema explica todo o processo.\n[AGENDAR]`,
+    reply: `A cannabis medicinal é conduzida com avaliação criteriosa e prescrição dentro das normas da Anvisa e do CFM. Se há indicação para o seu caso, isso só pode ser definido em consulta — a página sobre o tema explica todo o processo.\n[AGENDAR]`,
   },
   {
     match: /cultivo|habeas|judicial|plantio|advogad|processo/i,
@@ -56,7 +56,7 @@ const RULES: { match: RegExp; reply: string }[] = [
   },
   {
     match: /forma[çc][ãa]o|curr[íi]culo|crm|quem [ée]|especialis|forma[dt]o|experi[êe]ncia/i,
-    reply: `${site.name} é médico inscrito no ${site.crm}, graduado pela PUC Goiás, com atuação em clínica médica, medicina endocanabinoide e medicina esportiva. A página "Sobre" traz a trajetória e as publicações científicas.\n[AGENDAR]`,
+    reply: `${site.name} é médico inscrito no ${site.crm}, graduado pela PUC Goiás, com atuação em clínica médica, cannabis medicinal e medicina esportiva. A página "Sobre" traz a trajetória e as publicações científicas.\n[AGENDAR]`,
   },
   {
     match: /crian[çc]a|filho|beb[êe]|pediatr|idade|adolescent/i,

@@ -9,10 +9,10 @@ import { ThreeScene } from "@/components/three/ThreeScene";
 import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema, serviceSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Medicina Endocanabinoide em Goiânia e por telemedicina",
+  title: "Cannabis Medicinal em Goiânia e por telemedicina",
   description:
     "Avaliação médica criteriosa do sistema endocanabinoide: indicação individualizada, prescrição dentro das normas da Anvisa e do CFM e acompanhamento contínuo. Dr. José Victor — CRM-GO 38508.",
-  alternates: { canonical: "/medicina-endocanabinoide" },
+  alternates: { canonical: "/cannabis-medicinal" },
 };
 
 const pillars = [
@@ -22,7 +22,7 @@ const pillars = [
   },
   {
     title: "O papel da medicina",
-    text: "A medicina endocanabinoide estuda como esse sistema se comporta na saúde e na doença, e em quais situações intervenções farmacológicas sobre ele têm respaldo científico — sempre com avaliação individual de indicação, dose, segurança e interações.",
+    text: "A cannabis medicinal estuda como esse sistema se comporta na saúde e na doença, e em quais situações intervenções farmacológicas sobre ele têm respaldo científico — sempre com avaliação individual de indicação, dose, segurança e interações.",
   },
   {
     title: "Prescrição responsável",
@@ -86,7 +86,7 @@ const faq: FaqItem[] = [
       "O uso medicinal de produtos à base de canabinoides é regulamentado no Brasil pela Anvisa, que autoriza a importação e a venda de produtos específicos mediante prescrição médica. O que a legislação não permite é o uso recreativo ou a produção caseira sem autorização. Na consulta, oriento todo o caminho regulatório de forma legal e segura.",
   },
   {
-    question: "Para quais situações a medicina endocanabinoide é estudada?",
+    question: "Para quais situações a cannabis medicinal é estudada?",
     answer:
       "A literatura científica investiga o papel de canabinoides em condições como dor crônica, epilepsias refratárias, distúrbios do sono e sintomas associados a doenças neurológicas, entre outras. A existência de estudos não significa indicação automática: cada caso exige avaliação médica individual de benefício, risco e alternativas.",
   },
@@ -124,14 +124,14 @@ export default function EndocanabinoidePage() {
               <span aria-hidden="true" className="opacity-50">/</span>
             </li>
             <li>
-              <span aria-current="page" className="text-[var(--accent)]">Medicina Endocanabinoide</span>
+              <span aria-current="page" className="text-[var(--accent)]">Cannabis Medicinal</span>
             </li>
           </ol>
         </nav>
         <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-5 pt-8 sm:px-8 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
             <Reveal as="p" className="eyebrow mb-5">
-              Medicina Endocanabinoide
+              Cannabis Medicinal
             </Reveal>
             <Reveal
               as="h1"
@@ -237,7 +237,7 @@ export default function EndocanabinoidePage() {
             Um campo novo exige <span className="text-gradient">mais rigor</span>, não menos
           </>
         }
-        lede="A medicina endocanabinoide desperta entusiasmo — e é justamente por isso que precisa de critério redobrado. Aqui, cada indicação passa por revisão da literatura, análise de segurança e comparação honesta com as alternativas já estabelecidas. Se a evidência não sustenta, você vai ouvir isso com clareza."
+        lede="A cannabis medicinal desperta entusiasmo — e é justamente por isso que precisa de critério redobrado. Aqui, cada indicação passa por revisão da literatura, análise de segurança e comparação honesta com as alternativas já estabelecidas. Se a evidência não sustenta, você vai ouvir isso com clareza."
         image="/images/dr-poltrona-pensativo.jpg"
         alt="Dr. José Victor sentado, em atitude reflexiva"
         reverse
@@ -316,25 +316,25 @@ export default function EndocanabinoidePage() {
       <CtaSection
         title="Avalie a sua elegibilidade"
         lede="Envie uma mensagem e agende uma avaliação criteriosa — presencial em Goiânia ou por telemedicina."
-        message="Olá! Gostaria de agendar uma avaliação em medicina endocanabinoide com o Dr. José Victor."
+        message="Olá! Gostaria de agendar uma avaliação em cannabis medicinal com o Dr. José Victor."
       />
 
       <JsonLd
         data={[
           breadcrumbSchema([
             { name: "Início", path: "/" },
-            { name: "Medicina Endocanabinoide", path: "/medicina-endocanabinoide" },
+            { name: "Cannabis Medicinal", path: "/cannabis-medicinal" },
           ]),
           medicalWebPageSchema({
-            title: "Medicina Endocanabinoide",
+            title: "Cannabis Medicinal",
             description: metadata.description as string,
-            path: "/medicina-endocanabinoide",
+            path: "/cannabis-medicinal",
           }),
           serviceSchema({
-            name: "Medicina Endocanabinoide",
+            name: "Cannabis Medicinal",
             description:
               "Avaliação médica do sistema endocanabinoide, indicação individualizada e prescrição dentro das normas da Anvisa e do CFM.",
-            path: "/medicina-endocanabinoide",
+            path: "/cannabis-medicinal",
           }),
           faqSchema(faq),
         ]}
