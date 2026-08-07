@@ -33,6 +33,20 @@ concurrency:
 jobs:
   sincronizar:
     runs-on: ubuntu-latest
+    # Prazo de dez minutos, contra o padrão do GitHub, que é seis horas.
+    #
+    # Aqui a execução normal leva **meio minuto**: buscar na Soro, ver que não
+    # mudou nada e sair. Quando há artigo novo, o build acrescenta uns poucos
+    # minutos. Dez é folgado para o pior caso real e curto o bastante para uma
+    # execução travada não segurar a fila.
+    #
+    # Por que isso importa: o grupo de concorrência aceita só uma execução
+    # esperando. Se uma emperrar, a próxima fica pendente e a seguinte
+    # **cancela a pendente** — e cada cancelamento manda um e-mail de alarme
+    # sobre um problema que não existe. Foi o que aconteceu em 06/08: duas
+    # execuções ficaram exatos 15 minutos na fila, sem rodar nada, e foram
+    # descartadas. Com prazo, a que emperra morre sozinha e a fila anda.
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 

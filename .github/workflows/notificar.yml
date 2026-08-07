@@ -32,6 +32,11 @@ concurrency:
 jobs:
   avisar:
     runs-on: ubuntu-latest
+    # Prazo de dez minutos. O envio normal leva menos de um; dez cobre o dia
+    # em que houver muitos inscritos. Sem prazo, o padrão do GitHub é seis
+    # horas — tempo suficiente para uma execução travada segurar a fila e
+    # fazer as seguintes serem canceladas.
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
