@@ -92,6 +92,20 @@ export function Footer() {
                   Aplicativos
                 </Link>
               </li>
+              {/*
+                Faltava, e a falta era grave: a página existia, estava no
+                sitemap e no mapa do site, e **não era alcançável navegando**.
+                Página que só o Google acha é meia página — foi exatamente o
+                que aconteceu antes com os Poemas, e eu repeti.
+              */}
+              <li>
+                <Link
+                  href="/voluntariado"
+                  className="text-faint transition-colors hover:text-[var(--accent)]"
+                >
+                  Projetos voluntários
+                </Link>
+              </li>
             </ul>
           </nav>
 
