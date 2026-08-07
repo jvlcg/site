@@ -310,7 +310,16 @@ export default function SobrePage() {
             </Reveal>
           ))}
         </ul>
-        <Reveal className="mt-8">
+        {/*
+          O voluntariado sai daqui, e não do menu do topo.
+
+          É a continuação natural desta seção: internato, extensão premiada e
+          liga acadêmica já aparecem no currículo acima, e a página de projetos
+          voluntários é onde isso está contado por inteiro. Quem chega até as
+          publicações é justamente quem quer saber quem atende — e era o único
+          leitor que não tinha como chegar lá.
+        */}
+        <Reveal className="mt-8 flex flex-wrap gap-3">
           <a
             href={site.sameAs[0]}
             target="_blank"
@@ -319,6 +328,9 @@ export default function SobrePage() {
           >
             Currículo Lattes completo ↗
           </a>
+          <Link href="/voluntariado" className="btn-ghost text-sm">
+            Projetos voluntários →
+          </Link>
         </Reveal>
       </section>
 
