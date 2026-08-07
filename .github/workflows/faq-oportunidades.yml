@@ -28,6 +28,10 @@ concurrency:
 jobs:
   analisar:
     runs-on: ubuntu-latest
+    # Prazo de vinte minutos: aqui há chamada ao modelo, que é a parte mais
+    # sujeita a demorar. Ainda assim é muito abaixo das seis horas do padrão,
+    # que deixariam uma execução presa bloqueando as próximas.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
