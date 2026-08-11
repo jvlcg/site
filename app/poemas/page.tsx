@@ -27,6 +27,7 @@ export default function PoemasPage() {
   return (
     <>
       <PageHero
+        fundo="cintila"
         eyebrow="Escrita"
         title={
           <>

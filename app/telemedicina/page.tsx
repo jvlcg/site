@@ -71,6 +71,7 @@ export default function TelemedicinaPage() {
   return (
     <>
       <PageHero
+        fundo="varredura"
         eyebrow="Telemedicina"
         title={
           <>

@@ -110,6 +110,7 @@ export default function SobrePage() {
   return (
     <>
       <PageHero
+        fundo="espiral"
         eyebrow="Sobre"
         title={
           <>

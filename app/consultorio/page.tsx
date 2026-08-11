@@ -38,6 +38,7 @@ export default function ConsultorioPage() {
   return (
     <>
       <PageHero
+        fundo="respiro"
         eyebrow="Unidade presencial"
         title={
           <>

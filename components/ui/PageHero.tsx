@@ -9,6 +9,30 @@ type Props = {
   title: React.ReactNode;
   lede: string;
   scene?: "particles" | "network" | "wave" | "none";
+  /**
+   * A animação do fundo desta página.
+   *
+   * Onze variações, uma por assunto — ver o bloco "UM FUNDO POR PÁGINA" em
+   * globals.css, onde cada movimento está justificado pelo tema da página.
+   *
+   * É prop e não dedução a partir da rota de propósito: `PageHero` roda no
+   * servidor e não conhece o caminho. Descobrir isso exigiria um componente
+   * de cliente só para ler o `usePathname` — JavaScript novo em todas as
+   * páginas para escolher um `keyframes`, o que é caro demais pelo que
+   * entrega. Passar explicitamente custa uma palavra por página.
+   */
+  fundo?:
+    | "espiral"
+    | "orbita"
+    | "mare"
+    | "pulso"
+    | "varredura"
+    | "respiro"
+    | "deriva"
+    | "ondulacao"
+    | "pendulo"
+    | "cintila"
+    | "convergencia";
   breadcrumbs?: Crumb[];
   children?: React.ReactNode;
 };
@@ -34,11 +58,11 @@ type Props = {
  * compõe sem passar pela thread principal — mesmo efeito percebido, sem a
  * conta.
  */
-export function PageHero({ eyebrow, title, lede, scene = "none", breadcrumbs, children }: Props) {
+export function PageHero({ eyebrow, title, lede, scene = "none", fundo, breadcrumbs, children }: Props) {
   return (
     <section className="relative overflow-hidden pt-32 pb-24 sm:pt-36 sm:pb-32">
       <div className="camada-fundo absolute inset-0">
-        <div className="aurora" />
+        <div className="aurora" data-fundo={fundo} />
         <div className="mesh-bg" />
       </div>
       {scene !== "none" && (

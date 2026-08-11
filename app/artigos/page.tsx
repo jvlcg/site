@@ -81,6 +81,7 @@ export default function ArtigosCientificosPage() {
   return (
     <>
       <PageHero
+        fundo="ondulacao"
         eyebrow="Produção científica"
         title={
           <>

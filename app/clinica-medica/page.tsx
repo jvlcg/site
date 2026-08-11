@@ -79,6 +79,7 @@ export default function ClinicaMedicaPage() {
   return (
     <>
       <PageHero
+        fundo="mare"
         eyebrow="Clínica Médica & Check-up"
         title={
           <>

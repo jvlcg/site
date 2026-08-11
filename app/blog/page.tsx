@@ -19,6 +19,7 @@ export default function ArtigosPage() {
   return (
     <>
       <PageHero
+        fundo="ondulacao"
         eyebrow="Artigos"
         title={
           <>

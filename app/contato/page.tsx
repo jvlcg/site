@@ -16,6 +16,7 @@ export default function ContatoPage() {
   return (
     <>
       <PageHero
+        fundo="convergencia"
         eyebrow="Contato"
         title={
           <>

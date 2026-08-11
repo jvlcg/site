@@ -38,7 +38,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
     */
   ].map((path) => ({
     url: `${site.url}${path}`,
-    lastModified: new Date(),
+    /*
+      Sem `lastModified` — e a ausência é deliberada.
+
+      Antes ia `new Date()`, ou seja, a data da geração. Como o sitemap é
+      regerado a cada publicação, o site declarava que **todas** as páginas
+      haviam mudado a cada deploy, inclusive as que ninguém tocou há meses.
+
+      É pior do que não dizer nada. O `lastmod` só vale enquanto o rastreador
+      acredita nele; quando ele percebe que a data muda sozinha, passa a
+      ignorar o campo no site inteiro — e aí a data das páginas que **de fato**
+      mudaram, como os artigos, perde o efeito junto.
+
+      A documentação do Google é explícita: `lastmod` deve refletir a última
+      alteração significativa de conteúdo, e valor não confiável é
+      desconsiderado. Omitir é dizer "não sei", que é a verdade para uma página
+      estática cuja data de edição não está guardada em lugar nenhum. Os
+      artigos continuam com data real, vinda do próprio texto, e é justamente
+      neles que o campo importa.
+    */
     changeFrequency: "monthly" as const,
     priority: path === "" ? 1 : 0.8,
     ...(path === "/consultorio" ? { images: galleryImageUrls() } : {}),
@@ -60,7 +78,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
    */
   const poemaRoutes = POEMAS_COM_ANALISE.map((p) => ({
     url: `${site.url}/poemas/${p.slug}`,
-    lastModified: new Date(),
     changeFrequency: "yearly" as const,
     priority: 0.3,
   }));
@@ -75,14 +92,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const cursoRoutes = cursosPublicados().flatMap((c) => [
     {
       url: `${site.url}/cursos/${c.slug}`,
-      lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.7,
     },
     ...(c.acesso === "livre"
       ? aulasDo(c).map((a) => ({
           url: `${site.url}/cursos/${c.slug}/${a.slug}`,
-          lastModified: new Date(),
           changeFrequency: "yearly" as const,
           priority: 0.5,
         }))

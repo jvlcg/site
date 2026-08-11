@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { PainelCursos } from "./PainelCursos";
 import { PainelPontos } from "./PainelPontos";
+import { PainelModeracao } from "./PainelModeracao";
 
 /**
  * Painel da área restrita: entrar, ver as fichas, exportar e apagar.
@@ -62,7 +63,7 @@ export function PainelRestrito() {
    * de curso carregam só e-mail e nome. Abas separadas evitam o descuido de
    * deixar a lista de pacientes aberta enquanto se libera um curso.
    */
-  const [aba, setAba] = useState<"cadastros" | "cursos" | "pontos">("cadastros");
+  const [aba, setAba] = useState<"cadastros" | "cursos" | "pontos" | "comentarios">("cadastros");
 
   const carregar = useCallback(async () => {
     const r = await fetch("/api/area-restrita", { cache: "no-store" });
@@ -207,6 +208,19 @@ export function PainelRestrito() {
           <button type="button" onClick={() => setAba("pontos")} className={classeAba("pontos")}>
             Pontos
           </button>
+          {/*
+            A moderação fica aqui, atrás da mesma senha, e não numa página com
+            senha própria: mais um segredo para guardar é mais um segredo para
+            perder, e quem entra aqui já alcança dados mais sensíveis que um
+            comentário.
+          */}
+          <button
+            type="button"
+            onClick={() => setAba("comentarios")}
+            className={classeAba("comentarios")}
+          >
+            Comentários
+          </button>
         </div>
         <button type="button" onClick={sair} className="btn-ghost !py-2.5 text-sm">
           Sair
@@ -214,6 +228,8 @@ export function PainelRestrito() {
       </div>
 
       {aba === "pontos" && <PainelPontos />}
+
+      {aba === "comentarios" && <PainelModeracao />}
 
       {aba === "cursos" && (
         <>

@@ -71,6 +71,7 @@ export default function CursosPage() {
   return (
     <>
       <PageHero
+        fundo="deriva"
         eyebrow="Aulas"
         title={
           <>

@@ -102,7 +102,12 @@ export default function HomePage() {
           desloca é a GPU, por `transform`.
         */}
         <div className="camada-fundo absolute inset-0">
-          <div className="aurora" />
+          {/*
+            A home usa "orbita" — a rede de nós girando, que é a mesma ideia da
+            cena neural em WebGL logo atrás. As duas camadas passam a contar a
+            mesma história em vez de disputar a atenção.
+          */}
+          <div className="aurora" data-fundo="orbita" />
           <div className="mesh-bg" />
         </div>
         <ThreeScene kind="neural" className="absolute inset-0" />

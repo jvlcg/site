@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { SoParaAlunos } from "@/components/blog/SoParaAlunos";
+import { Reacoes } from "@/components/blog/Reacoes";
 import { Reveal } from "@/components/ui/Reveal";
 import { ReadingProgress } from "@/components/ui/ReadingProgress";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
@@ -170,6 +171,18 @@ export default async function ArtigoPage({ params }: Props) {
           </p>
         </div>
       </article>
+
+      {/*
+        Fica **fora** do `<article>`, e logo depois dele.
+
+        Fora porque `<article>` marca o texto do médico; comentário de terceiro
+        dentro dele diria ao Google e ao leitor de tela que aquilo faz parte do
+        artigo assinado — o oposto do que se quer num conteúdo médico.
+
+        Logo depois porque é onde a pergunta faz sentido: quem acabou de ler é
+        quem tem o que responder.
+      */}
+      <Reacoes slug={article.slug} />
 
       {related.length > 0 && (
         <section className="mx-auto mt-24 max-w-3xl px-5 sm:px-8">

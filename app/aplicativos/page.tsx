@@ -86,6 +86,7 @@ export default function AplicativosPage() {
   return (
     <>
       <PageHero
+        fundo="deriva"
         eyebrow="Aplicativos"
         title="Aplicativos"
         lede="O que eu desenvolvi, o que eu indico e o que não tem nada a ver com medicina."
