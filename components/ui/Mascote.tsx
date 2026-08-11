@@ -80,6 +80,19 @@ type Props = {
   ativo?: boolean;
   /** Segundos até aparecer, no computador. */
   esperaSegundos?: number;
+  /**
+   * Força a missão desta aparição, em vez de deixar a alternância decidir.
+   *
+   * Existe por causa de um defeito real: no computador os dois entram juntos, e
+   * cada um alternava por um contador próprio. Como entravam sempre em par, os
+   * contadores andavam em sincronia — e os dois caíam na **mesma** missão, um
+   * ao lado do outro pedindo a mesma coisa com palavras parecidas.
+   *
+   * Quem coordena a cena é o pai; é ele quem sabe que há dois. Quando há só um
+   * (celular, ou o outro recusado), isto fica vazio e a alternância normal
+   * volta a valer — aí ela é exatamente o que se quer.
+   */
+  missaoFixa?: "propria" | "agenda";
   /** Avisa o pai que a conversa acabou — ou que a pessoa fechou. */
   aoSair?: () => void;
   /**
@@ -98,6 +111,7 @@ export function Mascote({
   Desenho,
   ativo = true,
   esperaSegundos = PADRAO_ESPERA,
+  missaoFixa,
   aoSair,
   aoNegar,
 }: Props) {
@@ -197,7 +211,11 @@ export function Mascote({
        */
       const n = (vezes.get(personagem.nome) ?? 0) + 1;
       vezes.set(personagem.nome, n);
-      const alvo = n % 2 === 1 ? personagem.propria : personagem.agenda;
+      const alvo = missaoFixa
+        ? personagem[missaoFixa]
+        : n % 2 === 1
+          ? personagem.propria
+          : personagem.agenda;
       setMissao(alvo);
       setConversa(alvo.conversas[Math.floor(Math.random() * alvo.conversas.length)]);
       setVisivel(true);
@@ -259,7 +277,7 @@ export function Mascote({
       clearTimeout(porTempo);
       if (soltarGesto) sinais.forEach((s) => window.removeEventListener(s, soltarGesto!));
     };
-  }, [caminho, ativo, esperaSegundos, personagem]);
+  }, [caminho, ativo, esperaSegundos, personagem, missaoFixa]);
 
   /**
    * A digitação, letra a letra, com a voz junto — escrita direto no DOM.

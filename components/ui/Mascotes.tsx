@@ -190,6 +190,26 @@ export function Mascotes() {
     const mostrar = (["esteto", "termo"] as Nome[]).filter((n) => !negados.includes(n));
     if (mostrar.length === 0) return null;
 
+    /**
+     * Com os dois em cena, um fala do agendamento e o outro fala do que é dele
+     * — nunca os dois da mesma coisa.
+     *
+     * Era o defeito relatado: dois balões lado a lado convidando para o mesmo
+     * WhatsApp, com frases irmãs. Cada mascote alternava a missão por um
+     * contador próprio, mas como no computador eles entram sempre juntos os
+     * contadores andavam em sincronia e caíam na mesma missão.
+     *
+     * Quem carrega o convite de agendar é **o da vez** — o mesmo `emCena` que
+     * no celular decide quem aparece. Ele já alterna a cada página e sobrevive
+     * a recarga (contador em `localStorage`), então sai de graça e nenhum dos
+     * dois fica preso num papel só durante a visita.
+     *
+     * Só vale quando há dois. Sobrando um, ele volta a alternar sozinho —
+     * senão quem recusou o Termô ouviria do Estetô o mesmo assunto para sempre.
+     */
+    const dupla = mostrar.length === 2;
+    const agendaEDo: Nome = emCena ?? "esteto";
+
     return (
       <div data-flutuante="" className={canto}>
         {mostrar.map((nome, i) => {
@@ -199,6 +219,7 @@ export function Mascotes() {
               key={nome}
               personagem={eEsteto ? ESTETO : TERMO}
               Desenho={eEsteto ? Estetoscopio : Termometro}
+              missaoFixa={dupla ? (nome === agendaEDo ? "agenda" : "propria") : undefined}
               /*
                 Escalonado: o segundo entra sete segundos depois do primeiro.
 
