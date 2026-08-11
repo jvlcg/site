@@ -16,6 +16,8 @@ import { avisosConfigurados, inscreverEmail } from "@/lib/avisos-email";
 import { verificarIdentidade } from "@/lib/google-identidade";
 import { contaDe, creditarIndicacao, lancar, pontosConfigurados } from "@/lib/pontos";
 import { cookies } from "next/headers";
+import { emailConfigurado, enviarEmail, modeloCadastro } from "@/lib/enviar-email";
+import { whatsappLink } from "@/lib/site-config";
 
 /**
  * Recebe o cadastro de paciente.
@@ -109,6 +111,42 @@ export async function POST(req: Request) {
       }
     } catch {
       /* placar quebrado nunca derruba cadastro */
+    }
+  }
+
+  /**
+   * Confirmação por e-mail — o último passo, e o mais frágil de propósito.
+   *
+   * Fica **depois** de tudo e dentro de um `try` que engole qualquer falha,
+   * pela mesma regra que vale para os pontos e para a lista de avisos: a
+   * pessoa preencheu a ficha para ser atendida. Recusar um cadastro porque um
+   * servidor de e-mail está fora do ar seria trocar o essencial pelo
+   * acessório.
+   *
+   * Sem `RESEND_API_KEY` no ambiente, `emailConfigurado()` é falso e nada
+   * acontece — nem erro, nem espera. O cadastro segue exatamente como hoje.
+   *
+   * **Sem `await` bloqueando a resposta?** Não: o `await` fica, e é
+   * deliberado. Na Vercel a função pode ser encerrada assim que a resposta
+   * sai, e uma promessa solta seria cortada no meio — o e-mail simplesmente
+   * não sairia, de forma intermitente e impossível de diagnosticar. Meio
+   * segundo a mais na resposta é barato perto de um e-mail que às vezes vem e
+   * às vezes não.
+   */
+  if (emailConfigurado()) {
+    try {
+      const { html, texto } = modeloCadastro({
+        nome: resultado.ficha.nome,
+        whatsapp: whatsappLink(),
+      });
+      await enviarEmail({
+        para: resultado.ficha.email,
+        assunto: "Cadastro recebido — Dr. José Victor",
+        html,
+        texto,
+      });
+    } catch {
+      /* e-mail nunca derruba cadastro */
     }
   }
 

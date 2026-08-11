@@ -117,3 +117,76 @@ function escapar(s: string) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
+
+/**
+ * Confirmação de cadastro.
+ *
+ * ## Por que este e-mail existe
+ *
+ * Antes dele, quem preenchia a ficha via uma mensagem na tela e nada mais.
+ * Silêncio depois de um formulário é onde mais se perde gente: a pessoa não
+ * sabe se deu certo, não tem nada para guardar, e no dia em que precisar não
+ * lembra se chegou a se cadastrar. Um e-mail resolve as três coisas de uma vez
+ * — e ainda deixa o endereço do consultório na caixa de entrada dela.
+ *
+ * ## O que ele NÃO faz
+ *
+ * **Não repete nenhum dado clínico.** Nem CPF, nem data de nascimento, nem o
+ * que a pessoa escreveu no campo de observação. Só o primeiro nome.
+ *
+ * E-mail trafega e fica guardado em servidor que não é nosso; devolver dado de
+ * saúde por ali seria espalhar o que o site guarda cifrado. Sob a LGPD, dado
+ * de saúde é categoria especial — o cuidado aqui não é excesso de zelo, é a
+ * diferença entre guardar bem e vazar por conveniência.
+ *
+ * **Não promete atendimento nem prazo.** Cadastro não é agendamento, e dizer
+ * "em breve entraremos em contato" criaria uma expectativa que ninguém no
+ * consultório se comprometeu a cumprir.
+ */
+export function modeloCadastro(opcoes: { nome: string; whatsapp: string }) {
+  const { nome, whatsapp } = opcoes;
+  /* só o primeiro nome: o e-mail é um cumprimento, não um documento */
+  const primeiro = escapar(nome.trim().split(/\s+/)[0] ?? "");
+
+  const html = `<!doctype html>
+<html lang="pt-BR"><body style="margin:0;padding:24px;background:#f4f6f6;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#0f172a">
+  <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:16px;padding:32px">
+    <p style="margin:0;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#0f766e">Cadastro recebido</p>
+    <h1 style="margin:12px 0 0;font-size:23px;line-height:1.3;color:#0f172a">Tudo certo, ${primeiro}</h1>
+    <p style="margin:16px 0 0;font-size:15px;line-height:1.6;color:#475569">
+      Seus dados chegaram ao consultório do Dr. José Victor Lisboa Cardoso Gomes (CRM-GO 38508).
+      Guarde este e-mail: nas próximas vezes você não precisa preencher nada de novo.
+    </p>
+    <p style="margin:20px 0 0;font-size:15px;line-height:1.6;color:#475569">
+      <strong>Para marcar consulta</strong>, é só falar com a gente no WhatsApp — o cadastro
+      não agenda sozinho.
+    </p>
+    <p style="margin:28px 0 0">
+      <a href="${whatsapp}" style="display:inline-block;background:#0f766e;color:#ffffff;text-decoration:none;padding:13px 26px;border-radius:999px;font-size:15px;font-weight:600">Falar com o consultório</a>
+    </p>
+    <hr style="margin:32px 0 0;border:none;border-top:1px solid #e2e8f0">
+    <p style="margin:16px 0 0;font-size:12px;line-height:1.6;color:#94a3b8">
+      Clínica Fisiogyn — Rua 94, Setor Sul, Goiânia-GO.<br>
+      Este e-mail confirma um cadastro e <strong>não substitui consulta médica</strong>.
+      Se não foi você quem se cadastrou, basta ignorar.
+    </p>
+  </div>
+</body></html>`;
+
+  const texto = [
+    `Cadastro recebido — tudo certo, ${nome.trim().split(/\s+/)[0] ?? ""}`,
+    "",
+    "Seus dados chegaram ao consultório do Dr. José Victor Lisboa Cardoso Gomes (CRM-GO 38508).",
+    "Guarde este e-mail: nas próximas vezes você não precisa preencher nada de novo.",
+    "",
+    "Para marcar consulta, fale com a gente no WhatsApp — o cadastro não agenda sozinho:",
+    whatsapp,
+    "",
+    "---",
+    "Clínica Fisiogyn — Rua 94, Setor Sul, Goiânia-GO.",
+    "Este e-mail confirma um cadastro e não substitui consulta médica.",
+    "Se não foi você quem se cadastrou, basta ignorar.",
+  ].join("\n");
+
+  return { html, texto };
+}
