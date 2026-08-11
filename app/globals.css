@@ -348,9 +348,28 @@ body {
   Em tela de toque não existe hover, e `:hover` em toque gruda até o próximo
   toque em outro lugar — o cartão ficaria inclinado e brilhando sem motivo.
 */
+/*
+  Em tela de toque, o cartão volta a ser simples.
+
+  Duas razões que se somam. A primeira é de comportamento: não existe hover em
+  toque, e `:hover` disparado por toque gruda até a pessoa tocar em outro
+  lugar — o cartão ficaria inclinado e brilhando sem motivo.
+
+  A segunda é de custo, e foi medida. O Lighthouse de celular acusava 1.358 ms
+  em "Style & Layout" — recálculo de estilo, não JavaScript. Sombra de três
+  camadas com `color-mix` repetida em 33 cartões é cara de compor, e no celular
+  ela nem aparece: o efeito de profundidade que ela cria só se percebe em tela
+  grande, com o cartão inteiro visível.
+
+  Fica uma sombra só, discreta, que é o que cabe numa tela onde o cartão ocupa
+  a largura inteira.
+*/
 @media (hover: none) {
   .card-hover:hover { transform: none; }
   .card-hover::after { display: none; }
+  .card-hover {
+    box-shadow: 0 8px 24px -18px color-mix(in oklab, var(--fg) 22%, transparent);
+  }
 }
 
 .btn-primary {
@@ -797,6 +816,165 @@ html[data-menu="aberto"] [data-flutuante] {
 }
 @media (min-width: 1024px) {
   .display-apple { letter-spacing: -0.042em; }
+}
+
+/*
+  ═══════════════════════════════════════════════════════════════════════
+  CAMADA "APPLE" II — revelação de texto, foto e seção fixada
+  ═══════════════════════════════════════════════════════════════════════
+
+  Continuação da camada anterior. Os três gestos abaixo são o que resta de
+  mais reconhecível nas páginas de produto da Apple, e nenhum deles precisa
+  de JavaScript: todos usam `animation-timeline: view()`, que amarra o
+  progresso da animação à posição do elemento na tela.
+
+  A regra de custo aprendida na rodada passada vale aqui inteira: **anima-se
+  `transform` e `opacity`, nunca `filter`**. Foi o desfoque que derrubou o
+  Lighthouse de 97 para 81 antes.
+*/
+
+/*
+  ---------- Texto que se revela palavra a palavra ----------
+
+  Cada palavra acende conforme a frase sobe na tela, em vez de o parágrafo
+  inteiro aparecer de uma vez. É o gesto de abertura das páginas de produto da
+  Apple, e o efeito é de leitura acompanhada — o olho é conduzido.
+
+  O escalonamento vem do índice de cada palavra (`--i`), somado ao intervalo
+  de rolagem. Não dá para usar `animation-delay` aqui: em animação dirigida
+  por rolagem o atraso não significa tempo, e seria ignorado. O que desloca
+  cada palavra é o próprio `animation-range`.
+
+  As palavras nascem em `opacity: .18` e não em zero. Duas razões: some o
+  salto de layout (o texto já ocupa o espaço dele desde o início) e, para quem
+  cai no meio da página sem rolar, a frase continua legível em vez de invisível.
+*/
+/*
+  ## O erro que a auditoria pegou, e a correção que ficou melhor que o original
+
+  A primeira versão dimerizava as palavras a `opacity: .18` sobre o cinza de
+  apoio (`--fg-muted`). O Lighthouse reprovou por contraste, e com razão: quem
+  cai no meio da página com a rolagem restaurada, ou usa navegador sem
+  `animation-timeline`, vê texto a 18% — ilegível.
+
+  Medido, a opacidade mínima para o cinza de apoio passar em 4,5:1 seria
+  **0,80** no tema claro. Nesse nível não sobra efeito nenhum: 0,80 a 1,00 é
+  invisível.
+
+  O problema era dimerizar texto que já é claro. A correção inverte a lógica,
+  e é o que a Apple realmente faz: **o texto revelado é o forte** (`--fg`,
+  17:1), e o estado apagado tem mais ou menos o peso do cinza de apoio de
+  antes. Assim o efeito ganha alcance em vez de perder:
+
+    apagado   0,62 → 4,9:1 no claro, 7,2:1 no escuro   (passa)
+    aceso     1,00 → 17:1 nos dois                     (passa folgado)
+
+  A frase termina mais legível do que era antes desta camada existir.
+*/
+.texto-revela {
+  color: var(--fg);
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (pointer: fine) {
+    /*
+      O repouso vive DENTRO do `@supports`, e não fora.
+
+      Fora, um navegador sem suporte a `animation-timeline` aplicaria o
+      apagado e nunca a animação que o desfaz — o parágrafo ficaria
+      permanentemente meio apagado. É a pior falha possível para um efeito
+      decorativo: quebrar a leitura em quem menos pode reclamar.
+    */
+    .texto-revela > span {
+      opacity: 0.62;
+      will-change: opacity;
+      animation: palavra-acende linear both;
+      animation-timeline: view();
+      /*
+        Cada palavra começa 1,1% de rolagem depois da anterior e leva 24% para
+        acender. A soma das duas coisas é o que faz a onda atravessar a frase
+        em vez de todas piscarem juntas.
+      */
+      animation-range: entry calc(8% + var(--i) * 1.1%) entry calc(32% + var(--i) * 1.1%);
+    }
+    @keyframes palavra-acende {
+      to { opacity: 1; }
+    }
+  }
+}
+
+/*
+  ---------- Foto que entra crescendo ----------
+
+  A imagem chega 8% maior e assenta no tamanho certo conforme sobe. Como o
+  recorte é fixo e quem se move é a foto dentro dele, a leitura é de câmera se
+  aproximando — não de elemento inflando.
+
+  `overflow: hidden` no recipiente é obrigatório: sem ele a imagem ampliada
+  vaza por cima do texto vizinho durante a animação.
+*/
+.foto-revela {
+  overflow: hidden;
+}
+.foto-revela > * {
+  will-change: transform;
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .foto-revela > * {
+      animation: foto-assenta linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 85%;
+    }
+    @keyframes foto-assenta {
+      from { transform: scale(1.08); }
+      to   { transform: scale(1); }
+    }
+  }
+}
+
+/*
+  ---------- Seção fixada: a sequência de passos ----------
+
+  O bloco gruda na tela enquanto o conteúdo ao lado corre. É o recurso mais
+  característico da Apple e o mais fácil de errar: feito com JavaScript exige
+  medir alturas, travar a rolagem e desfazer tudo no redimensionamento.
+
+  Com `position: sticky` ele é uma linha de CSS e o navegador cuida do resto,
+  inclusive de girar o aparelho.
+
+  Só a partir de 1024 px. Em tela estreita não há coluna ao lado para correr,
+  e um bloco grudado ali só rouba a altura útil de quem já tem pouca.
+*/
+@media (min-width: 1024px) {
+  .fixa-lateral {
+    position: sticky;
+    top: 8rem;
+    align-self: start;
+  }
+}
+
+/*
+  ---------- Número gigante de fundo ----------
+
+  Algarismo grande, quase apagado, atrás do passo correspondente. Dá hierarquia
+  e escala a uma lista que, sem isso, é só texto empilhado.
+
+  `-webkit-text-stroke` em vez de preenchimento: contorno pesa menos na
+  composição visual e não compete com o texto que está por cima.
+*/
+.numero-fantasma {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 0.8;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in oklab, var(--fg) 14%, transparent);
+  user-select: none;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .texto-revela > span { opacity: 1 !important; animation: none !important; }
+  .foto-revela > * { transform: none !important; animation: none !important; }
 }
 
 /* ---------- Route transition (template.tsx) ---------- */

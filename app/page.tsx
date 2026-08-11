@@ -254,24 +254,53 @@ export default function HomePage() {
       {/* ---------- JORNADA DO PACIENTE ---------- */}
       <section className="relative mt-32 overflow-hidden py-24">
         <div className="mesh-bg opacity-60" />
-        <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
-          <SectionHeading
-            eyebrow="Como funciona"
-            title="Uma jornada desenhada para resolver"
-            lede="Do primeiro contato ao acompanhamento de longo prazo, cada etapa é pensada para você sentir clareza sobre o que está acontecendo e o porquê de cada decisão."
-            align="center"
-          />
-          <ol className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {steps.map((step, i) => (
-              <Reveal as="li" key={step.n} delay={i * 90} className="relative">
-                <div className="glass card-hover h-full rounded-3xl p-7">
-                  <span className="font-display text-sm font-semibold text-[var(--accent)]">
+        {/*
+          Sequência fixada, no lugar da fileira de quatro cartões.
+
+          Os quatro passos eram lado a lado, do mesmo tamanho, e por isso não
+          tinham ordem visual nenhuma — quem chegava lia os quatro de uma vez,
+          que é o contrário de "jornada". Agora o título gruda na tela à
+          esquerda enquanto os passos passam à direita, um de cada vez: a
+          rolagem vira a linha do tempo da própria jornada.
+
+          Feito com `position: sticky`. A versão em JavaScript disto exigiria
+          medir alturas, travar a rolagem e refazer tudo ao girar o aparelho.
+        */}
+        <div className="relative mx-auto grid max-w-7xl gap-14 px-5 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+          <div className="fixa-lateral">
+            <SectionHeading
+              eyebrow="Como funciona"
+              title="Uma jornada desenhada para resolver"
+              lede="Do primeiro contato ao acompanhamento de longo prazo, cada etapa é pensada para você sentir clareza sobre o que está acontecendo e o porquê de cada decisão."
+            />
+          </div>
+          <ol className="space-y-5">
+            {steps.map((step) => (
+              <Reveal as="li" key={step.n} className="relative">
+                <div className="glass card-hover relative overflow-hidden rounded-3xl p-7 sm:p-9">
+                  {/*
+                    O algarismo gigante em contorno, atrás do texto. Dá escala
+                    e posição na sequência sem competir pela leitura — é
+                    `aria-hidden` porque o número já está no `<ol>`, e repetir
+                    faria o leitor de tela anunciar "um, um".
+                  */}
+                  <span
+                    aria-hidden="true"
+                    className="numero-fantasma pointer-events-none absolute -right-3 -top-6 text-[7rem] sm:text-[9rem]"
+                  >
                     {step.n}
                   </span>
-                  <h3 className="font-display mt-4 text-lg font-semibold tracking-tight">
-                    {step.title}
-                  </h3>
-                  <p className="mt-3 text-[0.92rem] leading-relaxed text-muted">{step.text}</p>
+                  <div className="relative">
+                    <span className="font-mono-tech text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
+                      Etapa {step.n}
+                    </span>
+                    <h3 className="font-display mt-3 text-xl font-semibold tracking-tight sm:text-2xl">
+                      {step.title}
+                    </h3>
+                    <p className="mt-3 max-w-xl text-[0.95rem] leading-relaxed text-muted">
+                      {step.text}
+                    </p>
+                  </div>
                 </div>
               </Reveal>
             ))}
@@ -286,7 +315,12 @@ export default function HomePage() {
         <div className="grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr]">
           <Reveal className="relative order-2 mx-auto w-full max-w-sm lg:order-1">
             <div className="glass overflow-hidden rounded-[1.8rem] p-2">
-              <div className="overflow-hidden rounded-[1.4rem]">
+              {/*
+                `foto-revela`: a imagem chega 8% maior e assenta conforme sobe
+                na tela. Como o recorte não se move e quem cresce é a foto
+                dentro dele, a leitura é de câmera se aproximando.
+              */}
+              <div className="foto-revela rounded-[1.4rem]">
               <Parallax speed={0.16}>
               <Image
                 src="/images/dr-jaleco-braco.jpg"

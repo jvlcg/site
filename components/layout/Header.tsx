@@ -112,7 +112,14 @@ export function Header() {
         largura útil, e nesta barra 8 px decidem se o menu cabe.
       */}
       <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-8 min-[1500px]:max-w-[1440px]">
-        <Link href="/" aria-label="Página inicial — Dr. José Victor Lisboa Cardoso Gomes">
+        {/*
+          Sem `aria-label` aqui, de propósito. O nome deste link vem do texto
+          dentro dele — ver a explicação no `LogoLockup`. Um `aria-label`
+          **substitui** o texto visível como nome do elemento, e era isso que
+          quebrava a navegação por comando de voz: a pessoa via "Dr.JV", dizia
+          "clicar em Dr.JV", e o nome do link era outro.
+        */}
+        <Link href="/">
           <LogoLockup compact />
         </Link>
 
