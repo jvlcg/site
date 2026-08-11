@@ -178,9 +178,30 @@ export const CURSOS: Curso[] = [
     SÉRIES DO CANAL — vídeos públicos do YouTube (@jvlcg)
     ────────────────────────────────────────────────────────────────
 
-    Os seis vídeos longos do canal, agrupados por assunto. Os nove #shorts
-    ficaram de fora a pedido: são verticais e de poucos segundos, e o player
-    do site é horizontal — cada um viraria uma página quase vazia.
+    Os vídeos longos do canal, agrupados por assunto. Os #shorts ficaram de
+    fora a pedido: são verticais e de poucos segundos, e o player do site é
+    horizontal — cada um viraria uma página quase vazia.
+
+    ## A extração ficou incompleta na primeira vez, e vale saber por quê
+
+    A primeira leitura do canal trouxe seis vídeos. O canal tem vinte. O
+    problema não foi o critério (shorts fora), foi o alcance: a página do
+    YouTube carrega os vídeos aos poucos, e o que vem no primeiro pedaço de
+    HTML é só o começo da lista. Quem parar ali acha que viu tudo.
+
+    Na segunda vez a lista completa saiu dos identificadores embutidos no
+    próprio HTML, e os títulos vieram do `oembed` do YouTube, que responde por
+    vídeo e não depende de rolar página nenhuma.
+
+    ## Falta o #2
+
+    A série vai de #1 a #16 e o **#2 não existe** na listagem pública do
+    canal — pode ter virado privado, ter sido removido ou ser um short. Não
+    inventei um lugar para ele: se voltar, é só acrescentar entre o #1 e o #3.
+
+    **Os títulos são os do YouTube**, com a pontuação e os acentos
+    normalizados. Não escrevi `resumo` nem `duracao` nas aulas: nenhum dos
+    dois vem do `oembed`, e preencher de cabeça seria inventar.
 
     **Os títulos e as datas são os do YouTube, sem alteração.** Não escrevi
     `resumo` nas aulas porque a página de cada vídeo está protegida por
@@ -245,6 +266,76 @@ export const CURSOS: Curso[] = [
             titulo: "Você também é um NPC? O perigo da síndrome de Deus",
             video: { tipo: "youtube", id: "NMv4Ijlzr2Y" },
             publicadaEm: "2026-04-24",
+          },
+          {
+            slug: "eu-menti",
+            titulo: "Eu menti — eu quero tudo ao meu alcance, custe o que custar",
+            video: { tipo: "youtube", id: "Pf1LgVb6w0g" },
+          },
+          {
+            slug: "morte-e-vida",
+            titulo: "Morte, morte, morte — que talvez seja o segredo dessa vida",
+            video: { tipo: "youtube", id: "n1BeuY6D4eU" },
+          },
+          {
+            slug: "atencao",
+            titulo: "Sua atenção está fadada à destruição",
+            video: { tipo: "youtube", id: "PdS9TMuDZqU" },
+          },
+          {
+            slug: "inocencia",
+            titulo: "A inocência pode acabar com sua tomada de decisões",
+            video: { tipo: "youtube", id: "guu7dKjdSNI" },
+          },
+          {
+            slug: "saiba-seu-valor",
+            titulo: "Saiba o seu valor, mesmo que isso signifique sacrifício",
+            video: { tipo: "youtube", id: "QLeFwQkjRDU" },
+          },
+          {
+            slug: "fracasso-privilegio",
+            titulo: "O fracasso é um privilégio e desistir é uma opção",
+            video: { tipo: "youtube", id: "5FTl29Cy1BM" },
+          },
+          {
+            slug: "excelencia",
+            titulo: "Excelência ≠ esforço",
+            video: { tipo: "youtube", id: "xwB1RtDHpEM" },
+          },
+          {
+            slug: "insignificancia",
+            titulo: "Sua insignificância é o segredo por trás da vida",
+            video: { tipo: "youtube", id: "HHr4FJ3SMzU" },
+          },
+          {
+            slug: "proposito",
+            titulo: "Seu propósito de vida está para ser escrito",
+            video: { tipo: "youtube", id: "0rjgtFWsp94" },
+          },
+          {
+            slug: "extremismos",
+            titulo: "Para aqueles que se perderam em extremismos políticos",
+            video: { tipo: "youtube", id: "cZETGnZfBGg" },
+          },
+          {
+            slug: "ser-inteligente",
+            titulo: "A verdade cruel sobre ser inteligente",
+            video: { tipo: "youtube", id: "KJ69GEX_iAc" },
+          },
+          {
+            slug: "cansado-de-voce",
+            titulo: "Você não está cansado da sua rotina, está cansado de você",
+            video: { tipo: "youtube", id: "mLamZc6Vf9A" },
+          },
+          {
+            slug: "nao-deveria-ver",
+            titulo: "Você não deveria estar vendo esse vídeo",
+            video: { tipo: "youtube", id: "VWfnGubfR8I" },
+          },
+          {
+            slug: "berserk",
+            titulo: "O evangelho do sofrimento: como Berserk mudou minha vida",
+            video: { tipo: "youtube", id: "4Spfr3xqIDY" },
           },
         ],
       },
