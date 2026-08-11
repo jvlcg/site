@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FaqAccordion, type FaqItem } from "@/components/ui/FaqAccordion";
@@ -115,8 +114,17 @@ const faq: FaqItem[] = [
 export default function EndocanabinoidePage() {
   return (
     <>
-      <section className="relative overflow-hidden pt-32 pb-16 sm:pt-36">
-        <div className="mesh-bg" />
+      {/*
+        Herói próprio, e não o `PageHero` — esta página põe a cena neural ao
+        lado do texto em vez de atrás dele. Por isso ela precisa receber a
+        camada Apple à mão: passou batido na primeira rodada e foi a única das
+        vinte e uma a ficar sem, justo a página mais disputada do site.
+      */}
+      <section className="relative overflow-hidden pt-32 pb-20 sm:pt-36 sm:pb-24">
+        <div className="camada-fundo absolute inset-0">
+          <div className="aurora" />
+          <div className="mesh-bg" />
+        </div>
         <nav aria-label="Trilha de navegação" className="relative mx-auto max-w-7xl px-5 sm:px-8">
           <ol className="font-mono-tech flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.7rem] uppercase tracking-[0.14em] text-faint">
             <li className="flex items-center gap-2">
@@ -128,20 +136,32 @@ export default function EndocanabinoidePage() {
             </li>
           </ol>
         </nav>
-        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-5 pt-8 sm:px-8 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="heroi-recua relative mx-auto grid max-w-7xl items-center gap-10 px-5 pt-8 sm:px-8 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
-            <Reveal as="p" className="eyebrow mb-5">
+            {/*
+              `imediato` nos três, e a falta dele aqui era um defeito de peso.
+
+              Sem ele, o reveal espera o JavaScript hidratar para só então
+              tirar o elemento de `opacity: 0` — e o Chrome só marca o LCP
+              quando o elemento aparece de fato. O `<h1>` já estava pronto no
+              HTML e ficava escondido esperando script, **na página que mais
+              disputa posição no Google**. Todas as outras vinte já usavam
+              `imediato` por meio do `PageHero`; esta ficou para trás quando
+              ganhou herói próprio.
+            */}
+            <Reveal imediato as="p" className="eyebrow mb-5">
               Cannabis Medicinal
             </Reveal>
             <Reveal
+              imediato
               as="h1"
               delay={70}
-              className="font-display text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
+              className="display-apple text-[2.6rem] sm:text-6xl lg:text-7xl"
             >
               O sistema que regula o seu equilíbrio,{" "}
               <span className="text-gradient">tratado com ciência</span>
             </Reveal>
-            <Reveal as="p" delay={150} className="mt-6 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
+            <Reveal imediato as="p" delay={150} className="mt-7 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
               Avaliação criteriosa, prescrição dentro das normas da Anvisa e do CFM e
               acompanhamento próximo — sem promessas milagrosas, com a honestidade que a
               boa medicina exige.
