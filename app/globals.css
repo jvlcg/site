@@ -49,7 +49,10 @@
   --mesh-a: rgba(16, 185, 129, 0.12);
   --mesh-b: rgba(45, 212, 191, 0.1);
   --mesh-c: rgba(14, 116, 144, 0.08);
-  --header-bg: rgba(247, 249, 248, 0.8);
+  /* 0,88 e não 0,80: a barra de vidro precisa deste tanto de opacidade para
+     as cores do menu passarem em contraste quando algo escuro (o player de
+     vídeo dos cursos) rola por baixo. Ver o bloco --nav-* mais abaixo. */
+  --header-bg: rgba(247, 249, 248, 0.88);
   --grad-a: #047857;
   --grad-b: #0f766e;
   color-scheme: light;
@@ -71,7 +74,8 @@
   --mesh-a: rgba(16, 185, 129, 0.1);
   --mesh-b: rgba(13, 148, 136, 0.09);
   --mesh-c: rgba(3, 105, 161, 0.08);
-  --header-bg: rgba(10, 14, 18, 0.72);
+  /* 0,82 e não 0,72, pelo mesmo motivo do tema claro. */
+  --header-bg: rgba(10, 14, 18, 0.82);
   --grad-a: #5eead4;
   --grad-b: #34d399;
   color-scheme: dark;
@@ -337,6 +341,99 @@ html[data-menu="aberto"] [data-flutuante] {
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.25s ease, visibility 0.25s;
+}
+
+/*
+  ---------- Uma cor por página, no menu do topo ----------
+
+  Cada item do menu ganha a cor do assunto da página. Serve para o olho achar
+  o destino antes de ler a palavra — em onze itens, isso é a diferença entre
+  varrer a barra e reconhecê-la.
+
+  ## As cores saem da identidade do site, não de uma caixa de lápis
+
+  A primeira versão disto usava índigo, laranja, rosa e roxo: onze cores
+  bonitas e sem nenhuma relação com o site. Ficava um arco-íris colado num
+  cabeçalho cuja marca é esmeralda e teal — chamava atenção para si em vez de
+  ajudar a navegar.
+
+  Agora as onze saem de uma **rampa única** que atravessa a família da marca,
+  do dourado (o `--color-gold`) ao azul-petróleo, passando pelo esmeralda e
+  pelo teal — que são exatamente os dois pontos do gradiente da identidade
+  (`--grad-a`, `--grad-b`). Duas delas caem em cima de cores que o site já
+  usava: Contato é o `--accent`, Clínica Médica é o teal do gradiente.
+
+  A rampa é construída em **OKLCH com claridade e croma fixos**, variando só o
+  matiz. Isso importa: em OKLCH a claridade é perceptual, então as onze cores
+  têm o mesmo peso visual e contraste parecido. Em HSL não seria assim — um
+  amarelo e um azul com a mesma "claridade" pesam muito diferente aos olhos e
+  na medição. Matizes espaçados de 17° a 20°, o bastante para distinguir sem
+  que a barra vire listra.
+
+  **Os dois tons de cada cor não são decoração: são o que mantém o texto
+  legível.** Uma cor escolhida sobre o fundo claro fica ilegível sobre o
+  escuro, e vice-versa.
+
+  ## Contra o que a medição foi feita — e por que isso importa
+
+  A barra é de **vidro**: quando rolada, o fundo dela é translúcido, e o fundo
+  real do texto é a mistura do `--header-bg` com o que estiver passando por
+  baixo. Medir só contra `--bg` daria um número bonito e falso.
+
+  E o pior caso não é hipotético: nas páginas de curso, o **player de vídeo é
+  preto** e passa por baixo da barra. Com a primeira paleta que escolhi (tons
+  700) e a opacidade que a barra tinha (0,80), as onze cores do tema claro
+  desabavam para 2,90–4,47:1 exatamente ali — abaixo do mínimo. O texto cinza
+  que estava no menu antes passava nesse mesmo teste, ou seja: teria sido uma
+  piora, não um enfeite.
+
+  Duas mudanças resolveram, e nenhuma sozinha bastava:
+
+    1. paleta do tema claro mais escura (a claridade fixa da rampa, L = 0,45);
+    2. barra um pouco mais opaca (claro 0,80 → 0,88; escuro 0,72 → 0,82).
+
+  Só escurecer a paleta apagaria as onze cores até virarem quase preto. Só
+  opacar a barra exigiria 1,00 no tema claro, o que mata o vidro. O meio-termo
+  guarda os dois.
+
+  Medido — as 22 combinações (11 cores × 2 temas), no pior fundo possível
+  (barra sobre preto no claro, sobre branco no escuro):
+
+    claro    4,84 a 5,53:1   (pior: Clínica Médica)
+    escuro   7,06 a 8,01:1   (pior: Poemas)
+
+  Todas acima do mínimo de 4,5:1 que a norma pede para texto pequeno — e este
+  é pequeno: 0,78 rem.
+
+  Ao trocar qualquer valor daqui, **meça de novo, e meça contra a mistura, não
+  contra `--bg`**. A cor que parece boa na tela do autor é exatamente a que
+  costuma reprovar.
+*/
+:root {
+  --nav-poemas: #7f4400;
+  --nav-sobre: #734d00;
+  --nav-consultorio: #645500;
+  --nav-esportiva: #4b5e00;
+  --nav-cannabis: #26652b;
+  --nav-contato: #006743;
+  --nav-clinica: #006858;
+  --nav-cursos: #00666b;
+  --nav-blog: #00637b;
+  --nav-telemedicina: #005e88;
+  --nav-faq: #1f5790;
+}
+.dark {
+  --nav-poemas: #ffbd73;
+  --nav-sobre: #fbc865;
+  --nav-consultorio: #e5d367;
+  --nav-esportiva: #c3df7b;
+  --nav-cannabis: #99e89b;
+  --nav-contato: #77ecb8;
+  --nav-clinica: #5aedd4;
+  --nav-cursos: #49ebf0;
+  --nav-blog: #52e6ff;
+  --nav-telemedicina: #6edfff;
+  --nav-faq: #90d6ff;
 }
 
 /* ---------- Route transition (template.tsx) ---------- */

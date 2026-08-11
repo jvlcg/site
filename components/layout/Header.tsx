@@ -9,17 +9,23 @@ import { SoundToggle } from "./SoundToggle";
 import { ContaAluno } from "@/components/ui/ContaAluno";
 import { whatsappLink } from "@/lib/site-config";
 
+/*
+  Cada item carrega a cor do assunto da própria página (`cor`), definida em
+  globals.css como um par de tons — um para o tema claro, outro para o escuro.
+  Ver o comentário do bloco `--nav-*` lá: os dois tons são o que mantém o texto
+  legível, não enfeite.
+*/
 const headerLinks = [
-  { href: "/sobre", label: "Sobre" },
+  { href: "/sobre", label: "Sobre", cor: "--nav-sobre" },
   /* Rótulo curto no topo: "Cannabis Medicinal" inteiro não cabe entre os doze
      itens, e a página se identifica sozinha assim que abre. */
-  { href: "/cannabis-medicinal", label: "Cannabis" },
-  { href: "/clinica-medica", label: "Clínica Médica" },
-  { href: "/medicina-esportiva", label: "Esportiva" },
-  { href: "/telemedicina", label: "Telemedicina" },
-  { href: "/consultorio", label: "Consultório" },
-  { href: "/cursos", label: "Cursos" },
-  { href: "/blog", label: "Blog" },
+  { href: "/cannabis-medicinal", label: "Cannabis", cor: "--nav-cannabis" },
+  { href: "/clinica-medica", label: "Clínica Médica", cor: "--nav-clinica" },
+  { href: "/medicina-esportiva", label: "Esportiva", cor: "--nav-esportiva" },
+  { href: "/telemedicina", label: "Telemedicina", cor: "--nav-telemedicina" },
+  { href: "/consultorio", label: "Consultório", cor: "--nav-consultorio" },
+  { href: "/cursos", label: "Cursos", cor: "--nav-cursos" },
+  { href: "/blog", label: "Blog", cor: "--nav-blog" },
   /*
     "Artigos" (a produção científica) sai do topo e fica no rodapé, no mapa do
     site e no link dentro da página Sobre, que é de onde a maioria chega nela.
@@ -27,9 +33,9 @@ const headerLinks = [
     isso o botão de agendar passava da faixa do cabeçalho e desalinhava com o
     conteúdo da página.
   */
-  { href: "/perguntas-frequentes", label: "FAQ" },
-  { href: "/poemas", label: "Poemas" },
-  { href: "/contato", label: "Contato" },
+  { href: "/perguntas-frequentes", label: "FAQ", cor: "--nav-faq" },
+  { href: "/poemas", label: "Poemas", cor: "--nav-poemas" },
+  { href: "/contato", label: "Contato", cor: "--nav-contato" },
 ];
 
 export function Header() {
@@ -134,8 +140,20 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`whitespace-nowrap rounded-full px-1.5 py-2 text-[0.78rem] transition-colors ${
-                  active ? "text-[var(--accent)]" : "text-muted hover:text-[var(--fg)]"
+                /*
+                  A cor da página vem do token; o "você está aqui" deixou de ser
+                  cor (agora todo item tem uma) e passou a ser **peso e fundo**,
+                  que continuam distinguindo o item ativo mesmo para quem não
+                  separa bem as cores — cerca de 8% dos homens.
+                */
+                style={{ color: `var(${link.cor})` }}
+                /*
+                  Sem `opacity` no estado de repouso, por mais discreto que
+                  ficasse: opacidade rebaixa o contraste medido, e a medição
+                  abaixo foi feita na cor cheia. 0,78 rem já é texto pequeno.
+                */
+                className={`whitespace-nowrap rounded-full px-1.5 py-2 text-[0.78rem] transition-all hover:bg-[color-mix(in_srgb,currentColor_10%,transparent)] ${
+                  active ? "bg-[color-mix(in_srgb,currentColor_14%,transparent)] font-semibold" : ""
                 }`}
               >
                 {link.label}
@@ -230,7 +248,12 @@ export function Header() {
               className={`border-b hairline py-4 font-display text-2xl font-medium transition-all duration-500 ${
                 open ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
               }`}
-              style={{ transitionDelay: open ? `${80 + i * 45}ms` : "0ms" }}
+              /* Mesma cor por página do menu do topo. Aqui o texto tem 1,5 rem,
+                 então a folga de contraste é ainda maior que a medida. */
+              style={{
+                color: `var(${link.cor})`,
+                transitionDelay: open ? `${80 + i * 45}ms` : "0ms",
+              }}
             >
               {link.label}
             </Link>
