@@ -90,6 +90,72 @@ export const DESTINOS: Destino[] = [
     href: "/contato",
     termos: ["agendar uma consulta", "agendamento da consulta", "marcar uma consulta"],
   },
+  /*
+    ────────────────────────────────────────────────────────────────
+    Destinos acrescentados quando os links passaram a valer no site
+    inteiro, e não só no blog e no FAQ
+    ────────────────────────────────────────────────────────────────
+
+    Cada um destes tem página própria e era citado em texto sem nunca virar
+    caminho. "Curso" aparecia dezenas de vezes no site e não levava a lugar
+    nenhum; quem lia sobre voluntariado não tinha como chegar à página que
+    conta o que é.
+
+    Os termos continuam indo **do mais específico para o mais genérico**,
+    porque a busca para no primeiro que casa: se "cadastro de pacientes"
+    viesse depois de "cadastro", o termo curto venceria sempre e o link mais
+    preciso nunca apareceria.
+  */
+  {
+    href: "/cursos",
+    termos: [
+      "cursos gratuitos",
+      "aulas em vídeo",
+      "área de cursos",
+      "curso online",
+      "cursos",
+    ],
+  },
+  {
+    href: "/cadastro",
+    termos: [
+      "cadastro de pacientes",
+      "ficha de cadastro",
+      "cadastro",
+    ],
+  },
+  {
+    href: "/voluntariado",
+    termos: [
+      "trabalho voluntário",
+      "projetos voluntários",
+      "voluntariado",
+    ],
+  },
+  {
+    href: "/aplicativos",
+    termos: [
+      "aplicativos recomendados",
+      "catálogo de aplicativos",
+      "aplicativos",
+    ],
+  },
+  {
+    href: "/blog",
+    termos: [
+      "artigos científicos do blog",
+      "artigos do blog",
+      "blog",
+    ],
+  },
+  {
+    href: "/poemas",
+    termos: [
+      "poemas autorais",
+      "poesia",
+      "poemas",
+    ],
+  },
 ];
 
 /**

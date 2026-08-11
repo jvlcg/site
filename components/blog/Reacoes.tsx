@@ -1,7 +1,10 @@
 "use client";
 
+import Link from "next/link";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LIMITE_TEXTO, type Comentario } from "@/lib/interacoes";
+import { repartirComLinks } from "@/lib/auto-links";
 
 /**
  * Reações e comentários no fim do post.
@@ -249,7 +252,7 @@ export function Reacoes({ slug }: { slug: string }) {
               </div>
               {/* `whitespace-pre-line` preserva as quebras que a pessoa escreveu */}
               <p className="mt-2 whitespace-pre-line text-[0.95rem] leading-relaxed text-muted">
-                {c.texto}
+                <TextoComLinks texto={c.texto} slug={slug} />
               </p>
             </li>
           ))}
@@ -303,5 +306,42 @@ function BotaoVoto({
         <span className="font-mono-tech text-xs tabular-nums opacity-70">{contagem}</span>
       )}
     </button>
+  );
+}
+
+/**
+ * O texto do comentário, com as menções a assuntos do site virando link.
+ *
+ * ## Duas decisões que este trecho toma, e o motivo de cada uma
+ *
+ * **Só link INTERNO, e só a partir da nossa lista.** Nada do que a pessoa
+ * escreveu vira link para fora. Transformar `http://…` digitado por um
+ * visitante em link clicável num site de médico é abrir uma porta de spam com
+ * a credibilidade do consultório atrás — e é o vetor número um de abuso em
+ * qualquer caixa de comentário aberta.
+ *
+ * **Teto de dois, e não os seis do artigo.** Um comentário tem duas ou três
+ * frases; seis links ali seriam mais link do que texto, e o comentário do
+ * leitor viraria vitrine. Dois bastam para levar quem perguntou até a página
+ * que responde.
+ *
+ * O conjunto `jaUsados` é criado por comentário, e não compartilhado entre
+ * eles: cada comentário é um texto independente, e o segundo não deve perder
+ * o link porque o primeiro já usou aquele destino.
+ */
+function TextoComLinks({ texto, slug }: { texto: string; slug: string }) {
+  const trechos = repartirComLinks(texto, new Set<string>(), `/blog/${slug}`, 2);
+  return (
+    <>
+      {trechos.map((t, i) =>
+        t.href ? (
+          <Link key={i} href={t.href} className="underline underline-offset-2 hover:text-[var(--accent)]">
+            {t.texto}
+          </Link>
+        ) : (
+          <span key={i}>{t.texto}</span>
+        )
+      )}
+    </>
   );
 }
