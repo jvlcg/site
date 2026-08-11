@@ -11,7 +11,8 @@
     "soro:sync": "node scripts/sync-soro.mjs",
     "marca": "node scripts/gen-brand.mjs",
     "notificar": "node --import ./scripts/resolver-ts.mjs scripts/enviar-notificacoes.mjs",
-    "vapid": "node -e \"console.log(require('web-push').generateVAPIDKeys())\""
+    "vapid": "node -e \"console.log(require('web-push').generateVAPIDKeys())\"",
+    "verificar-links": "node scripts/verificar-links.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "^9.0.0",
