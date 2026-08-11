@@ -13,11 +13,34 @@ type Props = {
   children?: React.ReactNode;
 };
 
-/** Hero padrão das páginas internas, com cena 3D opcional ao fundo. */
+/**
+ * Hero padrão das páginas internas.
+ *
+ * Vinte e uma páginas passam por aqui, o que faz deste arquivo o único lugar
+ * onde uma mudança visual alcança o site inteiro de uma vez. É por isso que a
+ * camada "Apple" mora aqui e não em cada página.
+ *
+ * O que ele monta, de trás para frente:
+ *
+ *   aurora        três degradês em velocidades diferentes → profundidade
+ *   camada-fundo  paralaxe por rolagem, em CSS puro, sem ouvinte de scroll
+ *   cena 3D       só onde foi pedida (ver a nota sobre custo, abaixo)
+ *   scrim         garante o contraste do texto sobre tudo isso
+ *   heroi-recua   ao rolar, o título encolhe, desfoca e some — o gesto da Apple
+ *
+ * **A cena WebGL continua sendo exceção, e de propósito.** Medido no
+ * `ThreeScene`: com ela, o bloqueio da thread principal vai de 163 ms para
+ * 12.518 ms. A profundidade aqui vem de `transform` e degradê, que a GPU
+ * compõe sem passar pela thread principal — mesmo efeito percebido, sem a
+ * conta.
+ */
 export function PageHero({ eyebrow, title, lede, scene = "none", breadcrumbs, children }: Props) {
   return (
-    <section className="relative overflow-hidden pt-32 pb-20 sm:pt-36 sm:pb-24">
-      <div className="mesh-bg" />
+    <section className="relative overflow-hidden pt-32 pb-24 sm:pt-36 sm:pb-32">
+      <div className="camada-fundo absolute inset-0">
+        <div className="aurora" />
+        <div className="mesh-bg" />
+      </div>
       {scene !== "none" && (
         <>
           <ThreeScene kind={scene} className="absolute inset-0 opacity-60" />
@@ -52,22 +75,38 @@ export function PageHero({ eyebrow, title, lede, scene = "none", breadcrumbs, ch
             </ol>
           </nav>
         )}
-        <div className="max-w-3xl">
+        {/*
+          `heroi-recua` envolve o bloco inteiro para que título, linha de apoio
+          e botões recuem juntos, como uma peça só. Separados, cada um sairia
+          no seu tempo e o efeito viraria bagunça em vez de movimento de câmera.
+        */}
+        <div className="heroi-recua max-w-3xl">
           <Reveal imediato as="p" className="eyebrow mb-5">
             {eyebrow}
           </Reveal>
+          {/*
+            Um degrau maior em cada faixa, e com espacejamento negativo maior
+            (`display-apple`). Título grande com espacejamento normal é o que
+            mais denuncia um site amador: o espaço entre letras foi desenhado
+            para o corpo do texto e cresce junto com a fonte se ninguém segurar.
+          */}
           <Reveal
             imediato
             as="h1"
             delay={70}
-            className="font-display text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
+            className="display-apple text-[2.6rem] sm:text-6xl lg:text-7xl"
           >
             {title}
           </Reveal>
-          <Reveal imediato as="p" delay={150} className="mt-6 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">
+          <Reveal
+            imediato
+            as="p"
+            delay={150}
+            className="mt-7 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl"
+          >
             {lede}
           </Reveal>
-          {children && <Reveal imediato delay={230} className="mt-9">{children}</Reveal>}
+          {children && <Reveal imediato delay={230} className="mt-10">{children}</Reveal>}
         </div>
       </div>
     </section>
