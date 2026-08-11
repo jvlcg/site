@@ -8,6 +8,7 @@ import { CtaSection } from "@/components/ui/CtaSection";
 import { Parallax } from "@/components/ui/Parallax";
 import { JsonLd, breadcrumbSchema, medicalWebPageSchema } from "@/lib/schema";
 import { site } from "@/lib/site-config";
+import { FaixaFoto } from "@/components/ui/FaixaFoto";
 
 export const metadata: Metadata = {
   title: "Sobre o Dr. José Victor — formação, pesquisa e publicações",
@@ -110,6 +111,7 @@ export default function SobrePage() {
   return (
     <>
       <PageHero
+        fundo="espiral"
         eyebrow="Sobre"
         title={
           <>
@@ -366,6 +368,13 @@ export default function SobrePage() {
           </Reveal>
         </div>
       </section>
+
+      <FaixaFoto
+        src="/images/dr-retrato-gravata.jpg"
+        alt="Dr. José Victor Lisboa Cardoso Gomes"
+        legenda="Formação na PUC-GO com honraria Magna Cum Laude, e pesquisa em dor e intervenção guiada por imagem."
+        altura="alta"
+      />
 
       <CtaSection
         title="Vamos conversar sobre a sua saúde?"

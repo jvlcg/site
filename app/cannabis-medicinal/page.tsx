@@ -122,7 +122,7 @@ export default function EndocanabinoidePage() {
       */}
       <section className="relative overflow-hidden pt-32 pb-20 sm:pt-36 sm:pb-24">
         <div className="camada-fundo absolute inset-0">
-          <div className="aurora" />
+          <div className="aurora" data-fundo="orbita" />
           <div className="mesh-bg" />
         </div>
         <nav aria-label="Trilha de navegação" className="relative mx-auto max-w-7xl px-5 sm:px-8">

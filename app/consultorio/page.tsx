@@ -11,6 +11,7 @@ import { Parallax } from "@/components/ui/Parallax";
 import { galleryPhotos, clinicPhotos, galleryImageUrls } from "@/lib/gallery";
 import { site, whatsappLink } from "@/lib/site-config";
 import { JsonLd, breadcrumbSchema, medicalWebPageSchema } from "@/lib/schema";
+import { FaixaFoto } from "@/components/ui/FaixaFoto";
 
 export const metadata: Metadata = {
   title: "Consultório em Goiânia — Setor Sul | Estrutura e localização",
@@ -38,6 +39,7 @@ export default function ConsultorioPage() {
   return (
     <>
       <PageHero
+        fundo="respiro"
         eyebrow="Unidade presencial"
         title={
           <>
@@ -163,6 +165,13 @@ export default function ConsultorioPage() {
           </Reveal>
         </div>
       </section>
+
+      <FaixaFoto
+        src="/images/dr-jose-victor-perfil.jpg"
+        alt="Dr. José Victor Lisboa Cardoso Gomes"
+        legenda="Clínica Fisiogyn, Setor Sul — estrutura de diagnóstico no mesmo endereço da consulta."
+        altura="media"
+      />
 
       <CtaSection
         title="Prefere ser atendido presencialmente?"

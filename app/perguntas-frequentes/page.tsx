@@ -78,6 +78,7 @@ export default function PerguntasFrequentesPage() {
   return (
     <>
       <PageHero
+        fundo="pendulo"
         eyebrow="Dúvidas"
         title={
           <>

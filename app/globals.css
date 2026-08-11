@@ -987,6 +987,127 @@ html[data-menu="aberto"] [data-flutuante] {
   .foto-revela > * { transform: none !important; animation: none !important; }
 }
 
+/*
+  ═══════════════════════════════════════════════════════════════════════
+  UM FUNDO POR PÁGINA
+  ═══════════════════════════════════════════════════════════════════════
+
+  Onze animações diferentes, uma por assunto. A aurora é a mesma camada em
+  todas — o que muda é **como ela se move**, e o movimento é escolhido pelo
+  que a página trata:
+
+    sobre         espiral      trajetória, uma coisa que gira e volta
+    cannabis      orbita       receptores em órbita, a rede endocanabinoide
+    clinica       mare         maré, o acompanhamento que vai e volta
+    esportiva     pulso        batimento — o único com ritmo marcado
+    telemedicina  varredura    o sinal atravessando a distância
+    consultorio   respiro      respiração lenta, o lugar onde se senta
+    cursos        deriva       deslocamento diagonal, avanço
+    blog          ondulacao    onda de leitura
+    faq           pendulo      o vaivém da dúvida
+    poemas        cintila      brilho que aparece e some
+    contato       convergencia tudo indo para o mesmo ponto
+
+  ## O que todas têm em comum, e por quê
+
+  **Só `transform` e `opacity`.** É a regra que esta camada aprendeu caro:
+  animar `filter` derrubou o Lighthouse de 97 para 81 na primeira versão. As
+  onze animam a matriz do elemento, que a GPU compõe sem repintar.
+
+  **Todas param em tela de toque.** Fundo animado em celular gasta bateria por
+  um efeito que quase ninguém repara enquanto lê — e é onde está a maior parte
+  das visitas.
+
+  **Nenhuma passa de 0,2 de opacidade em movimento.** Fundo que compete com o
+  texto deixa de ser fundo. A legibilidade é o limite, e não o gosto.
+*/
+.aurora[data-fundo="espiral"]::before      { animation: fundo-espiral 46s linear infinite; }
+.aurora[data-fundo="orbita"]::before       { animation: fundo-orbita 38s ease-in-out infinite; }
+.aurora[data-fundo="mare"]::before         { animation: fundo-mare 30s ease-in-out infinite alternate; }
+.aurora[data-fundo="pulso"]::before        { animation: fundo-pulso 9s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.aurora[data-fundo="varredura"]::before    { animation: fundo-varredura 34s ease-in-out infinite alternate; }
+.aurora[data-fundo="respiro"]::before      { animation: fundo-respiro 22s ease-in-out infinite alternate; }
+.aurora[data-fundo="deriva"]::before       { animation: fundo-deriva 42s ease-in-out infinite alternate; }
+.aurora[data-fundo="ondulacao"]::before    { animation: fundo-ondulacao 36s ease-in-out infinite; }
+.aurora[data-fundo="pendulo"]::before      { animation: fundo-pendulo 26s ease-in-out infinite alternate; }
+.aurora[data-fundo="cintila"]::before      { animation: fundo-cintila 18s ease-in-out infinite alternate; }
+.aurora[data-fundo="convergencia"]::before { animation: fundo-convergencia 28s ease-in-out infinite alternate; }
+
+/* trajetória: gira devagar, sem começo nem fim visíveis */
+@keyframes fundo-espiral {
+  from { transform: rotate(0deg) scale(1.05); }
+  to   { transform: rotate(360deg) scale(1.05); }
+}
+/* órbita: dois eixos em velocidades diferentes, como corpos em volta de um centro */
+@keyframes fundo-orbita {
+  0%   { transform: translate3d(-6%, 2%, 0) rotate(0deg) scale(1.08); }
+  50%  { transform: translate3d(6%, -4%, 0) rotate(180deg) scale(1.16); }
+  100% { transform: translate3d(-6%, 2%, 0) rotate(360deg) scale(1.08); }
+}
+/* maré: sobe e desce, sem pressa */
+@keyframes fundo-mare {
+  from { transform: translate3d(0, -7%, 0) scale(1.06); }
+  to   { transform: translate3d(0, 7%, 0) scale(1.2); }
+}
+/*
+  batimento: dois toques rápidos e uma pausa longa — sístole, diástole,
+  repouso. É o único fundo com ritmo marcado, e combina com a única página
+  sobre esforço físico.
+*/
+@keyframes fundo-pulso {
+  0%   { transform: scale(1.04); opacity: 0.72; }
+  8%   { transform: scale(1.13); opacity: 1; }
+  16%  { transform: scale(1.06); opacity: 0.8; }
+  24%  { transform: scale(1.11); opacity: 0.95; }
+  38%  { transform: scale(1.04); opacity: 0.72; }
+  100% { transform: scale(1.04); opacity: 0.72; }
+}
+/* varredura: atravessa a tela na horizontal, como sinal indo longe */
+@keyframes fundo-varredura {
+  from { transform: translate3d(-12%, 0, 0) scale(1.14); }
+  to   { transform: translate3d(12%, 0, 0) scale(1.14); }
+}
+/* respiração: só escala, sem deslocar — o fundo inspira e expira */
+@keyframes fundo-respiro {
+  from { transform: scale(1.02); opacity: 0.78; }
+  to   { transform: scale(1.22); opacity: 1; }
+}
+/* deriva: diagonal contínua, sensação de avanço */
+@keyframes fundo-deriva {
+  from { transform: translate3d(-7%, 5%, 0) scale(1.06); }
+  to   { transform: translate3d(7%, -5%, 0) scale(1.18); }
+}
+/* ondulação: vaivém horizontal com leve balanço vertical */
+@keyframes fundo-ondulacao {
+  0%   { transform: translate3d(-5%, 0, 0) scale(1.08); }
+  33%  { transform: translate3d(3%, -3%, 0) scale(1.14); }
+  66%  { transform: translate3d(5%, 3%, 0) scale(1.1); }
+  100% { transform: translate3d(-5%, 0, 0) scale(1.08); }
+}
+/* pêndulo: inclina para um lado e para o outro */
+@keyframes fundo-pendulo {
+  from { transform: rotate(-7deg) translate3d(-4%, 0, 0) scale(1.12); }
+  to   { transform: rotate(7deg) translate3d(4%, 0, 0) scale(1.12); }
+}
+/* cintilação: aparece e some, sem sair do lugar */
+@keyframes fundo-cintila {
+  from { transform: scale(1.14); opacity: 0.45; }
+  to   { transform: scale(1.02); opacity: 1; }
+}
+/* convergência: vem de fora e fecha no centro */
+@keyframes fundo-convergencia {
+  from { transform: translate3d(-8%, -6%, 0) scale(1.28); opacity: 0.7; }
+  to   { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+}
+
+/* Mesmo motivo do resto da camada: em tela de toque, tudo parado. */
+@media (pointer: coarse) {
+  .aurora[data-fundo]::before { animation: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aurora[data-fundo]::before { animation: none; }
+}
+
 /* ---------- Route transition (template.tsx) ---------- */
 @keyframes route-in {
   from { opacity: 0; transform: translateY(10px); }
