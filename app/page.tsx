@@ -218,31 +218,115 @@ export default function HomePage() {
           }
           lede="Cada área é conduzida com o mesmo método: escuta detalhada, avaliação criteriosa e decisões compartilhadas com base na melhor evidência disponível."
         />
-        <div className="mt-14 grid gap-6 md:grid-cols-3">
-          {areas.map((area, i) => (
-            <Reveal key={area.href} delay={i * 90}>
-              <TiltCard className="h-full">
-                <Link
-                  href={area.href}
-                  className="holo glass card-hover group flex h-full flex-col rounded-3xl p-8"
-                >
-                  <span className="glass flex h-14 w-14 items-center justify-center rounded-2xl text-[var(--accent)]">
-                    {area.icon}
+        {/*
+          Três tratamentos diferentes, e não três cartões iguais.
+
+          Antes eram três retângulos de vidro do mesmo tamanho, lado a lado —
+          o arranjo mais copiado da web e o que mais denuncia modelo pronto.
+          Pior: sem hierarquia, os três disputavam a atenção igualmente, e
+          quem chegava lia os três de uma vez em vez de escolher um.
+
+          Agora o primeiro é grande e **fotográfico**, ocupando duas colunas e
+          duas linhas; os outros dois são placas sólidas, sem vidro e sem
+          ícone, com o assunto em tipo grande. A foto entra aqui porque era o
+          ativo mais desperdiçado do site: há dezessete fotografias
+          profissionais no repositório e a home usava uma.
+        */}
+        <div className="mt-14 grid gap-5 lg:grid-cols-3 lg:grid-rows-2">
+          <Reveal className="lg:col-span-2 lg:row-span-2">
+            {/*
+              Divisão em duas metades — texto de um lado, retrato do outro — e
+              **não** texto por cima da foto.
+
+              Tentei primeiro com a foto ao fundo e véu escuro por cima. Duas
+              coisas mataram a ideia. A primeira: as fotos da clínica são
+              instantâneos amadores (uma delas está torta, com cadeira de
+              plástico, extintor e ar-condicionado no enquadramento) — pôr
+              qualquer uma delas em destaque derruba mais a percepção do que
+              qualquer efeito levanta.
+
+              A segunda: os retratos que prestam são de **estúdio, verticais e
+              de fundo claro**. Escurecer um retrato desses com véu joga fora
+              exatamente o que ele tem de bom, e cortá-lo em faixa larga
+              decepa a composição.
+
+              Divididos, cada metade fica no formato que lhe serve: o retrato
+              inteiro em pé, o texto em coluna estreita e legível.
+            */}
+            <Link
+              href={areas[0].href}
+              className="group grid h-full overflow-hidden rounded-[1.75rem] border hairline sm:grid-cols-[1.05fr_0.95fr]"
+              style={{ background: "var(--bg-elevated)" }}
+            >
+              <div className="flex flex-col justify-center p-8 sm:p-10">
+                <span className="font-mono-tech text-[0.7rem] uppercase tracking-[0.2em] text-[var(--accent)]">
+                  Área principal
+                </span>
+                <h3 className="display-apple mt-4 text-3xl sm:text-[2.6rem]">
+                  {areas[0].title}
+                </h3>
+                <p className="mt-5 text-[0.98rem] leading-relaxed text-muted">
+                  {areas[0].text}
+                </p>
+                <span className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)]">
+                  Conhecer a abordagem
+                  <span
+                    aria-hidden="true"
+                    className="transition-transform duration-300 group-hover:translate-x-1"
+                  >
+                    →
                   </span>
-                  <h3 className="font-display mt-7 text-xl font-semibold tracking-tight">
+                </span>
+              </div>
+              {/*
+                `foto-revela` no recipiente e `scale` no hover: a imagem se
+                aproxima devagar quando o cursor entra, dentro de um recorte
+                que não se mexe.
+              */}
+              <div className="foto-revela relative min-h-[18rem] sm:min-h-full">
+                <Image
+                  src="/images/dr-poltrona-pensativo.jpg"
+                  alt="Dr. José Victor sentado em poltrona, em atitude reflexiva, de terno"
+                  fill
+                  sizes="(max-width: 640px) 100vw, 30vw"
+                  className="object-cover object-top transition-transform duration-[1.4s] ease-out group-hover:scale-[1.05]"
+                />
+              </div>
+            </Link>
+          </Reveal>
+
+          {areas.slice(1).map((area, i) => (
+            <Reveal key={area.href} delay={90 + i * 90}>
+              {/*
+                Placa sólida: fundo elevado, sem vidro, sem ícone e sem
+                inclinação no hover. É deliberadamente o oposto do cartão
+                grande ao lado — se os três tivessem o mesmo acabamento, a
+                assimetria do tamanho não bastaria para quebrar a monotonia.
+              */}
+              <Link
+                href={area.href}
+                className="group flex h-full flex-col justify-between rounded-[1.75rem] border hairline p-7 transition-colors duration-500 hover:border-[color-mix(in_oklab,var(--accent)_50%,transparent)]"
+                style={{ background: "var(--bg-elevated)" }}
+              >
+                <div>
+                  <span className="numero-fantasma block text-[3.4rem] leading-none">
+                    {String(i + 2).padStart(2, "0")}
+                  </span>
+                  <h3 className="font-display mt-4 text-xl font-semibold tracking-tight">
                     {area.title}
                   </h3>
-                  <p className="mt-3 flex-1 text-[0.95rem] leading-relaxed text-muted">
-                    {area.text}
-                  </p>
-                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[var(--accent)]">
-                    Saiba mais
-                    <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">
-                      →
-                    </span>
+                  <p className="mt-3 text-[0.92rem] leading-relaxed text-muted">{area.text}</p>
+                </div>
+                <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[var(--accent)]">
+                  Saiba mais
+                  <span
+                    aria-hidden="true"
+                    className="transition-transform duration-300 group-hover:translate-x-1"
+                  >
+                    →
                   </span>
-                </Link>
-              </TiltCard>
+                </span>
+              </Link>
             </Reveal>
           ))}
         </div>
@@ -273,6 +357,38 @@ export default function HomePage() {
               title="Uma jornada desenhada para resolver"
               lede="Do primeiro contato ao acompanhamento de longo prazo, cada etapa é pensada para você sentir clareza sobre o que está acontecendo e o porquê de cada decisão."
             />
+            {/*
+              A coluna grudada tinha o título e mais nada — cerca de 500 px de
+              vazio ao lado dos passos. Vazio de propósito é respiro; vazio por
+              descuido parece página quebrada, e era o segundo caso.
+
+              O que entra aqui é a lista dos quatro passos em miniatura, que
+              funciona como índice do que está passando ao lado, e o convite
+              para agendar. Quem se convence no passo 2 não precisa rolar até o
+              fim para achar o botão.
+            */}
+            <ol className="mt-12 hidden space-y-3 lg:block" aria-hidden="true">
+              {steps.map((step) => (
+                <li key={step.n} className="flex items-baseline gap-3 text-sm text-faint">
+                  <span className="font-mono-tech text-[0.7rem] text-[var(--accent)]">
+                    {step.n}
+                  </span>
+                  <span className="h-px flex-1 translate-y-[-0.3rem] bg-[var(--line)]" />
+                  <span>{step.title}</span>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-10 hidden lg:block">
+              <a
+                href={whatsappLink()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary text-sm"
+              >
+                Começar pelo WhatsApp
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
           </div>
           <ol className="space-y-5">
             {steps.map((step) => (
@@ -283,10 +399,17 @@ export default function HomePage() {
                     e posição na sequência sem competir pela leitura — é
                     `aria-hidden` porque o número já está no `<ol>`, e repetir
                     faria o leitor de tela anunciar "um, um".
+
+                    Posicionado **inteiro dentro** do cartão. Antes ele saía
+                    pelas bordas (`-right-3 -top-6`) e o `overflow-hidden` o
+                    cortava no meio do traço — o que não lê como recorte
+                    proposital, lê como defeito de renderização. Algarismo
+                    cortado ao meio é a diferença entre "detalhe de design" e
+                    "alguém errou a conta".
                   */}
                   <span
                     aria-hidden="true"
-                    className="numero-fantasma pointer-events-none absolute -right-3 -top-6 text-[7rem] sm:text-[9rem]"
+                    className="numero-fantasma pointer-events-none absolute right-6 top-5 text-[5rem] sm:text-[6.5rem]"
                   >
                     {step.n}
                   </span>
