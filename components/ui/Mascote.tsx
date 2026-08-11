@@ -245,7 +245,23 @@ export function Mascote({
      */
     const noCelular = window.matchMedia("(pointer: coarse)").matches;
     let soltarGesto: (() => void) | null = null;
-    const sinais = ["pointerdown", "touchstart", "keydown"] as const;
+    /*
+      Rolagem, e não toque.
+
+      Os sinais eram `pointerdown` e `touchstart`, que acontecem com a pessoa
+      ainda parada no topo — e o mascote é fixo no canto inferior esquerdo,
+      onde ficam os botões da primeira tela. Medido em 390 px na home: o balão
+      cobria inteiro o "Conhecer o Dr. José Victor".
+
+      Um link tapado por um balão publicitário é pior do que o balão não
+      existir, e o prejuízo é invisível: ninguém reclama de um botão que não
+      viu.
+
+      Exigindo rolagem, ele nunca fala por cima da primeira tela — e é
+      justamente ali que mora o botão principal de toda página. Quem rolou já
+      passou dele.
+    */
+    const sinais = ["scroll", "keydown"] as const;
 
     if (noCelular) {
       soltarGesto = () => {
@@ -270,7 +286,43 @@ export function Mascote({
      */
     const primeiraEntrada = esperaSegundos === PADRAO_ESPERA;
     const atraso = noCelular && primeiraEntrada ? 10_000 : esperaSegundos * 1000;
-    const porTempo = setTimeout(mostrar, atraso);
+    /**
+     * No celular, o relógio **não** basta para entrar: é preciso ter saído do
+     * topo.
+     *
+     * Trocar só os sinais de gesto não resolveu o problema do balão em cima do
+     * botão — medido: parado no topo, o mascote aparecia assim mesmo aos 10 s,
+     * porque este temporizador dispara sozinho. O balão continuava cobrindo o
+     * "Conhecer o Dr. José Victor" em 390 px.
+     *
+     * Agora, se o prazo vence com a pessoa ainda na primeira tela, ele não
+     * entra: fica esperando a rolagem, que os ouvintes acima já vigiam. Quem
+     * rolar vê o mascote no instante seguinte; quem ficar parado lendo a
+     * primeira tela não tem o botão principal tapado.
+     *
+     * A regra vale para **qualquer** entrada, e não só para a primeira da
+     * página. Tentei antes restringi-la à primeira, usando `esperaSegundos`
+     * como sinal de "é uma troca" — e não funcionou, por um motivo que só
+     * apareceu no teste: quando a vez cai no Termô, o pai o renderiza com
+     * `esperaSegundos={2}` mesmo sendo a estreia na página. O filho não tem
+     * como distinguir estreia de troca por esse dado.
+     *
+     * E não precisa distinguir: se a pessoa não rolou, o botão principal
+     * continua na tela, seja o primeiro mascote ou o segundo.
+     *
+     * A exceção é a página que não rola (curta demais para ter primeira tela
+     * separada do resto). Ali não há para onde rolar, e esperar por isso seria
+     * esperar para sempre.
+     */
+    const podeEntrarNoTopo = () => {
+      if (!noCelular) return true;
+      if (window.scrollY > 24) return true;
+      const rolavel = document.documentElement.scrollHeight - window.innerHeight;
+      return rolavel < 80;
+    };
+    const porTempo = setTimeout(() => {
+      if (podeEntrarNoTopo()) mostrar();
+    }, atraso);
 
     return () => {
       window.removeEventListener("scroll", porRolagem);
