@@ -94,7 +94,17 @@ export default function HomePage() {
     <>
       {/* ---------- HERO ---------- */}
       <section className="relative flex min-h-[100svh] items-center overflow-hidden pt-28 pb-16">
-        <div className="mesh-bg" />
+        {/*
+          Quatro camadas de fundo em velocidades diferentes, do mais distante
+          ao mais próximo: aurora, mesh, cena neural, véu. A paralaxe entre
+          elas — `camada-fundo` desliza mais devagar que a página — é o que dá
+          a sensação de profundidade sem custar quadro nenhum de CPU: quem
+          desloca é a GPU, por `transform`.
+        */}
+        <div className="camada-fundo absolute inset-0">
+          <div className="aurora" />
+          <div className="mesh-bg" />
+        </div>
         <ThreeScene kind="neural" className="absolute inset-0" />
         <div className="scrim" />
         <div
@@ -102,7 +112,15 @@ export default function HomePage() {
           style={{ background: "linear-gradient(to top, var(--bg), transparent)" }}
         />
 
-        <div className="relative mx-auto grid w-full max-w-7xl items-center gap-14 px-5 sm:px-8 lg:grid-cols-[1.15fr_0.85fr]">
+        {/*
+          `heroi-recua` envolve a grade inteira — texto e foto juntos.
+
+          Testado só na coluna de texto: o texto desfocava e encolhia enquanto
+          a foto continuava nítida e imóvel ao lado, o que parece defeito de
+          renderização, não intenção. O gesto só lê como "a câmera se afastou"
+          quando a cena inteira se afasta.
+        */}
+        <div className="heroi-recua relative mx-auto grid w-full max-w-7xl items-center gap-14 px-5 sm:px-8 lg:grid-cols-[1.15fr_0.85fr]">
           <div>
             <Reveal imediato as="p" className="font-mono-tech mb-6 inline-flex items-center gap-2 rounded-full border hairline px-4 py-2 text-[0.72rem] uppercase tracking-[0.16em] text-muted">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
@@ -112,7 +130,7 @@ export default function HomePage() {
               imediato
               as="h1"
               delay={80}
-              className="font-display text-[2.6rem] font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-[4.2rem]"
+              className="display-apple text-[2.7rem] sm:text-6xl lg:text-[4.6rem]"
             >
               Medicina de precisão,{" "}
               <span className="text-gradient">guiada por ciência</span> e pelo seu

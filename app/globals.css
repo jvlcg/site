@@ -268,13 +268,89 @@ body {
   55%, 100% { stroke-dashoffset: -220; }
 }
 
+/*
+  ---------- Cartões: a superfície ----------
+
+  Trinta e três lugares no site usam esta classe, então ela é o ponto onde uma
+  mudança alcança todos os cartões de uma vez — motivo pelo qual o acabamento
+  "Apple" foi feito aqui, e não repetido em cada página.
+
+  Três coisas o separam de um retângulo translúcido comum:
+
+  1. **Duas sombras, não uma.** Uma curta e fechada logo abaixo da borda,
+     outra longa e difusa embaixo. É como a luz real se comporta; sombra única
+     sempre parece adesivo colado na página.
+
+  2. **Filete claro no topo** (`inset 0 1px 0`). Simula a quina superior
+     pegando luz. É o detalhe barato que mais contribui para a leitura de
+     "objeto com espessura".
+
+  3. **Reflexo especular ao passar o mouse.** Uma faixa de luz atravessa o
+     cartão na diagonal, como o reflexo de uma janela. Sai de `-30%` a `130%`
+     do fundo — anima `background-position`, que aqui é aceitável porque roda
+     só no hover, num elemento pequeno e um de cada vez.
+
+  O `::after` não precisa de `overflow: hidden` no pai: `inset: 0` com
+  `border-radius: inherit` já o mantém dentro dos cantos arredondados. Evitar
+  o `overflow` importa — ele cortaria qualquer conteúdo que precise vazar do
+  cartão e criaria um contexto de rolagem novo.
+*/
 .card-hover {
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.5s, box-shadow 0.5s;
+  position: relative;
+  isolation: isolate;
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, var(--fg) 6%, transparent),
+    0 1px 2px -1px color-mix(in oklab, var(--fg) 14%, transparent),
+    0 16px 40px -28px color-mix(in oklab, var(--fg) 20%, transparent);
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.5s,
+    box-shadow 0.55s;
+}
+.card-hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    color-mix(in oklab, var(--fg) 7%, transparent) 47%,
+    color-mix(in oklab, var(--fg) 13%, transparent) 50%,
+    color-mix(in oklab, var(--fg) 7%, transparent) 53%,
+    transparent 62%
+  );
+  background-size: 280% 100%;
+  background-position: 130% 0;
+  opacity: 0;
+  transition: opacity 0.4s ease, background-position 1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .card-hover:hover {
-  transform: translateY(-5px);
+  /*
+    Sobe e se inclina de leve em direção a quem lê. `rotateX` negativo com a
+    origem embaixo dá a sensação de a borda de cima vir para frente — o mesmo
+    gesto dos cartões de produto da Apple.
+  */
+  transform: perspective(900px) rotateX(-1.6deg) translateY(-6px) scale(1.008);
   border-color: color-mix(in oklab, var(--accent) 45%, transparent);
-  box-shadow: 0 24px 60px -32px color-mix(in oklab, var(--accent) 38%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, var(--fg) 10%, transparent),
+    0 2px 4px -2px color-mix(in oklab, var(--fg) 16%, transparent),
+    0 32px 70px -34px color-mix(in oklab, var(--accent) 42%, transparent);
+}
+.card-hover:hover::after {
+  opacity: 1;
+  background-position: -30% 0;
+}
+/*
+  Em tela de toque não existe hover, e `:hover` em toque gruda até o próximo
+  toque em outro lugar — o cartão ficaria inclinado e brilhando sem motivo.
+*/
+@media (hover: none) {
+  .card-hover:hover { transform: none; }
+  .card-hover::after { display: none; }
 }
 
 .btn-primary {
@@ -436,6 +512,293 @@ html[data-menu="aberto"] [data-flutuante] {
   --nav-faq: #90d6ff;
 }
 
+/*
+  ═══════════════════════════════════════════════════════════════════════
+  CAMADA "APPLE" — coreografia de rolagem, materiais e profundidade
+  ═══════════════════════════════════════════════════════════════════════
+
+  ## Por que quase nada aqui é WebGL
+
+  O pedido foi "mais 3D, mais futurista, o mais Apple possível". A resposta
+  natural seria espalhar cenas WebGL — e seria a resposta errada, por dois
+  motivos que se somam.
+
+  O primeiro está medido neste repositório, no comentário do `ThreeScene`:
+  com a cena ligada, o bloqueio da thread principal vai de **163 ms para
+  12.518 ms**. A cena 3D é praticamente todo o custo de desempenho do site.
+  Ligá-la nas 21 páginas multiplicaria isso por 21.
+
+  O segundo é mais interessante: **a Apple não usa WebGL.** O visual que se
+  reconhece como "Apple" vem de tipografia grande com espacejamento apertado,
+  espaço em branco generoso, materiais translúcidos, e sobretudo coreografia
+  de rolagem — elemento que gruda, escala, desfoca e entrega a vez ao
+  seguinte. Nada disso precisa de GPU 3D.
+
+  Então o 3D aqui é feito com `transform` e `perspective`, que o navegador
+  compõe na GPU sem passar pela thread principal, e a coreografia é feita com
+  **linha do tempo de rolagem em CSS puro** (`animation-timeline`), que roda
+  fora da thread principal e não custa um byte de JavaScript.
+
+  ## `animation-timeline` e o degradê para quem não tem
+
+  `animation-timeline: view()` amarra o progresso de uma animação à posição do
+  elemento na tela. É o `ScrollTrigger` do GSAP sem GSAP: sem JavaScript, sem
+  ouvinte de rolagem, sem recalcular layout a cada quadro.
+
+  Onde não existe, o `@supports` simplesmente não aplica nada e o elemento
+  fica no estado final — visível e legível. O site não depende disto para
+  funcionar; depende para ficar bonito.
+*/
+
+/*
+  ---------- Aurora: profundidade atrás do conteúdo ----------
+
+  Três camadas de degradê radial em escalas e velocidades diferentes. A
+  diferença de velocidade é o que cria paralaxe — e portanto profundidade —
+  sem nenhum acompanhamento de rolagem.
+
+  Anima só `transform`, nunca `background-position` nem `filter`: as duas
+  últimas forçam repintura a cada quadro, e uma camada de tela cheia
+  repintando é exatamente o tipo de coisa que derruba a nota de celular. Com
+  `transform`, o navegador promove a camada e a GPU cuida sozinha.
+*/
+.aurora {
+  position: absolute;
+  inset: -30%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  /* `contain` impede que esta camada force recálculo do resto da página */
+  contain: strict;
+}
+/*
+  UMA camada, e sem `filter: blur()`.
+
+  A primeira versão tinha duas camadas de tela cheia com `blur(64px)`, somadas
+  ao `blur(80px)` que o `.mesh-bg` já usava — três desfoques gigantes na mesma
+  tela. Medido no Lighthouse: **desktop 97 → 81, celular 78 → 63**, com o
+  bloqueio da thread saindo de 90 ms para 360 ms.
+
+  Foi a lição mais cara desta rodada: `transform` é composto pela GPU, mas
+  `filter: blur()` **não é de graça** — a cada quadro o desfoque precisa ser
+  rasterizado de novo, e numa camada do tamanho da janela isso é caro mesmo
+  sem nada se mover.
+
+  O degradê aqui já nasce suave (as paradas de cor vão até `transparent` bem
+  antes da borda), então o desfoque só estava suavizando o que já era macio.
+  Sai o filtro, fica o degradê, e o efeito visual é praticamente o mesmo.
+*/
+.aurora::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(38% 42% at 18% 30%, color-mix(in oklab, var(--accent) 20%, transparent), transparent 72%),
+    radial-gradient(34% 38% at 76% 22%, color-mix(in oklab, var(--color-teal-flow) 17%, transparent), transparent 70%),
+    radial-gradient(40% 36% at 62% 78%, color-mix(in oklab, var(--color-gold) 12%, transparent), transparent 74%);
+  will-change: transform;
+  animation: aurora-deriva 40s ease-in-out infinite alternate;
+}
+@keyframes aurora-deriva {
+  from { transform: translate3d(-5%, -3%, 0) scale(1); }
+  to   { transform: translate3d(5%, 4%, 0) scale(1.18); }
+}
+/* Mesmo motivo do `.mesh-bg`: no celular o desfoque de tela cheia é caro. */
+@media (pointer: coarse) {
+  .aurora::before { animation: none; }
+}
+
+/*
+  ---------- Saída do herói: o gesto mais reconhecível da Apple ----------
+
+  O conteúdo do topo não some rolando para fora: ele **recua**. Encolhe um
+  pouco, desfoca e desaparece, como se a câmera se afastasse dele para dar
+  lugar ao que vem. É o que a Apple faz na abertura de toda página de produto.
+
+  `view()` mede o elemento contra a tela; o intervalo `exit` cobre só o trecho
+  em que ele está saindo por cima. Assim o efeito não toca nele na entrada.
+*/
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /*
+      Amarrado a `scroll()` (a rolagem da página) e não a `view()` (a posição
+      do elemento na tela).
+
+      Testado das duas formas: com `view()` e o intervalo `exit`, o herói não
+      se mexia. O motivo é que ele **já nasce no topo da página** — nunca
+      passa pela fase de "entrada" e, num herói de altura de tela inteira, a
+      fase de "saída" só começa tarde demais para o efeito ser percebido.
+
+      Com `scroll()` o progresso vem da barra de rolagem, e o intervalo em
+      `vh` diz exatamente o que se quer: o herói recua ao longo dos primeiros
+      70% de uma tela de rolagem, terminando pouco antes de a próxima seção
+      ocupar o espaço.
+    */
+    .heroi-recua {
+      animation: heroi-recuo linear both;
+      /*
+        `scroll(root)`: a linha do tempo é a rolagem do documento.
+
+        Explícito de propósito. `scroll()` sozinho significa `scroll(nearest)`,
+        que depende de qual ancestral é contêiner de rolagem — e isso pode
+        mudar com uma alteração de `overflow` em qualquer pai, longe daqui,
+        sem que ninguém relacione uma coisa à outra. `root` não tem essa
+        dependência.
+
+        ## Aviso a quem for testar isto
+
+        **`getComputedStyle` NÃO serve para verificar animação de rolagem.**
+        Perdi várias rodadas por isso: o `transform` vinha
+        `matrix(1,0,0,1,0,0)` — identidade — em qualquer posição de rolagem, e
+        a conclusão óbvia era "não funciona".
+
+        Funcionava o tempo todo. Animação dirigida por rolagem roda no
+        **compositor**, e o estilo computado devolve o valor base, não o que
+        está na tela. O que revela a verdade é o progresso da própria animação:
+
+          el.getAnimations()[0].effect.getComputedTiming().progress
+
+        Medido assim, com a página em 500 px: progresso 0,79. E a comparação
+        de capturas de tela nas posições 0, 200 e 400 px devolveu três imagens
+        diferentes — que é a prova final, porque é o que o visitante vê.
+      */
+      animation-timeline: scroll(root);
+      animation-range: 0 70vh;
+      /*
+        `will-change` sem `filter`, e o keyframe sem `blur`.
+
+        Desfoque animado é repintura por quadro: o navegador não consegue
+        compor, tem de rasterizar o borrão de novo a cada passo da rolagem.
+        Era parte dos 270 ms de bloqueio que esta camada adicionou.
+
+        Encolher e desaparecer já entrega o gesto inteiro — o borrão era
+        enfeite em cima de enfeite.
+      */
+      will-change: transform, opacity;
+    }
+    @keyframes heroi-recuo {
+      to {
+        transform: scale(0.94) translateY(-14px);
+        opacity: 0;
+      }
+    }
+
+    /*
+      Entrada em três dimensões de verdade.
+
+      O elemento chega tombado para trás no eixo X e se endireita conforme
+      sobe. Como `perspective` está no elemento, cada bloco tem o seu próprio
+      ponto de fuga e a sensação é de placa girando em direção a quem lê — não
+      de página inteira inclinando.
+    */
+    .entra-3d {
+      animation: entrada-3d linear both;
+      animation-timeline: view();
+      animation-range: entry 5% entry 62%;
+      transform-origin: 50% 100%;
+      will-change: transform, opacity;
+    }
+    @keyframes entrada-3d {
+      from {
+        opacity: 0;
+        transform: perspective(1100px) rotateX(9deg) translateY(46px) scale(0.965);
+      }
+      to {
+        opacity: 1;
+        transform: perspective(1100px) rotateX(0) translateY(0) scale(1);
+      }
+    }
+
+    /*
+      Paralaxe por rolagem, sem JavaScript.
+
+      `scroll()` usa a barra de rolagem da página como linha do tempo, então o
+      deslocamento acompanha a rolagem inteira em vez da posição do elemento.
+      É o que dá a sensação de camadas a distâncias diferentes.
+    */
+    .camada-fundo {
+      animation: deriva-fundo linear both;
+      animation-timeline: scroll(root); /* mesmo motivo do herói, acima */
+      will-change: transform;
+    }
+    @keyframes deriva-fundo {
+      to { transform: translate3d(0, 16%, 0); }
+    }
+  }
+}
+
+/*
+  ---------- Especular: o brilho que faz o vidro parecer vidro ----------
+
+  Uma faixa clara diagonal atravessa o cartão ao passar o mouse. É o reflexo
+  de uma fonte de luz — o detalhe que separa "retângulo translúcido" de
+  "superfície". A Apple usa isso em quase todo cartão de produto.
+
+  Fica em `::after` com `mask` de herança do raio, para acompanhar cantos
+  arredondados sem precisar repetir o valor.
+*/
+.especular {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.especular::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    color-mix(in oklab, var(--fg) 8%, transparent) 47%,
+    color-mix(in oklab, var(--fg) 14%, transparent) 50%,
+    color-mix(in oklab, var(--fg) 8%, transparent) 53%,
+    transparent 62%
+  );
+  background-size: 280% 100%;
+  background-position: 130% 0;
+  opacity: 0;
+  transition: opacity 0.4s ease, background-position 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.especular:hover::after {
+  opacity: 1;
+  background-position: -30% 0;
+}
+
+/*
+  ---------- Profundidade de superfície ----------
+
+  Borda superior clara e sombra difusa embaixo: a leitura de "objeto apoiado
+  sobre a página" em vez de "área pintada". Duas sombras, uma curta e fechada
+  e outra longa e aberta, porque é assim que a luz real se comporta — uma
+  sombra só sempre parece adesivo.
+*/
+.superficie {
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, var(--fg) 7%, transparent),
+    0 1px 2px -1px color-mix(in oklab, var(--fg) 18%, transparent),
+    0 18px 48px -24px color-mix(in oklab, var(--fg) 24%, transparent);
+}
+
+/*
+  ---------- Tipografia de display ----------
+
+  Quanto maior o texto, mais apertado o espacejamento. É a regra que a Apple
+  segue e o motivo de um título grande com espacejamento normal parecer
+  amador: o espaço entre letras foi desenhado para o tamanho do corpo do
+  texto, e cresce junto com a fonte se ninguém o segurar.
+*/
+.display-apple {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.03;
+  letter-spacing: -0.035em;
+}
+@media (min-width: 1024px) {
+  .display-apple { letter-spacing: -0.042em; }
+}
+
 /* ---------- Route transition (template.tsx) ---------- */
 @keyframes route-in {
   from { opacity: 0; transform: translateY(10px); }
@@ -445,16 +808,36 @@ html[data-menu="aberto"] [data-flutuante] {
   animation: route-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* ---------- Scroll reveal (activated by .reveal-ready on <html>) ---------- */
+/*
+  ---------- Scroll reveal (activated by .reveal-ready on <html>) ----------
+
+  A entrada ganhou uma terceira dimensão: além de subir, o bloco chega
+  **tombado para trás** e se endireita. É a diferença entre "texto deslizando"
+  e "placa girando em direção a quem lê".
+
+  `perspective` vai no próprio elemento, e não num pai comum. Com um pai só,
+  todos os blocos dividiriam o mesmo ponto de fuga e os de baixo da tela
+  inclinariam para o lado — a página inteira pareceria torta. Com a
+  perspectiva em cada um, cada bloco gira em torno do próprio eixo.
+
+  Continua animando apenas `transform` e `opacity`, que a GPU compõe sem
+  repintar. `rotateX` não custa mais que `translateY`: é a mesma matriz.
+
+  `transform-origin` na base é o que faz parecer que o bloco está apoiado e
+  levantando, em vez de girando no ar pelo meio.
+*/
 .reveal-ready [data-reveal] {
   opacity: 0;
-  transform: translateY(26px);
-  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: perspective(1200px) rotateX(7deg) translateY(30px) scale(0.985);
+  transform-origin: 50% 100%;
+  transition:
+    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: var(--reveal-delay, 0s);
 }
 .reveal-ready [data-reveal].is-visible {
   opacity: 1;
-  transform: none;
+  transform: perspective(1200px) rotateX(0) translateY(0) scale(1);
 }
 
 /*
@@ -474,9 +857,10 @@ html[data-menu="aberto"] [data-flutuante] {
   animation: reveal-entrada 0.9s cubic-bezier(0.22, 1, 0.36, 1) backwards;
   animation-delay: var(--reveal-delay, 0s);
 }
+/* Mesma inclinação da entrada por rolagem, para o topo não destoar do resto. */
 @keyframes reveal-entrada {
-  from { opacity: 0; transform: translateY(26px); }
-  to   { opacity: 1; transform: none; }
+  from { opacity: 0; transform: perspective(1200px) rotateX(7deg) translateY(30px) scale(0.985); }
+  to   { opacity: 1; transform: perspective(1200px) rotateX(0) translateY(0) scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -487,6 +871,21 @@ html[data-menu="aberto"] [data-flutuante] {
     transition: none;
   }
   .mesh-bg { animation: none; }
+  /*
+    A camada Apple inteira sai para quem pediu menos movimento. Não basta o
+    `animation-duration: 0.01ms` do coringa abaixo: as animações amarradas à
+    rolagem não têm duração — o progresso delas vem da posição na tela, então
+    encurtar a duração não as afeta. Precisam ser desligadas pelo nome.
+  */
+  .heroi-recua,
+  .entra-3d,
+  .camada-fundo {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+  .aurora::before { animation: none; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
