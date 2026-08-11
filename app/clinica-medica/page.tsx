@@ -6,6 +6,7 @@ import { FaqAccordion, type FaqItem } from "@/components/ui/FaqAccordion";
 import { CtaSection } from "@/components/ui/CtaSection";
 import { PortraitSection } from "@/components/ui/PortraitSection";
 import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema, serviceSchema } from "@/lib/schema";
+import { FaixaFoto } from "@/components/ui/FaixaFoto";
 
 export const metadata: Metadata = {
   title: "Clínica Médica e Check-up em Goiânia — médico particular",
@@ -152,6 +153,13 @@ export default function ClinicaMedicaPage() {
           <FaqAccordion items={faq} />
         </div>
       </section>
+
+      <FaixaFoto
+        src="/images/dr-jaleco-classico-2.jpg"
+        alt="Dr. José Victor Lisboa Cardoso Gomes"
+        legenda="Um médico de referência, que acompanha ao longo do tempo."
+        altura="media"
+      />
 
       <CtaSection
         title="Comece pelo essencial: uma boa consulta"

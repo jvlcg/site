@@ -7,6 +7,7 @@ import { CtaSection } from "@/components/ui/CtaSection";
 import { PortraitSection } from "@/components/ui/PortraitSection";
 import { MaterialGratuito } from "@/components/ui/MaterialGratuito";
 import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema, serviceSchema } from "@/lib/schema";
+import { FaixaFoto } from "@/components/ui/FaixaFoto";
 
 export const metadata: Metadata = {
   title: "Medicina Esportiva e Performance em Goiânia",
@@ -151,6 +152,13 @@ export default function MedicinaEsportivaPage() {
       <section className="mx-auto mt-24 max-w-4xl px-5 sm:px-8">
         <MaterialGratuito />
       </section>
+
+      <FaixaFoto
+        src="/images/dr-poltrona-perfil.jpg"
+        alt="Dr. José Victor Lisboa Cardoso Gomes"
+        legenda="Voltar a treinar sem repetir a lesão que tirou você do esporte."
+        altura="media"
+      />
 
       <CtaSection
         title="Performance começa com saúde"

@@ -6,6 +6,7 @@ import { FaqAccordion, type FaqItem } from "@/components/ui/FaqAccordion";
 import { CtaSection } from "@/components/ui/CtaSection";
 import { PortraitSection } from "@/components/ui/PortraitSection";
 import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema } from "@/lib/schema";
+import { FaixaFoto } from "@/components/ui/FaixaFoto";
 
 export const metadata: Metadata = {
   title: "Telemedicina — consulta médica online para todo o Brasil",
@@ -148,6 +149,13 @@ export default function TelemedicinaPage() {
           <FaqAccordion items={faq} />
         </div>
       </section>
+
+      <FaixaFoto
+        src="/images/dr-jose-victor-terno.jpg"
+        alt="Dr. José Victor Lisboa Cardoso Gomes"
+        legenda="A mesma consulta, sem a viagem até o consultório."
+        altura="media"
+      />
 
       <CtaSection
         title="Agende sua teleconsulta"
