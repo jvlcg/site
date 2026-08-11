@@ -653,6 +653,34 @@ html[data-menu="aberto"] [data-flutuante] {
       70% de uma tela de rolagem, terminando pouco antes de a próxima seção
       ocupar o espaço.
     */
+    /*
+      ---------- O recuo só vale onde o herói CABE numa tela ----------
+
+      Em 390 px isto escondia a foto do médico e ninguém conseguia vê-la.
+      Medido na home, em tela de 780 px:
+
+        altura do herói           1319 px  (não cabe na tela)
+        a foto começa em          y = 980  (abaixo da dobra)
+        o sumiço termina em       rolagem 600
+        onde a foto estaria ali   meio da tela — e já invisível
+
+      Ou seja: no celular a foto só entrava em cena **depois** de o herói ter
+      desaparecido. O gesto que no computador lê como "a câmera se afastou"
+      virava, no celular, conteúdo apagado antes de ser visto.
+
+      A causa é de layout, não de animação: no computador o herói é uma grade
+      de duas colunas que cabe numa tela, e recuar a peça inteira faz sentido
+      porque a pessoa já viu tudo. No celular ele vira uma coluna empilhada
+      mais alta que a tela, e recuá-la apaga justamente o que ainda não foi
+      lido.
+
+      Por isso o corte é por **largura** e não por tipo de ponteiro: o que
+      decide é a grade virar duas colunas, e é em 1024 px que isso acontece.
+
+      As animações de fundo continuam rodando no celular — elas não escondem
+      nada.
+    */
+    @media (min-width: 1024px) {
     .heroi-recua {
       animation: heroi-recuo linear both;
       /*
@@ -700,6 +728,7 @@ html[data-menu="aberto"] [data-flutuante] {
         transform: scale(0.94) translateY(-14px);
         opacity: 0;
       }
+    }
     }
 
     /*
