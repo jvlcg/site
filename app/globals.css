@@ -890,11 +890,21 @@ html[data-menu="aberto"] [data-flutuante] {
       animation: palavra-acende linear both;
       animation-timeline: view();
       /*
-        Cada palavra começa 1,1% de rolagem depois da anterior e leva 24% para
-        acender. A soma das duas coisas é o que faz a onda atravessar a frase
-        em vez de todas piscarem juntas.
+        `cover`, e não `entry` — a diferença decide se o efeito existe.
+
+        `entry` mede só o trecho em que o elemento está ENTRANDO na tela. Para
+        um parágrafo de duas linhas isso são uns 60 px de rolagem: os 8% a 50%
+        do escalonamento cabiam em ~25 px, e as dezesseis palavras acendiam
+        praticamente juntas. Medido varrendo posições de rolagem: entre 0,98 e
+        0,94 da altura da tela, o parágrafo passava de 0 palavras acesas para
+        16. Não era um efeito, era um piscar.
+
+        `cover` cobre a travessia inteira — de começar a entrar até terminar de
+        sair —, o que dá altura da tela mais altura do elemento, perto de
+        960 px. Aí os mesmos percentuais viram distância de rolagem de verdade
+        e a onda atravessa a frase no ritmo da leitura.
       */
-      animation-range: entry calc(8% + var(--i) * 1.1%) entry calc(32% + var(--i) * 1.1%);
+      animation-range: cover calc(6% + var(--i) * 1.6%) cover calc(26% + var(--i) * 1.6%);
     }
     @keyframes palavra-acende {
       to { opacity: 1; }
