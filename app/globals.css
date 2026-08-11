@@ -346,10 +346,29 @@ html[data-menu="aberto"] [data-flutuante] {
 /*
   ---------- Uma cor por página, no menu do topo ----------
 
-  Cada item do menu ganha a cor do assunto da página: verde para cannabis,
-  laranja para esportiva, azul para telemedicina, e assim por diante. Serve
-  para o olho achar o destino antes de ler a palavra — em doze itens, isso é
-  a diferença entre varrer a barra e reconhecê-la.
+  Cada item do menu ganha a cor do assunto da página. Serve para o olho achar
+  o destino antes de ler a palavra — em onze itens, isso é a diferença entre
+  varrer a barra e reconhecê-la.
+
+  ## As cores saem da identidade do site, não de uma caixa de lápis
+
+  A primeira versão disto usava índigo, laranja, rosa e roxo: onze cores
+  bonitas e sem nenhuma relação com o site. Ficava um arco-íris colado num
+  cabeçalho cuja marca é esmeralda e teal — chamava atenção para si em vez de
+  ajudar a navegar.
+
+  Agora as onze saem de uma **rampa única** que atravessa a família da marca,
+  do dourado (o `--color-gold`) ao azul-petróleo, passando pelo esmeralda e
+  pelo teal — que são exatamente os dois pontos do gradiente da identidade
+  (`--grad-a`, `--grad-b`). Duas delas caem em cima de cores que o site já
+  usava: Contato é o `--accent`, Clínica Médica é o teal do gradiente.
+
+  A rampa é construída em **OKLCH com claridade e croma fixos**, variando só o
+  matiz. Isso importa: em OKLCH a claridade é perceptual, então as onze cores
+  têm o mesmo peso visual e contraste parecido. Em HSL não seria assim — um
+  amarelo e um azul com a mesma "claridade" pesam muito diferente aos olhos e
+  na medição. Matizes espaçados de 17° a 20°, o bastante para distinguir sem
+  que a barra vire listra.
 
   **Os dois tons de cada cor não são decoração: são o que mantém o texto
   legível.** Uma cor escolhida sobre o fundo claro fica ilegível sobre o
@@ -370,18 +389,18 @@ html[data-menu="aberto"] [data-flutuante] {
 
   Duas mudanças resolveram, e nenhuma sozinha bastava:
 
-    1. paleta do tema claro um degrau mais escura (700 → 800);
+    1. paleta do tema claro mais escura (a claridade fixa da rampa, L = 0,45);
     2. barra um pouco mais opaca (claro 0,80 → 0,88; escuro 0,72 → 0,82).
 
-  Só escurecer a paleta exigiria descer a 900, onde as onze cores viram quase
-  preto e o efeito inteiro se perde. Só opacar a barra exigiria 1,00 no tema
-  claro, o que mata o vidro. O meio-termo guarda os dois.
+  Só escurecer a paleta apagaria as onze cores até virarem quase preto. Só
+  opacar a barra exigiria 1,00 no tema claro, o que mata o vidro. O meio-termo
+  guarda os dois.
 
   Medido — as 22 combinações (11 cores × 2 temas), no pior fundo possível
   (barra sobre preto no claro, sobre branco no escuro):
 
-    claro    4,92 a 7,44:1   (pior: Consultório)
-    escuro   5,13 a 8,05:1   (pior: Esportiva)
+    claro    4,84 a 5,53:1   (pior: Clínica Médica)
+    escuro   7,06 a 8,01:1   (pior: Poemas)
 
   Todas acima do mínimo de 4,5:1 que a norma pede para texto pequeno — e este
   é pequeno: 0,78 rem.
@@ -391,30 +410,30 @@ html[data-menu="aberto"] [data-flutuante] {
   costuma reprovar.
 */
 :root {
-  --nav-sobre: #3730a3;
-  --nav-cannabis: #166534;
-  --nav-clinica: #115e59;
-  --nav-esportiva: #9a3412;
-  --nav-telemedicina: #1e40af;
-  --nav-consultorio: #854d0e;
-  --nav-cursos: #6b21a8;
-  --nav-blog: #155e75;
-  --nav-faq: #334155;
-  --nav-poemas: #9d174d;
-  --nav-contato: #065f46;
+  --nav-poemas: #7f4400;
+  --nav-sobre: #734d00;
+  --nav-consultorio: #645500;
+  --nav-esportiva: #4b5e00;
+  --nav-cannabis: #26652b;
+  --nav-contato: #006743;
+  --nav-clinica: #006858;
+  --nav-cursos: #00666b;
+  --nav-blog: #00637b;
+  --nav-telemedicina: #005e88;
+  --nav-faq: #1f5790;
 }
 .dark {
-  --nav-sobre: #a5b4fc;
-  --nav-cannabis: #4ade80;
-  --nav-clinica: #5eead4;
-  --nav-esportiva: #fb923c;
-  --nav-telemedicina: #93c5fd;
-  --nav-consultorio: #fcd34d;
-  --nav-cursos: #d8b4fe;
-  --nav-blog: #67e8f9;
-  --nav-faq: #cbd5e1;
-  --nav-poemas: #f9a8d4;
-  --nav-contato: #34d399;
+  --nav-poemas: #ffbd73;
+  --nav-sobre: #fbc865;
+  --nav-consultorio: #e5d367;
+  --nav-esportiva: #c3df7b;
+  --nav-cannabis: #99e89b;
+  --nav-contato: #77ecb8;
+  --nav-clinica: #5aedd4;
+  --nav-cursos: #49ebf0;
+  --nav-blog: #52e6ff;
+  --nav-telemedicina: #6edfff;
+  --nav-faq: #90d6ff;
 }
 
 /* ---------- Route transition (template.tsx) ---------- */
