@@ -1100,10 +1100,29 @@ html[data-menu="aberto"] [data-flutuante] {
   to   { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
 }
 
-/* Mesmo motivo do resto da camada: em tela de toque, tudo parado. */
-@media (pointer: coarse) {
-  .aurora[data-fundo]::before { animation: none; }
-}
+/*
+  ---------- No celular elas CONTINUAM rodando ----------
+
+  Eu as tinha desligado em `pointer: coarse`, junto com o `.mesh-bg`. Era
+  errado, e o motivo do erro vale registrar: copiei a regra do mesh sem
+  reavaliar se ela ainda se aplicava.
+
+  O mesh é desligado no celular porque tem `filter: blur(80px)` numa camada do
+  tamanho da tela — o navegador precisa rasterizar o borrão a cada quadro, e
+  isso é caro em qualquer aparelho. **A aurora perdeu o desfoque** quando esta
+  camada foi otimizada (ver o comentário do `.aurora`): hoje ela é um degradê
+  sem filtro que anima só `transform`, e `transform` a GPU compõe sem repintar
+  e sem tocar na thread principal.
+
+  Ou seja: a razão que justificava desligar o mesh nunca se aplicou à aurora
+  depois da otimização. O que restou foi um celular sem nenhuma das onze
+  animações — justamente onde está a maior parte das visitas.
+
+  Medido depois de religar: o Lighthouse de celular não se mexeu.
+
+  `prefers-reduced-motion` continua desligando tudo, e esse sim é um pedido
+  explícito de quem está usando o site.
+*/
 @media (prefers-reduced-motion: reduce) {
   .aurora[data-fundo]::before { animation: none; }
 }
