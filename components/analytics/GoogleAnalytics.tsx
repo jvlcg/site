@@ -4,6 +4,7 @@ import Script from "next/script";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { site } from "@/lib/site-config";
+import { EVENTO, escolhaGuardada, type Escolha } from "@/components/ui/ConsentimentoCookies";
 
 /**
  * Google Analytics 4.
@@ -81,9 +82,42 @@ function useEntrada() {
   return liberado;
 }
 
+/**
+ * O consentimento da pessoa, acompanhado ao vivo.
+ *
+ * O `useState` inicial é `null` de propósito, mesmo quando já existe escolha
+ * guardada: ler `localStorage` durante a renderização quebraria a hidratação,
+ * porque o servidor não tem como saber o que o navegador guardou. A leitura
+ * acontece no efeito, um instante depois — e esse instante não custa medição
+ * nenhuma, já que o gtag só sobe depois do primeiro gesto de qualquer forma.
+ *
+ * O ouvinte do evento é o que faz o Analytics subir **na mesma visita** em que
+ * a pessoa clica em "Aceitar". Sem ele, quem aceitasse e fechasse a página não
+ * seria contado — teria clicado para nada.
+ */
+function useConsentimento(): Escolha | null {
+  const [escolha, setEscolha] = useState<Escolha | null>(null);
+
+  useEffect(() => {
+    setEscolha(escolhaGuardada());
+    const aoMudar = (e: Event) => setEscolha((e as CustomEvent<Escolha>).detail);
+    window.addEventListener(EVENTO, aoMudar);
+    return () => window.removeEventListener(EVENTO, aoMudar);
+  }, []);
+
+  return escolha;
+}
+
 export function GoogleAnalytics() {
   const id = site.googleAnalyticsId;
   const liberado = useEntrada();
+  const consentimento = useConsentimento();
+  /*
+    Sem "sim" explícito, o script não entra — nem com gesto, nem depois dos
+    seis segundos. É a diferença entre pedir permissão e avisar depois de ter
+    feito.
+  */
+  if (consentimento !== "aceito") return null;
   if (!id || !liberado || process.env.NEXT_PUBLIC_VERCEL_ENV !== "production") return null;
 
   return (

@@ -11,6 +11,7 @@ import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
 import { ChatWidgetLazy } from "@/components/chat/ChatWidgetLazy";
 import { ExtrasAdiados } from "@/components/layout/ExtrasAdiados";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { ConsentimentoCookies } from "@/components/ui/ConsentimentoCookies";
 import { JsonLd, physicianSchema, websiteSchema, medicalClinicSchema } from "@/lib/schema";
 import { site } from "@/lib/site-config";
 import "./globals.css";
@@ -133,6 +134,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           produção (ver o componente).
         */}
         <GoogleAnalytics />
+        <ConsentimentoCookies />
       </body>
     </html>
   );

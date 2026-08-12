@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LogoMark } from "./Logo";
 import { navLinks, site, whatsappLink } from "@/lib/site-config";
+import { RevogarConsentimento } from "@/components/ui/RevogarConsentimento";
 
 export function Footer() {
   return (
@@ -194,6 +195,13 @@ export function Footer() {
             <Link href="/politica-de-privacidade" className="hover:text-[var(--accent)]">
               Política de Privacidade
             </Link>
+            {/*
+              Rever a escolha sobre medição. Fica ao lado da política de
+              privacidade porque é onde a pessoa procura quando pensa no
+              assunto — e some enquanto ninguém respondeu, para não competir
+              com o aviso que ainda está na tela.
+            */}
+            <RevogarConsentimento />
             <p>© {new Date().getFullYear()} {site.shortName}. Todos os direitos reservados.</p>
           </div>
         </div>
