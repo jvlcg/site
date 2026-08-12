@@ -589,6 +589,13 @@ html[data-menu="aberto"] [data-flutuante] {
   overflow: hidden;
   /* `contain` impede que esta camada force recálculo do resto da página */
   contain: strict;
+  /*
+    Espelhamento por página, quando há semente. Vale mais do que parece: além
+    de trocar a composição de lado, inverte o **sentido** de todo movimento
+    horizontal — o mesmo `@keyframes` passa a andar para o outro lado. Padrão
+    `1`, então nada muda onde não há semente.
+  */
+  transform: scaleX(var(--fundo-espelho, 1));
 }
 /*
   UMA camada, e sem `filter: blur()`.
@@ -611,10 +618,19 @@ html[data-menu="aberto"] [data-flutuante] {
   content: "";
   position: absolute;
   inset: 0;
+  /*
+    As posições das três manchas saem de variáveis, com os valores originais
+    como padrão. Só as páginas que passam uma semente (artigo, poema, aula,
+    curso — ver `variacaoDoFundo`) as sobrescrevem; as outras dezessete
+    continuam idênticas ao que eram.
+
+    Mudar a posição de um degradê não custa quadro nenhum: ele é pintado uma
+    vez, e quem anima continua sendo o `transform`.
+  */
   background:
-    radial-gradient(38% 42% at 18% 30%, color-mix(in oklab, var(--accent) 34%, transparent), transparent 72%),
-    radial-gradient(34% 38% at 76% 22%, color-mix(in oklab, var(--color-teal-flow) 30%, transparent), transparent 70%),
-    radial-gradient(40% 36% at 62% 78%, color-mix(in oklab, var(--color-gold) 22%, transparent), transparent 74%);
+    radial-gradient(38% 42% at var(--fundo-g1x, 18%) var(--fundo-g1y, 30%), color-mix(in oklab, var(--accent) 34%, transparent), transparent 72%),
+    radial-gradient(34% 38% at var(--fundo-g2x, 76%) var(--fundo-g2y, 22%), color-mix(in oklab, var(--color-teal-flow) 30%, transparent), transparent 70%),
+    radial-gradient(40% 36% at var(--fundo-g3x, 62%) var(--fundo-g3y, 78%), color-mix(in oklab, var(--color-gold) 22%, transparent), transparent 74%);
   will-change: transform;
   animation: aurora-deriva 40s ease-in-out infinite alternate;
 }
@@ -1163,10 +1179,29 @@ html[data-menu="aberto"] [data-flutuante] {
 .aurora[data-fundo="constelacao"]::before { animation: fundo-constelacao 19s linear infinite; }
 .aurora[data-fundo="semear"]::before      { animation: fundo-semear 14s ease-in-out infinite alternate; }
 .aurora[data-fundo="acolhe"]::before      { animation: fundo-acolhe 10s ease-in-out infinite alternate; }
-.aurora[data-fundo="trilha"]::before      { animation: fundo-trilha 17s linear infinite; }
-.aurora[data-fundo="foco"]::before        { animation: fundo-foco 8s ease-in-out infinite alternate; }
-.aurora[data-fundo="leitura"]::before     { animation: fundo-leitura 20s ease-in-out infinite alternate; }
-.aurora[data-fundo="verso"]::before       { animation: fundo-verso 12s ease-in-out infinite alternate; }
+/*
+  As quatro famílias abaixo cobrem muitos endereços cada — dezesseis artigos,
+  vinte poemas, dezoito aulas, os cursos. Por isso só elas leem `--fundo-dur` e
+  `--fundo-fase`: a duração e o ponto de partida mudam por página, e nenhum
+  artigo abre no mesmo quadro que o vizinho. Sem semente, caem no padrão e
+  ficam como estavam. Ver `variacaoDoFundo` em `lib/fundos.ts`.
+*/
+.aurora[data-fundo="trilha"]::before {
+  animation: fundo-trilha var(--fundo-dur, 17s) linear infinite;
+  animation-delay: var(--fundo-fase, 0s);
+}
+.aurora[data-fundo="foco"]::before {
+  animation: fundo-foco var(--fundo-dur, 8s) ease-in-out infinite alternate;
+  animation-delay: var(--fundo-fase, 0s);
+}
+.aurora[data-fundo="leitura"]::before {
+  animation: fundo-leitura var(--fundo-dur, 20s) ease-in-out infinite alternate;
+  animation-delay: var(--fundo-fase, 0s);
+}
+.aurora[data-fundo="verso"]::before {
+  animation: fundo-verso var(--fundo-dur, 12s) ease-in-out infinite alternate;
+  animation-delay: var(--fundo-fase, 0s);
+}
 .aurora[data-fundo="malha"]::before       { animation: fundo-malha 22s linear infinite; }
 /*
   O décimo. `/artigos` (produção científica) e `/blog` estavam os dois em

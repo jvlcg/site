@@ -127,11 +127,25 @@ async function rotasDinamicas(page) {
   return [artigo, poema, curso, aula].filter(Boolean);
 }
 
+/** Todos os endereços de uma família, tirados da própria listagem. */
+async function todosOsEnderecos(page, lista, prefixo) {
+  await page.goto(`${BASE}${lista}`, { waitUntil: "domcontentloaded" });
+  const hrefs = await page.$$eval(
+    `a[href^="${prefixo}"]`,
+    (as) => as.map((a) => new URL(a.href).pathname)
+  );
+  return [...new Set(hrefs)].filter((h) => h !== lista && h.startsWith(prefixo));
+}
+
 /**
  * O que é observável de fora, para uma rota.
  *
  * `animationPlayState` vem do objeto `Animation`, não do CSS calculado — é a
  * diferença entre "o navegador conhece a regra" e "o pixel está se mexendo".
+ *
+ * A `impressao` é a identidade visível daquele fundo: o movimento em si mais a
+ * variação da página (duração, fase, espelho, onde nascem as manchas). Duas
+ * páginas com a mesma impressão são, para quem olha, a mesma página.
  */
 async function medir(page, rota) {
   await page.goto(`${BASE}${rota}`, { waitUntil: "domcontentloaded" });
@@ -139,10 +153,24 @@ async function medir(page, rota) {
 
   return page.evaluate(() => {
     const aurora = document.querySelector(".aurora[data-fundo]");
-    if (!aurora) return { fundo: null, animacoes: [] };
+    if (!aurora) return { fundo: null, animacoes: [], impressao: null };
+
+    const cs = getComputedStyle(aurora);
+    const antes = getComputedStyle(aurora, "::before");
+    const variaveis = [
+      "--fundo-dur", "--fundo-fase", "--fundo-espelho",
+      "--fundo-g1x", "--fundo-g1y", "--fundo-g2x",
+      "--fundo-g2y", "--fundo-g3x", "--fundo-g3y",
+    ].map((v) => cs.getPropertyValue(v).trim());
 
     return {
       fundo: aurora.getAttribute("data-fundo"),
+      impressao: [
+        aurora.getAttribute("data-fundo"),
+        antes.animationDuration,
+        antes.animationDelay,
+        ...variaveis,
+      ].join("|"),
       animacoes: aurora.getAnimations({ subtree: true }).map((a) => ({
         nome: a.animationName ?? null,
         estado: a.playState,
@@ -284,6 +312,65 @@ try {
   });
 
   console.log(`\n${vistos.size} fundos distintos em ${rotas.length} tipos de página.`);
+
+  /*
+    ---------- Dentro de cada família ----------
+
+    A conferência acima trata "artigo" como uma página só, porque os dezesseis
+    artigos saem do mesmo arquivo. Do lado de fora não é uma página só: são
+    dezesseis endereços, e por um tempo os dezesseis tiveram o mesmo fundo —
+    quem lesse dois seguidos via a mesma coisa duas vezes. Foi exatamente essa
+    a queixa, e o molde idêntico é o que a esconde de quem confere pelo código.
+
+    Aqui cada endereço é aberto de verdade e a impressão é comparada com a das
+    irmãs. É a única passagem que enxerga esse tipo de repetição.
+  */
+  console.log("\nDentro de cada família:");
+  await comAba(navegador, { viewport: { width: 1440, height: 900 } }, async (page) => {
+    const cursos = await todosOsEnderecos(page, "/cursos", "/cursos/");
+
+    /*
+      As aulas não aparecem na listagem de cursos — estão um nível abaixo, uma
+      lista dentro de cada curso. Se a família fosse montada só a partir de
+      `/cursos`, as dezoito aulas ficariam de fora da conferência, que é
+      justamente onde a repetição se esconde melhor: são as páginas mais
+      numerosas e as menos visitadas por quem revisa.
+    */
+    const aulas = [];
+    for (const curso of cursos) {
+      aulas.push(...(await todosOsEnderecos(page, curso, `${curso}/`)));
+    }
+
+    const familias = [
+      ["artigos", await todosOsEnderecos(page, "/blog", "/blog/")],
+      ["poemas", await todosOsEnderecos(page, "/poemas", "/poemas/")],
+      ["cursos", cursos],
+      ["aulas", [...new Set(aulas)]],
+    ];
+
+    for (const [nome, enderecos] of familias) {
+      const impressoes = new Map();
+
+      for (const endereco of enderecos) {
+        const { impressao } = await medir(page, endereco);
+        if (!impressao) {
+          problemas.push(`${endereco} — sem fundo nenhum`);
+          continue;
+        }
+        if (impressoes.has(impressao)) {
+          problemas.push(
+            `${endereco} — fundo idêntico ao de ${impressoes.get(impressao)}`
+          );
+        } else {
+          impressoes.set(impressao, endereco);
+        }
+      }
+
+      console.log(
+        `  ${nome.padEnd(8)} ${String(impressoes.size).padStart(2)}/${enderecos.length} distintos`
+      );
+    }
+  });
 
   /*
     ---------- E de novo no celular ----------
