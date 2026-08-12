@@ -32,29 +32,41 @@
  * reconhece é o outro.
  */
 
-/** Termos por categoria. Sem acento e em minúsculas — ver `normalizar`. */
+/**
+ * Termos por categoria, **escritos como se lê**.
+ *
+ * A primeira versão os guardava já sem acento, porque é assim que eles são
+ * comparados. Funcionava para classificar e estragava as tags: saíam
+ * "dor cronica" e "prevencao" no `og:tags`, que é texto que uma pessoa lê.
+ * Agora a normalização acontece na comparação, e a forma escrita fica intacta.
+ */
 const TERMOS = {
   "Cannabis medicinal": [
-    "canabidiol", "cbd", "cannabis", "canabinoide", "canabinoides",
-    "endocanabinoide", "thc", "anvisa",
+    "canabidiol", "CBD", "cannabis", "canabinoide", "canabinoides",
+    "sistema endocanabinoide", "THC", "Anvisa",
   ],
   Telemedicina: [
     "telemedicina", "teleconsulta", "consulta online", "atendimento online",
-    "receita digital", "prescricao digital", "videochamada",
+    "receita digital", "prescrição digital", "videochamada",
   ],
+  /*
+    "noites" saiu daqui. É palavra comum em texto corrido — aparecia em artigo
+    de check-up e de telemedicina, e entrava nas tags deles como se fossem
+    sobre sono.
+  */
   Sono: [
-    "insonia", "sono", "dormir", "noites", "sonolencia", "higiene do sono",
+    "insônia", "sono", "dormir", "sonolência", "higiene do sono",
   ],
   "Check-up e prevenção": [
-    "check-up", "checkup", "rastreamento", "prevencao", "exames de rotina",
+    "check-up", "checkup", "rastreamento", "prevenção", "exames de rotina",
     "medicina preventiva",
   ],
   "Medicina esportiva": [
-    "medicina esportiva", "treino", "treinar", "exercicio", "lesao",
+    "medicina esportiva", "treino", "treinar", "exercício", "lesão",
     "atleta", "performance", "retorno ao esporte",
   ],
   "Dor crônica": [
-    "dor cronica", "fibromialgia", "dor persistente", "analgesia",
+    "dor crônica", "fibromialgia", "dor persistente", "analgesia",
     "tratamento da dor",
   ],
   /*
@@ -70,8 +82,8 @@ const TERMOS = {
     também disputar o sinal dos outros, deixa de ser reserva e vira ímã.
   */
   "Clínica médica": [
-    "clinica medica", "medico particular", "clinico geral",
-    "medicina interna", "cuidado continuo",
+    "clínica médica", "médico particular", "clínico geral",
+    "medicina interna", "cuidado contínuo",
   ],
 };
 
@@ -93,7 +105,7 @@ function contar(texto, termo) {
     "sonoridade" e "cbd" dentro de qualquer sigla. Os termos podem ter espaço
     e hífen, então a fronteira é escrita à mão em vez de `\b`.
   */
-  const escapado = termo.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const escapado = normalizar(termo).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const re = new RegExp(`(^|[^a-z0-9])${escapado}([^a-z0-9]|$)`, "g");
   return (texto.match(re) ?? []).length;
 }
@@ -123,4 +135,45 @@ export function classificar(titulo, corpo = "") {
   }
 
   return melhor;
+}
+
+/**
+ * Os assuntos que o artigo realmente menciona, para o `tags:` do frontmatter.
+ *
+ * ## Por que derivadas, e não escritas
+ *
+ * Eu as escrevi à mão uma vez, nos dezesseis artigos. O `sync-soro` rodou
+ * sozinho na madrugada seguinte e devolveu `tags: []` a onze deles — e estava
+ * certo: aqueles arquivos são propriedade do robô, é o que a marca
+ * `origem: soro` significa. Anotação à mão em arquivo de máquina dura até a
+ * próxima execução.
+ *
+ * Derivadas do mesmo vocabulário que decide a categoria, elas sobrevivem.
+ *
+ * Só entram termos que **aparecem com alguma insistência**, e no máximo quatro.
+ * Sem o piso, uma menção de passagem virava tag: "sono" entrava em quase todo
+ * artigo porque quase todo texto de médico cita sono uma vez. Uma lista de tudo
+ * que o artigo tangencia não descreve artigo nenhum.
+ *
+ * @param {string} titulo
+ * @param {string} corpo
+ * @returns {string[]}
+ */
+export function tagsDe(titulo, corpo = "") {
+  const t = normalizar(titulo);
+  const c = normalizar(corpo);
+
+  const achados = [];
+  for (const termos of Object.values(TERMOS)) {
+    for (const termo of termos) {
+      const peso = contar(t, termo) * 5 + contar(c, termo);
+      if (peso > 0) achados.push({ termo, peso });
+    }
+  }
+
+  return achados
+    .filter((a) => a.peso >= 3)
+    .sort((a, b) => b.peso - a.peso)
+    .slice(0, 4)
+    .map((a) => a.termo);
 }

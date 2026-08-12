@@ -16,7 +16,7 @@ import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import TurndownService from "turndown";
-import { classificar } from "./categorias.mjs";
+import { classificar, tagsDe } from "./categorias.mjs";
 
 const TOKEN = process.env.SORO_EMBED_TOKEN ?? "85ab1693-799e-4f7e-8017-4b1ea52c3567";
 const API = "https://app.trysoro.com";
@@ -102,7 +102,7 @@ function montarMdx(artigo, markdown, imagemLocal) {
     `description: "${yaml(artigo.excerpt)}"`,
     `date: "${data}"`,
     `category: "${yaml(classificar(artigo.title ?? "", markdown))}"`,
-    "tags: []",
+    `tags: [${tagsDe(artigo.title ?? "", markdown).map((t) => `"${yaml(t)}"`).join(", ")}]`,
     "faq: []",
     imagemLocal ? `image: "${imagemLocal}"` : null,
     "# Gerado por scripts/sync-soro.mjs — edições manuais são sobrescritas.",
