@@ -73,6 +73,7 @@ export default function TelemedicinaPage() {
     <>
       <PageHero
         fundo="varredura"
+        semente="/telemedicina"
         eyebrow="Telemedicina"
         title={
           <>

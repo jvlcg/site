@@ -40,6 +40,7 @@ export default function CadastroPage() {
     <>
       <PageHero
         fundo="acolhe"
+        semente="/cadastro"
         eyebrow="Cadastro"
         title={
           <>

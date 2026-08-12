@@ -624,13 +624,24 @@ html[data-menu="aberto"] [data-flutuante] {
     curso — ver `variacaoDoFundo`) as sobrescrevem; as outras dezessete
     continuam idênticas ao que eram.
 
-    Mudar a posição de um degradê não custa quadro nenhum: ele é pintado uma
-    vez, e quem anima continua sendo o `transform`.
+    Posição, **tamanho e força** de cada mancha saem de variáveis.
+
+    Só a posição não bastava. Capturei o fundo de oito páginas principais lado
+    a lado e as duas primeiras eram praticamente a mesma imagem: mancha
+    esverdeada no canto superior esquerdo, sumindo para a direita. Só o
+    movimento mudava — e movimento de vinte segundos não se percebe em quem
+    chega, olha e rola a página.
+
+    O que a pessoa vê ao trocar de página é a **composição**: onde estão as
+    manchas, que tamanho têm e qual cor domina. É isso que varia agora.
+
+    Nada disso custa quadro: degradê é pintado uma vez, e quem anima continua
+    sendo o `transform`.
   */
   background:
-    radial-gradient(38% 42% at var(--fundo-g1x, 18%) var(--fundo-g1y, 30%), color-mix(in oklab, var(--accent) 34%, transparent), transparent 72%),
-    radial-gradient(34% 38% at var(--fundo-g2x, 76%) var(--fundo-g2y, 22%), color-mix(in oklab, var(--color-teal-flow) 30%, transparent), transparent 70%),
-    radial-gradient(40% 36% at var(--fundo-g3x, 62%) var(--fundo-g3y, 78%), color-mix(in oklab, var(--color-gold) 22%, transparent), transparent 74%);
+    radial-gradient(var(--fundo-r1, 38%) var(--fundo-r1v, 42%) at var(--fundo-g1x, 18%) var(--fundo-g1y, 30%), color-mix(in oklab, var(--accent) var(--fundo-f1, 34%), transparent), transparent 72%),
+    radial-gradient(var(--fundo-r2, 34%) var(--fundo-r2v, 38%) at var(--fundo-g2x, 76%) var(--fundo-g2y, 22%), color-mix(in oklab, var(--color-teal-flow) var(--fundo-f2, 30%), transparent), transparent 70%),
+    radial-gradient(var(--fundo-r3, 40%) var(--fundo-r3v, 36%) at var(--fundo-g3x, 62%) var(--fundo-g3y, 78%), color-mix(in oklab, var(--color-gold) var(--fundo-f3, 22%), transparent), transparent 74%);
   will-change: transform;
   animation: aurora-deriva 40s ease-in-out infinite alternate;
 }
@@ -1017,14 +1028,49 @@ html[data-menu="aberto"] [data-flutuante] {
   `-webkit-text-stroke` em vez de preenchimento: contorno pesa menos na
   composição visual e não compete com o texto que está por cima.
 */
+/*
+  O número de ordem do cartão.
+
+  Era `color: transparent` com contorno a 14% — dava algo perto de 1,4:1, e o
+  resultado na tela é um número que quase não existe. Ornamento discreto é uma
+  coisa; ornamento que a pessoa não consegue ler é defeito, porque ela vê que
+  há **algo** ali e não consegue decifrar.
+
+  Agora são três camadas somadas: um preenchimento tênue que dá corpo à forma,
+  um contorno mais firme que a define, e espessura maior. Continua sendo fundo
+  — não disputa com o título logo abaixo —, mas agora se lê de relance.
+
+  `pointer-events: none` e `user-select: none` continuam: é numeração, não
+  conteúdo para copiar.
+*/
 .numero-fantasma {
   font-family: var(--font-display);
   font-weight: 700;
   line-height: 0.8;
-  color: transparent;
-  -webkit-text-stroke: 1px color-mix(in oklab, var(--fg) 14%, transparent);
+  color: color-mix(in oklab, var(--fg) 8%, transparent);
+  -webkit-text-stroke: 1.5px color-mix(in oklab, var(--fg) 34%, transparent);
   user-select: none;
   pointer-events: none;
+}
+/*
+  No escuro, traço claro sobre fundo escuro rende mais que o inverso: a mesma
+  porcentagem que fica discreta no claro fica berrante aqui. Daí os valores
+  menores.
+
+  Os dois blocos são necessários: o `data-theme` cobre quem escolheu o tema no
+  site, e a consulta de mídia cobre quem não escolheu nada e está no escuro do
+  sistema — que é a maioria. Só um dos dois deixaria metade das pessoas de
+  fora.
+*/
+:root[data-theme="dark"] .numero-fantasma {
+  color: color-mix(in oklab, var(--fg) 6%, transparent);
+  -webkit-text-stroke-color: color-mix(in oklab, var(--fg) 26%, transparent);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .numero-fantasma {
+    color: color-mix(in oklab, var(--fg) 6%, transparent);
+    -webkit-text-stroke-color: color-mix(in oklab, var(--fg) 26%, transparent);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

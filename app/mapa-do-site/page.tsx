@@ -28,6 +28,7 @@ export default function MapaDoSitePage() {
     <>
       <PageHero
         fundo="malha"
+        semente="/mapa-do-site"
         eyebrow="Navegação"
         title={
           <>

@@ -82,6 +82,7 @@ export default function ArtigosCientificosPage() {
     <>
       <PageHero
         fundo="acervo"
+        semente="/artigos"
         eyebrow="Produção científica"
         title={
           <>

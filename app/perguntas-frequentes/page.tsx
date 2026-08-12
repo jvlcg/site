@@ -79,6 +79,7 @@ export default function PerguntasFrequentesPage() {
     <>
       <PageHero
         fundo="pendulo"
+        semente="/perguntas-frequentes"
         eyebrow="Dúvidas"
         title={
           <>

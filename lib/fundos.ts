@@ -92,9 +92,50 @@ function embaralhar(semente: string) {
   };
 }
 
+/**
+ * As páginas de menu, na ordem em que são distribuídas.
+ *
+ * ## Por que uma lista, e não sorteio
+ *
+ * Sorteio colide. Semeadas ao acaso, `/` e `/contato` saíram com a mancha
+ * quase no mesmo lugar e na mesma cor — capturei as duas lado a lado e são
+ * parecidas o bastante para parecerem a mesma página, que é exatamente a
+ * queixa que originou este trabalho. Com dezessete páginas e três cores, a
+ * chance de duas caírem perto é alta.
+ *
+ * Estar nesta lista faz a página receber uma fatia **reservada** do círculo:
+ * a mancha principal nasce num ângulo próprio e a cor dominante gira a cada
+ * página. Nenhuma vizinha na navegação repete a outra.
+ *
+ * Artigo, poema e aula continuam no sorteio: são dezenas, ninguém os compara
+ * lado a lado, e o que importa ali é não repetir o vizinho de leitura.
+ */
+const PAGINAS_DISTRIBUIDAS = [
+  "/",
+  "/sobre",
+  "/cannabis-medicinal",
+  "/clinica-medica",
+  "/medicina-esportiva",
+  "/telemedicina",
+  "/consultorio",
+  "/contato",
+  "/perguntas-frequentes",
+  "/blog",
+  "/artigos",
+  "/poemas",
+  "/cursos",
+  "/aplicativos",
+  "/voluntariado",
+  "/cadastro",
+  "/mapa-do-site",
+];
+
 export function variacaoDoFundo(semente: string): VariacaoDeFundo {
   const sorte = embaralhar(semente);
   const entre = (min: number, max: number) => min + sorte() * (max - min);
+
+  const ordem = PAGINAS_DISTRIBUIDAS.indexOf(semente);
+  if (ordem >= 0) return distribuida(ordem, PAGINAS_DISTRIBUIDAS.length, entre);
 
   const duracao = Math.round(entre(12, 27));
 
@@ -116,5 +157,97 @@ export function variacaoDoFundo(semente: string): VariacaoDeFundo {
     "--fundo-g2y": `${Math.round(entre(10, 38))}%`,
     "--fundo-g3x": `${Math.round(entre(44, 76))}%`,
     "--fundo-g3y": `${Math.round(entre(62, 88))}%`,
+
+    /*
+      ---------- E o que faz a diferença ser vista ----------
+
+      Posição sozinha não bastou. Capturei o fundo de oito páginas principais
+      lado a lado: as duas primeiras eram praticamente a mesma imagem — mancha
+      esverdeada em cima à esquerda, sumindo para a direita. Só o movimento
+      mudava, e movimento de vinte segundos não se percebe em quem chega,
+      olha e rola a página.
+
+      O que se vê ao trocar de página é o **tamanho** das manchas e **qual cor
+      domina**. Uma página de mancha grande e dourada não se confunde com uma
+      de mancha pequena e esmeralda, nem que as duas se movam igual.
+
+      As três cores continuam sendo as da marca. O que muda é a proporção
+      entre elas — o site continua o mesmo site, cada página com o seu ar.
+    */
+    "--fundo-r1": `${Math.round(entre(26, 52))}%`,
+    "--fundo-r1v": `${Math.round(entre(30, 56))}%`,
+    "--fundo-r2": `${Math.round(entre(24, 48))}%`,
+    "--fundo-r2v": `${Math.round(entre(26, 50))}%`,
+    "--fundo-r3": `${Math.round(entre(28, 54))}%`,
+    "--fundo-r3v": `${Math.round(entre(24, 48))}%`,
+
+    /*
+      A força de cada cor. As faixas se sobrepõem de propósito: às vezes o
+      dourado vence o esmeralda, às vezes some. O piso de 12% evita a página
+      onde as três somem e o fundo vira papel branco.
+    */
+    "--fundo-f1": `${Math.round(entre(18, 46))}%`,
+    "--fundo-f2": `${Math.round(entre(14, 42))}%`,
+    "--fundo-f3": `${Math.round(entre(12, 38))}%`,
+  };
+}
+
+/**
+ * A variação de uma página de menu — repartida, não sorteada.
+ *
+ * A mancha principal percorre um círculo: a página `i` de `total` nasce no
+ * ângulo `i/total` de uma volta, num raio que a mantém dentro da tela. Assim
+ * duas páginas quaisquer estão separadas por pelo menos uma fatia, e páginas
+ * vizinhas no menu ficam em lados opostos.
+ *
+ * A cor dominante gira de três em três, então nem a fatia vizinha repete o
+ * tom. As três cores continuam sendo as da marca — muda a proporção.
+ */
+function distribuida(
+  i: number,
+  total: number,
+  entre: (min: number, max: number) => number
+): VariacaoDeFundo {
+  const volta = (i / total) * Math.PI * 2;
+
+  /* centro da tela, com raio de 30% — a mancha some pela borda se passar disso */
+  const x = Math.round(50 + Math.cos(volta) * 30);
+  const y = Math.round(38 + Math.sin(volta) * 24);
+
+  /* as outras duas seguem a principal, defasadas — a composição gira junto */
+  const x2 = Math.round(50 + Math.cos(volta + 2.1) * 28);
+  const y2 = Math.round(34 + Math.sin(volta + 2.1) * 20);
+  const x3 = Math.round(50 + Math.cos(volta + 4.2) * 26);
+  const y3 = Math.round(60 + Math.sin(volta + 4.2) * 22);
+
+  /* qual das três cores manda nesta página */
+  const dominante = i % 3;
+  const forca = (n: number) => (n === dominante ? 46 : n === (dominante + 1) % 3 ? 24 : 14);
+
+  const duracao = Math.round(entre(11, 22));
+
+  return {
+    "--fundo-dur": `${duracao}s`,
+    "--fundo-fase": `-${Math.round(entre(0, duracao))}s`,
+    "--fundo-espelho": i % 2 === 0 ? "1" : "-1",
+
+    "--fundo-g1x": `${x}%`,
+    "--fundo-g1y": `${y}%`,
+    "--fundo-g2x": `${x2}%`,
+    "--fundo-g2y": `${y2}%`,
+    "--fundo-g3x": `${x3}%`,
+    "--fundo-g3y": `${y3}%`,
+
+    /* a dominante também é a maior: cor e tamanho apontam para o mesmo lado */
+    "--fundo-r1": `${dominante === 0 ? 52 : 32}%`,
+    "--fundo-r1v": `${dominante === 0 ? 50 : 34}%`,
+    "--fundo-r2": `${dominante === 1 ? 50 : 30}%`,
+    "--fundo-r2v": `${dominante === 1 ? 48 : 32}%`,
+    "--fundo-r3": `${dominante === 2 ? 54 : 34}%`,
+    "--fundo-r3v": `${dominante === 2 ? 46 : 30}%`,
+
+    "--fundo-f1": `${forca(0)}%`,
+    "--fundo-f2": `${forca(1)}%`,
+    "--fundo-f3": `${forca(2)}%`,
   };
 }

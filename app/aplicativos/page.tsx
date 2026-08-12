@@ -87,6 +87,7 @@ export default function AplicativosPage() {
     <>
       <PageHero
         fundo="constelacao"
+        semente="/aplicativos"
         eyebrow="Aplicativos"
         title="Aplicativos"
         lede="O que eu desenvolvi, o que eu indico e o que não tem nada a ver com medicina."

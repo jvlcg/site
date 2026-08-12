@@ -20,6 +20,7 @@ export default function ArtigosPage() {
     <>
       <PageHero
         fundo="ondulacao"
+        semente="/blog"
         eyebrow="Artigos"
         title={
           <>
