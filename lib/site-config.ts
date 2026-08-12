@@ -13,8 +13,21 @@ export const site = {
   brand: "Dr.JV",
   crm: "CRM-GO 38508",
   tagline: "Medicina de precisão, do consultório à telemedicina",
+  /**
+   * A descrição que o Google mostra abaixo do título, na home.
+   *
+   * Sem o nome e o CRM no começo, de propósito. Eles ocupavam trinta e cinco
+   * caracteres de uma frase que o Google corta em cerca de cento e cinquenta —
+   * e são redundantes ali: o título do resultado já termina em "Dr. José
+   * Victor", e o CRM aparece no rodapé de todas as páginas, que é onde a
+   * exigência do CFM se cumpre. O espaço liberado foi para o bairro e para a
+   * abrangência da telemedicina, que são o que a pessoa procura.
+   *
+   * Serve também ao `manifest`, ao `llms.txt` e ao Schema, onde nome e CRM já
+   * são campos próprios.
+   */
   description:
-    "Dr. José Victor Lisboa Cardoso Gomes (CRM-GO 38508) — clínica médica, cannabis medicinal e medicina esportiva em Goiânia-GO, com atendimento presencial e por telemedicina.",
+    "Clínica médica, cannabis medicinal e medicina esportiva em Goiânia-GO. Atendimento presencial no Setor Sul e por telemedicina para todo o Brasil.",
   email: "jvlcg.work@gmail.com",
   /**
    * Chave PIX das doações do conteúdo gratuito.

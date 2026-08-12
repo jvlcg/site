@@ -14,7 +14,8 @@
     "vapid": "node -e \"console.log(require('web-push').generateVAPIDKeys())\"",
     "verificar-links": "node scripts/verificar-links.mjs",
     "verificar-fundos": "node scripts/verificar-fundos.mjs",
-    "verificar-categorias": "node scripts/verificar-categorias.mjs"
+    "verificar-categorias": "node scripts/verificar-categorias.mjs",
+    "verificar-metadados": "node scripts/verificar-metadados.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "^9.0.0",

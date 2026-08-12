@@ -9,9 +9,9 @@ import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema } from "@/lib
 import { FaixaFoto } from "@/components/ui/FaixaFoto";
 
 export const metadata: Metadata = {
-  title: "Telemedicina — consulta médica online para todo o Brasil",
+  title: "Telemedicina para todo o Brasil",
   description:
-    "Teleconsulta com o Dr. José Victor (CRM-GO 38508): agendamento pelo WhatsApp, consulta por vídeo com privacidade e prescrição digital válida em todo o território nacional.",
+    "Teleconsulta por vídeo: agendamento pelo WhatsApp, privacidade e prescrição digital válida em todo o território nacional. Como funciona, passo a passo.",
   alternates: { canonical: "/telemedicina" },
 };
 

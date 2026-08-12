@@ -7,7 +7,7 @@ import { getAllArticles } from "@/lib/articles";
 import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Artigos — educação em saúde baseada em evidências",
+  title: "Artigos de educação em saúde",
   description:
     "Conteúdo médico educativo sobre cannabis medicinal, clínica médica, check-up e medicina esportiva, escrito pelo Dr. José Victor (CRM-GO 38508).",
   alternates: { canonical: "/blog" },

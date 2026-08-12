@@ -155,6 +155,31 @@ export function websiteSchema() {
     name: site.name,
     inLanguage: "pt-BR",
     publisher: { "@id": `${site.url}/#physician` },
+    /**
+     * A caixa de busca dentro do resultado do Google.
+     *
+     * Quando o Google aceita esta declaração, o resultado do site deixa de ser
+     * só título e descrição: ganha um campo onde a pessoa pesquisa dentro do
+     * site sem sair da página de resultados. É a diferença mais visível que dá
+     * para pedir sem depender de nota de avaliação.
+     *
+     * **Só pôde ser declarada agora.** Ela promete que `/busca?q=` responde de
+     * verdade; até esta semana o site não tinha busca nenhuma, e declará-la
+     * seria descrever ao Google uma página que não existia. O Google confere —
+     * e a punição por dado estruturado que não corresponde à página é perder a
+     * elegibilidade a resultado enriquecido no site inteiro.
+     *
+     * O formato com `query-input` e `{consulta}` é o que a documentação exige,
+     * literalmente: o marcador entre chaves é substituído pelo termo digitado.
+     */
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${site.url}/busca?q={consulta}`,
+      },
+      "query-input": "required name=consulta",
+    },
   };
 }
 

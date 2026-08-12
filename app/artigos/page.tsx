@@ -17,7 +17,7 @@ import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 export const metadata: Metadata = {
   title: "Artigos científicos e produção acadêmica",
   description:
-    "Produção científica do Dr. José Victor Lisboa Cardoso Gomes (CRM-GO 38508): artigos em periódicos sobre dor, anestesia e intervenção guiada por imagem, livro, capítulo e trabalhos em congressos.",
+    "Produção científica do Dr. José Victor: artigos sobre dor, anestesia e intervenção guiada por imagem, livro, capítulo e trabalhos em congressos.",
   alternates: { canonical: "/artigos" },
 };
 

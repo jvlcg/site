@@ -8,9 +8,9 @@ import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "Projetos voluntários e trabalho comunitário",
+  title: "Projetos voluntários",
   description:
-    "Trabalho voluntário e projetos comunitários do Dr. José Victor Lisboa Cardoso Gomes (CRM-GO 38508): internato na rede pública, campanha de vacinação contra a COVID-19, extensão universitária e iniciativas em preparação.",
+    "Trabalho voluntário do Dr. José Victor: internato na rede pública, campanha de vacinação contra a COVID-19, extensão universitária e projetos novos.",
   alternates: { canonical: "/voluntariado" },
 };
 
