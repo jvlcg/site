@@ -279,7 +279,29 @@ export default async function AulaPage({ params }: Props) {
           Só aparece com três aulas ou mais. Com duas, os cartões de anterior e
           próxima já mostram o curso inteiro, e repetir vira ruído.
         */}
-        {todasAsAulas.length > 2 && (
+        {/*
+          A lista completa some quando o curso é grande — e isso saiu de uma
+          medição, não de gosto.
+
+          Com 18 aulas, cada página de aula trazia os 18 títulos. Somados ao
+          menu e ao rodapé, que já se repetem, o resultado foi que **duas aulas
+          quaisquer tinham 0 ou 1 palavra diferente entre si**: páginas
+          praticamente idênticas, distintas apenas pelo vídeo embutido.
+
+          O Search Console reagiu como era de esperar: 15 páginas em "detectada,
+          mas não indexada", nunca rastreadas. O Google achou dezoito páginas
+          iguais e decidiu não gastar rastreio nelas.
+
+          Até 8 aulas a lista continua: ali ela ajuda a navegar e ainda sobra
+          diferença entre as páginas. Acima disso, os cartões de anterior e
+          próxima — que mudam a cada aula — mais o link para o curso dão o mesmo
+          serviço sem transformar toda aula numa cópia da vizinha.
+
+          Isto reduz a duplicação; **não resolve o problema de fundo**, que é
+          cada aula não ter um texto próprio. Enquanto não houver resumo por
+          aula, a página continua sendo um título e um vídeo.
+        */}
+        {todasAsAulas.length > 2 && todasAsAulas.length <= 8 && (
           <nav aria-label="Aulas deste curso" className="mt-12 border-t hairline pt-8">
             <h2 className="font-mono-tech text-[0.68rem] uppercase tracking-[0.16em] text-faint">
               As {todasAsAulas.length} aulas de {curso.titulo}
