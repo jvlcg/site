@@ -175,6 +175,8 @@ async function medir(page, rota) {
       fundo: aurora.getAttribute("data-fundo"),
       impressao: [
         aurora.getAttribute("data-fundo"),
+        /* o desenho é o que mais distingue duas páginas — anel não é listra */
+        aurora.getAttribute("data-desenho"),
         antes.animationDuration,
         antes.animationDelay,
         ...variaveis,

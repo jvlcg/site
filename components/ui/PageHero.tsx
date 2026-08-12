@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Reveal } from "./Reveal";
 import { ThreeScene } from "@/components/three/ThreeScene";
-import { variacaoDoFundo, type Fundo } from "@/lib/fundos";
+import { variacaoDoFundo, desenhoDoFundo, type Fundo } from "@/lib/fundos";
 
 type Crumb = { name: string; path: string };
 
@@ -67,6 +67,7 @@ export function PageHero({ eyebrow, title, lede, scene = "none", fundo, semente,
         <div
           className="aurora"
           data-fundo={fundo}
+          data-desenho={semente ? desenhoDoFundo(semente) : undefined}
           style={semente ? variacaoDoFundo(semente) : undefined}
         />
         <div className="mesh-bg" />

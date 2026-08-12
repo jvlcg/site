@@ -276,3 +276,44 @@ function distribuida(
     "--fundo-f3": `${forca(2)}%`,
   };
 }
+
+/**
+ * O desenho do fundo — o **tipo** de imagem, não os seus parâmetros.
+ *
+ * ## Por que isto existe
+ *
+ * Ele disse três vezes que as animações não eram únicas por página, e nas três
+ * eu respondi variando parâmetros: posição, tamanho, cor, velocidade, ângulo.
+ * Melhorava a medida e não resolvia a queixa, porque todas as páginas
+ * continuavam mostrando **a mesma coisa** — uma névoa colorida deslizando.
+ * Trocar onde a névoa está não deixa de ser névoa.
+ *
+ * O que muda a percepção é o desenho: anéis não se confundem com listras, nem
+ * listras com pontos, por mais parecida que seja a cor.
+ *
+ * ## Como são distribuídos
+ *
+ * Seis desenhos para dezessete páginas, com passo 5 — que é primo com 6, então
+ * a sequência percorre todos antes de repetir, e páginas vizinhas no menu
+ * nunca caem no mesmo. Somado à posição e à cor, que já variam, nenhuma página
+ * do menu se parece com a seguinte.
+ *
+ * A névoa continua sendo o desenho de mais páginas: é o mais discreto, e as
+ * páginas de acolhimento — contato, cadastro, consultório — não pedem
+ * geometria.
+ */
+const DESENHOS = ["nevoa", "aneis", "pontos", "faixas", "leque", "ondas"] as const;
+
+export type DesenhoDeFundo = (typeof DESENHOS)[number];
+
+export function desenhoDoFundo(semente: string): DesenhoDeFundo {
+  const ordem = PAGINAS_DISTRIBUIDAS.indexOf(semente);
+  if (ordem >= 0) return DESENHOS[(ordem * 5) % DESENHOS.length];
+
+  /*
+    Artigo, poema e aula ficam na névoa, sempre.
+    Ali o fundo acompanha texto longo, e geometria atrás de parágrafo cansa —
+    é o oposto do que a página precisa fazer.
+  */
+  return "nevoa";
+}

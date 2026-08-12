@@ -1,4 +1,4 @@
-import { variacaoDoFundo, type Fundo } from "@/lib/fundos";
+import { variacaoDoFundo, desenhoDoFundo, type Fundo } from "@/lib/fundos";
 
 /**
  * A camada de fundo animada, para as páginas que não usam o `PageHero`.
@@ -50,6 +50,7 @@ export function FundoDaPagina({
       <div
         className="aurora"
         data-fundo={fundo}
+        data-desenho={semente ? desenhoDoFundo(semente) : undefined}
         style={semente ? variacaoDoFundo(semente) : undefined}
       />
       <div className="mesh-bg" />

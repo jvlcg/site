@@ -6,7 +6,7 @@ import { CtaSection } from "@/components/ui/CtaSection";
 import { PortraitSection } from "@/components/ui/PortraitSection";
 import { ThreeScene } from "@/components/three/ThreeScene";
 import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema, serviceSchema } from "@/lib/schema";
-import { variacaoDoFundo } from "@/lib/fundos";
+import { variacaoDoFundo, desenhoDoFundo } from "@/lib/fundos";
 
 export const metadata: Metadata = {
   title: "Cannabis medicinal em Goiânia",
@@ -123,7 +123,7 @@ export default function EndocanabinoidePage() {
       */}
       <section className="relative overflow-hidden pt-32 pb-20 sm:pt-36 sm:pb-24">
         <div className="camada-fundo absolute inset-0">
-          <div className="aurora" data-fundo="germina" style={variacaoDoFundo("/cannabis-medicinal")} />
+          <div className="aurora" data-fundo="germina" data-desenho={desenhoDoFundo("/cannabis-medicinal")} style={variacaoDoFundo("/cannabis-medicinal")} />
           <div className="mesh-bg" />
         </div>
         <nav aria-label="Trilha de navegação" className="relative mx-auto max-w-7xl px-5 sm:px-8">
