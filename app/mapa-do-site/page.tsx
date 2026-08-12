@@ -5,6 +5,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { getAllArticles } from "@/lib/articles";
 import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 import { site } from "@/lib/site-config";
+import { GRUPOS_DE_PAGINAS } from "@/content/paginas";
 
 export const metadata: Metadata = {
   title: "Mapa do site",
@@ -13,45 +14,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/mapa-do-site" },
 };
 
-const grupos = [
-  {
-    titulo: "Atendimento",
-    links: [
-      { href: "/clinica-medica", label: "Clínica Médica e Check-up", desc: "Consultas aprofundadas, prevenção e acompanhamento contínuo." },
-      { href: "/cannabis-medicinal", label: "Cannabis Medicinal", desc: "Avaliação criteriosa, prescrição regulamentada e laudo para cultivo." },
-      { href: "/medicina-esportiva", label: "Medicina Esportiva e Performance", desc: "Manejo de dor, retorno ao esporte e saúde de quem treina." },
-      { href: "/telemedicina", label: "Telemedicina", desc: "Consulta por vídeo para todo o Brasil, com prescrição digital." },
-    ],
-  },
-  {
-    titulo: "O consultório",
-    links: [
-      { href: "/consultorio", label: "Consultório em Goiânia", desc: "Fotos da estrutura, localização no mapa e como chegar." },
-      { href: "/sobre", label: "Sobre o médico", desc: "Formação, trajetória de pesquisa e publicações científicas." },
-      { href: "/contato", label: "Contato e agendamento", desc: "Canais de atendimento, endereço e mapa." },
-      { href: "/perguntas-frequentes", label: "Perguntas frequentes", desc: "Respostas sobre consultas, valores, convênios e telemedicina." },
-      { href: "/voluntariado", label: "Projetos voluntários", desc: "Trabalho comunitário realizado e iniciativas em preparação." },
-      { href: "/cadastro", label: "Cadastro de pacientes", desc: "Canal digital direto com o consultório e prioridade no retorno." },
-    ],
-  },
-  {
-    titulo: "Conteúdo",
-    links: [
-      { href: "/cursos", label: "Cursos e aulas em vídeo", desc: "Aulas sobre saúde em linguagem sem jargão. Conteúdo gratuito e cursos completos." },
-      { href: "/blog", label: "Blog — educação em saúde", desc: "Textos educativos para pacientes." },
-      { href: "/artigos", label: "Artigos científicos", desc: "Produção científica publicada em periódicos e congressos." },
-      { href: "/poemas", label: "Poemas", desc: "Escrita pessoal, com análise literária de cada texto. Sem conteúdo médico." },
-      { href: "/aplicativos", label: "Aplicativos", desc: "Aplicativos autorais, indicações para médicos e pacientes, e coisas fora do tema." },
-    ],
-  },
-  {
-    titulo: "Institucional",
-    links: [
-      { href: "/politica-de-privacidade", label: "Política de Privacidade", desc: "Tratamento de dados conforme a LGPD." },
-      { href: "/termos-dos-cursos", label: "Termos de uso dos cursos", desc: "Acesso, reembolso em 7 dias e uso do conteúdo em vídeo." },
-    ],
-  },
-];
+/*
+  A lista saiu daqui para `content/paginas.ts` quando a busca passou a precisar
+  dela. Escrita nos dois lugares, um dia o mapa teria uma página que a busca
+  não acha — e nada acusaria, porque os dois continuariam funcionando.
+*/
+const grupos = GRUPOS_DE_PAGINAS;
 
 export default function MapaDoSitePage() {
   const artigos = getAllArticles();

@@ -175,6 +175,26 @@ export function Header() {
           intervalo decide se o último elemento cabe — e o último é o menu.
         */}
         <div className="flex items-center gap-1 sm:gap-3">
+          {/*
+            Só a partir de 1500 px, que é onde o menu de toque some e a barra
+            deixa de disputar espaço. Abaixo disso a busca está no menu — pôr
+            mais um botão de 40 px aqui é o que fazia o menu ser cortado em
+            320 px, e sem menu o site fica sem navegação nenhuma.
+          */}
+          <Link
+            href="/busca"
+            aria-label="Buscar no site"
+            className="glass hidden h-10 w-10 items-center justify-center rounded-full transition-colors hover:text-[var(--accent)] min-[1500px]:flex"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              className="h-[1.05rem] w-[1.05rem] fill-none stroke-current stroke-2"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+            </svg>
+          </Link>
           <ContaAluno />
           {/*
             O som some abaixo de 360 px.
@@ -248,6 +268,32 @@ export function Header() {
         style={{ background: "var(--bg)" }}
       >
         <nav aria-label="Navegação móvel" className="flex h-full flex-col gap-1 overflow-y-auto px-6 pt-6 pb-10">
+          {/*
+            A busca abre o menu, e não a barra do topo.
+
+            A barra já está no limite: os comentários acima registram medições
+            em 320 e 640 px, onde cada 4 px decide se o menu ainda cabe. Abaixo
+            de 1500 px é aqui que mora toda a navegação, então é aqui que quem
+            procura algo vem olhar.
+          */}
+          <Link
+            href="/busca"
+            onClick={() => setOpen(false)}
+            className={`mb-2 flex items-center gap-3 rounded-2xl border hairline px-4 py-3.5 text-muted transition-all duration-500 ${
+              open ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+            }`}
+            style={{ transitionDelay: open ? "60ms" : "0ms" }}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              className="h-[1.15rem] w-[1.15rem] shrink-0 fill-none stroke-current stroke-2"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+            </svg>
+            Buscar no site
+          </Link>
           {headerLinks.map((link, i) => (
             <Link
               key={link.href}
