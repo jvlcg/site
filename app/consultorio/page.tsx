@@ -14,9 +14,9 @@ import { JsonLd, breadcrumbSchema, medicalWebPageSchema } from "@/lib/schema";
 import { FaixaFoto } from "@/components/ui/FaixaFoto";
 
 export const metadata: Metadata = {
-  title: "Consultório em Goiânia — Setor Sul | Estrutura e localização",
+  title: "Consultório em Goiânia — Setor Sul",
   description:
-    "Conheça o consultório do Dr. José Victor (CRM-GO 38508) na Clínica Fisiogyn, Rua 94, Setor Sul, Goiânia: fotos da estrutura, localização no mapa e como chegar. Atendimento particular e por telemedicina.",
+    "O consultório na Clínica Fisiogyn, Rua 94, Setor Sul, Goiânia: fotos da estrutura, localização no mapa e como chegar. Particular e por telemedicina.",
   alternates: { canonical: "/consultorio" },
   openGraph: {
     title: "Consultório em Goiânia — Setor Sul | Dr. José Victor",

@@ -29,7 +29,7 @@ import { site } from "@/lib/site-config";
 export const metadata: Metadata = {
   title: "Cursos e aulas em vídeo",
   description:
-    "Aulas em vídeo sobre saúde, em linguagem sem jargão, com o Dr. José Victor Lisboa Cardoso Gomes (CRM-GO 38508). Conteúdo gratuito aberto e cursos completos.",
+    "Aulas em vídeo sobre saúde, em linguagem sem jargão. Conteúdo gratuito e aberto a qualquer pessoa, além de cursos completos com acesso por matrícula.",
   alternates: { canonical: "/cursos" },
 };
 

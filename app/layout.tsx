@@ -37,7 +37,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.shortName} — Cannabis Medicinal e Clínica Médica em Goiânia`,
+    default: `${site.shortName} — cannabis medicinal e clínica médica`,
     template: `%s | ${site.shortName}`,
   },
   description: site.description,

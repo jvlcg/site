@@ -9,9 +9,9 @@ import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema, serviceSchem
 import { FaixaFoto } from "@/components/ui/FaixaFoto";
 
 export const metadata: Metadata = {
-  title: "Clínica Médica e Check-up em Goiânia — médico particular",
+  title: "Clínica médica e check-up em Goiânia",
   description:
-    "Consultas de clínica médica com tempo de escuta real, check-up estratégico e acompanhamento longitudinal em Goiânia e por telemedicina. Dr. José Victor — CRM-GO 38508.",
+    "Consultas de clínica médica com tempo de escuta real, check-up estratégico e acompanhamento contínuo, em Goiânia e por telemedicina para todo o Brasil.",
   alternates: { canonical: "/clinica-medica" },
 };
 

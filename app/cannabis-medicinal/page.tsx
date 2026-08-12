@@ -8,9 +8,9 @@ import { ThreeScene } from "@/components/three/ThreeScene";
 import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema, serviceSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Cannabis Medicinal em Goiânia e por telemedicina",
+  title: "Cannabis medicinal em Goiânia",
   description:
-    "Avaliação médica criteriosa do sistema endocanabinoide: indicação individualizada, prescrição dentro das normas da Anvisa e do CFM e acompanhamento contínuo. Dr. José Victor — CRM-GO 38508.",
+    "Avaliação do sistema endocanabinoide em Goiânia: indicação individualizada, prescrição dentro das normas da Anvisa e do CFM, acompanhamento contínuo.",
   alternates: { canonical: "/cannabis-medicinal" },
 };
 

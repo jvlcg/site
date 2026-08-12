@@ -11,9 +11,9 @@ import { site, whatsappLink } from "@/lib/site-config";
 import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Perguntas frequentes — consultas, telemedicina e agendamento",
+  title: "Perguntas frequentes",
   description:
-    "Respostas diretas sobre agendamento, valores, convênios, telemedicina, consultório em Goiânia e cannabis medicinal. Dr. José Victor Lisboa Cardoso Gomes — CRM-GO 38508.",
+    "Respostas diretas sobre agendamento, valores, convênios, telemedicina, consultório em Goiânia e cannabis medicinal — sem precisar ligar para perguntar.",
   alternates: { canonical: "/perguntas-frequentes" },
 };
 

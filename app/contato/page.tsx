@@ -6,9 +6,9 @@ import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 import { site, whatsappLink } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "Contato e agendamento — consultório em Goiânia",
+  title: "Contato e agendamento em Goiânia",
   description:
-    "Agende sua consulta com o Dr. José Victor (CRM-GO 38508): Clínica Fisiogyn, Setor Sul, Goiânia-GO, ou telemedicina para todo o Brasil. Atendimento via WhatsApp.",
+    "Agende sua consulta na Clínica Fisiogyn, Setor Sul, Goiânia-GO, ou por telemedicina para todo o Brasil. Agendamento pelo WhatsApp, sem espera na linha.",
   alternates: { canonical: "/contato" },
 };
 

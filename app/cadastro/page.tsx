@@ -6,9 +6,9 @@ import { Estetoscopio } from "@/components/ui/Estetoscopio";
 import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Cadastro de pacientes — canal digital direto",
+  title: "Cadastro de pacientes",
   description:
-    "Cadastre-se para ter um canal digital direto com o consultório do Dr. José Victor Lisboa Cardoso Gomes (CRM-GO 38508), com acompanhamento entre consultas e prioridade no retorno.",
+    "Um canal digital direto com o consultório, com acompanhamento entre consultas, aviso de novos conteúdos e prioridade no retorno. Cadastro gratuito.",
   alternates: { canonical: "/cadastro" },
 };
 

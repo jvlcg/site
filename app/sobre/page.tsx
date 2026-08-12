@@ -11,9 +11,9 @@ import { site } from "@/lib/site-config";
 import { FaixaFoto } from "@/components/ui/FaixaFoto";
 
 export const metadata: Metadata = {
-  title: "Sobre o Dr. José Victor — formação, pesquisa e publicações",
+  title: "Formação, pesquisa e publicações",
   description:
-    "Trajetória do Dr. José Victor Lisboa Cardoso Gomes (CRM-GO 38508): graduação em Medicina pela PUC-GO com Magna Cum Laude, pesquisa em dor e intervenção guiada por imagem, publicações científicas e certificação ACLS.",
+    "Medicina pela PUC-GO com Magna Cum Laude, pesquisa em dor e intervenção guiada por imagem, publicações científicas e certificação ACLS em emergência.",
   alternates: { canonical: "/sobre" },
 };
 

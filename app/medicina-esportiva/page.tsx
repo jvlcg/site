@@ -10,9 +10,9 @@ import { JsonLd, breadcrumbSchema, faqSchema, medicalWebPageSchema, serviceSchem
 import { FaixaFoto } from "@/components/ui/FaixaFoto";
 
 export const metadata: Metadata = {
-  title: "Medicina Esportiva e Performance em Goiânia",
+  title: "Medicina esportiva e performance, Goiânia",
   description:
-    "Avaliação clínica de quem treina: manejo de dor, retorno seguro ao esporte, prevenção de lesões e otimização de saúde para performance. Dr. José Victor — CRM-GO 38508.",
+    "Avaliação clínica de quem treina, em Goiânia: manejo de dor, retorno seguro ao esporte, prevenção de lesões e saúde para performance sustentável.",
   alternates: { canonical: "/medicina-esportiva" },
 };
 
