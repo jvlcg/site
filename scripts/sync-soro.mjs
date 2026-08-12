@@ -94,12 +94,47 @@ async function baixarImagem(url, slug) {
 /** Escapa aspas para uso dentro de string YAML entre aspas duplas. */
 const yaml = (s) => String(s ?? "").replace(/\\/g, "\\\\").replace(/"/g, '\\"').trim();
 
+/** O teto que o Google mostra antes de cortar a descrição no meio da frase. */
+const LIMITE_DESCRICAO = 155;
+
+/**
+ * Encurta o resumo do artigo para caber no resultado da busca.
+ *
+ * ## Por que no gerador, e não à mão
+ *
+ * Encurtei uma dessas descrições à mão. O sync rodou naquela noite e devolveu
+ * a versão longa — e estava certo: o arquivo é dele, e o resumo vem do
+ * `excerpt` da Soro. É a mesma lição das tags, aprendida duas vezes.
+ *
+ * ## Onde corta
+ *
+ * Primeiro tenta terminar numa frase inteira: se existe um ponto final antes
+ * do limite, corta ali e o texto termina como texto. Só quando não há, cai
+ * para o último espaço com reticências — que é feio, mas menos do que uma
+ * palavra partida ao meio.
+ */
+function encurtarResumo(texto) {
+  const limpo = String(texto ?? "").trim();
+  if (limpo.length <= LIMITE_DESCRICAO) return limpo;
+
+  const cabe = limpo.slice(0, LIMITE_DESCRICAO);
+
+  const fimDeFrase = Math.max(cabe.lastIndexOf(". "), cabe.lastIndexOf("? "), cabe.lastIndexOf("! "));
+  /*
+    O piso de 60% evita o pior caso: um ponto logo na primeira linha faria a
+    descrição virar meia frase, jogando fora o resto que cabia.
+  */
+  if (fimDeFrase > LIMITE_DESCRICAO * 0.6) return cabe.slice(0, fimDeFrase + 1);
+
+  return cabe.slice(0, cabe.lastIndexOf(" ")).replace(/[,;:]$/, "") + "…";
+}
+
 function montarMdx(artigo, markdown, imagemLocal) {
   const data = (artigo.isoDate ?? new Date().toISOString()).slice(0, 10);
   const frontmatter = [
     "---",
     `title: "${yaml(artigo.title)}"`,
-    `description: "${yaml(artigo.excerpt)}"`,
+    `description: "${yaml(encurtarResumo(artigo.excerpt))}"`,
     `date: "${data}"`,
     `category: "${yaml(classificar(artigo.title ?? "", markdown))}"`,
     `tags: [${tagsDe(artigo.title ?? "", markdown).map((t) => `"${yaml(t)}"`).join(", ")}]`,
