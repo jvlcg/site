@@ -102,6 +102,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider>
           <SoundProvider>
             <MotionProvider>
+              {/*
+                Pular para o conteúdo — o primeiro elemento focável da página.
+
+                Quem navega por teclado ou leitor de tela atravessa o cabeçalho
+                inteiro antes de chegar ao texto, em **toda** página que abre:
+                marca, conta, som, tema, agendar, menu e, acima de 1500 px,
+                mais onze links de seção. Este atalho pula tudo com um Tab e um
+                Enter.
+
+                Fica escondido até receber foco, e por isso não muda nada para
+                quem usa mouse. `sr-only` sozinho não serviria: o link precisa
+                **aparecer** quando focado, senão o foco some da tela e a
+                pessoa perde a referência de onde está.
+              */}
+              <a href="#conteudo" className="pular-conteudo">
+                Pular para o conteúdo
+              </a>
               <Header />
               <main id="conteudo">{children}</main>
               <Footer />

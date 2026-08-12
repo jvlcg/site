@@ -262,6 +262,21 @@ export function Header() {
         mantém o botão de fechar alcançável com o menu aberto.
       */}
       <div
+        /*
+          `inert` enquanto fechado — e isto conserta um defeito real.
+
+          O painel some por opacidade, não por `display`. Medido no navegador
+          com o menu fechado: `opacity: 0`, mas `visibility: visible` e os doze
+          links ainda focáveis. Quem navega por teclado dava Tab e o foco
+          entrava num menu invisível: doze paradas em elementos que a pessoa
+          não vê, sem nenhuma forma de saber onde está.
+
+          `inert` tira o ramo inteiro da ordem de tabulação e da árvore de
+          acessibilidade, sem tocar na transição. `visibility: hidden` também
+          resolveria, mas exigiria coordenar o atraso com a animação para o
+          menu não sumir antes de terminar de desaparecer.
+        */
+        inert={!open}
         className={`fixed inset-0 top-[72px] z-40 transition-all duration-500 min-[1500px]:hidden ${
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}

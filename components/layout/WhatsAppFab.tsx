@@ -22,6 +22,20 @@ export function WhatsAppFab() {
       aria-label="Agendar consulta pelo WhatsApp"
       /* sai da frente com o menu de toque aberto — ver globals.css */
       data-flutuante=""
+      /**
+       * Fora da ordem de tabulação enquanto está invisível.
+       *
+       * `pointer-events-none` desliga o mouse, mas não o teclado: medido, quem
+       * navegava por Tab parava neste botão com `opacity: 0` — cinquenta e seis
+       * pixels de nada, sem indicação de onde o foco estava. Aparecia em
+       * qualquer página curta demais para passar dos 420 px de rolagem que o
+       * fazem surgir; a busca era uma delas.
+       *
+       * `tabIndex={-1}` e não `inert` porque aqui é um elemento só, e o próprio
+       * link é o alvo — `inert` serve para desligar um ramo inteiro.
+       */
+      tabIndex={visible ? undefined : -1}
+      aria-hidden={visible ? undefined : true}
       className={`fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-accent-400)] to-[var(--color-teal-flow)] text-[#06231d] shadow-[0_16px_40px_-12px_rgba(16,185,129,0.6)] transition-all duration-500 hover:scale-110 ${
         visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
       }`}
