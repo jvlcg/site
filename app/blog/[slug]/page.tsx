@@ -70,7 +70,7 @@ export default async function ArtigoPage({ params }: Props) {
     <>
       <ReadingProgress />
       <article className="relative overflow-hidden pt-32 sm:pt-36">
-        <FundoDaPagina fundo="leitura" />
+        <FundoDaPagina fundo="leitura" semente={article.slug} />
         <div className="relative mx-auto max-w-3xl px-5 sm:px-8">
           <nav aria-label="Trilha de navegação" className="mb-7">
             <ol className="font-mono-tech flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.68rem] uppercase tracking-[0.14em] text-faint">

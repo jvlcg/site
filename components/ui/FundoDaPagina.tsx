@@ -1,4 +1,4 @@
-import type { Fundo } from "@/lib/fundos";
+import { variacaoDoFundo, type Fundo } from "@/lib/fundos";
 
 /**
  * A camada de fundo animada, para as páginas que não usam o `PageHero`.
@@ -27,13 +27,31 @@ import type { Fundo } from "@/lib/fundos";
  * e vira um verde chapado sob o texto inteiro. A justificativa completa, com
  * as medidas, está em `.camada-fundo-topo` no `globals.css`.
  */
-export function FundoDaPagina({ fundo }: { fundo: Fundo }) {
+export function FundoDaPagina({
+  fundo,
+  /**
+   * O `slug` da página, quando muitas páginas dividem o mesmo `fundo`.
+   *
+   * Dezesseis artigos usam `leitura`, vinte poemas usam `verso`, dezoito aulas
+   * usam `foco`. Sem a semente, quem lê dois artigos seguidos vê o mesmo fundo
+   * duas vezes — que é a queixa que originou tudo isto. Ver
+   * `variacaoDoFundo` em `lib/fundos.ts`.
+   */
+  semente,
+}: {
+  fundo: Fundo;
+  semente?: string;
+}) {
   return (
     <div
       className="camada-fundo camada-fundo-topo absolute inset-x-0 top-0"
       aria-hidden="true"
     >
-      <div className="aurora" data-fundo={fundo} />
+      <div
+        className="aurora"
+        data-fundo={fundo}
+        style={semente ? variacaoDoFundo(semente) : undefined}
+      />
       <div className="mesh-bg" />
     </div>
   );

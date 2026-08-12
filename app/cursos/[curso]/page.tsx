@@ -76,6 +76,7 @@ export default async function CursoPage({ params }: Props) {
     <>
       <PageHero
         fundo="trilha"
+        semente={curso.slug}
         eyebrow={curso.acesso === "pago" ? "Curso" : "Curso gratuito"}
         title={curso.titulo}
         lede={curso.resumo}

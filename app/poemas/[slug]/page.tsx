@@ -59,7 +59,7 @@ export default async function PoemaPage({ params }: Props) {
   return (
     <>
       <article className="relative overflow-hidden pt-32 pb-24 sm:pt-36">
-        <FundoDaPagina fundo="verso" />
+        <FundoDaPagina fundo="verso" semente={poema.slug} />
         <div className="mesh-bg opacity-50" />
         <div className="relative mx-auto max-w-2xl px-5 sm:px-8">
           <nav aria-label="Trilha de navegação" className="mb-7">

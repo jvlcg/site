@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Reveal } from "./Reveal";
 import { ThreeScene } from "@/components/three/ThreeScene";
-import type { Fundo } from "@/lib/fundos";
+import { variacaoDoFundo, type Fundo } from "@/lib/fundos";
 
 type Crumb = { name: string; path: string };
 
@@ -27,6 +27,14 @@ type Props = {
    * entrega. Passar explicitamente custa uma palavra por página.
    */
   fundo?: Fundo;
+  /**
+   * O `slug`, quando muitas páginas dividem o mesmo `fundo`.
+   *
+   * Só faz sentido nas rotas dinâmicas — hoje, a de curso. Nas páginas fixas o
+   * fundo já é único, e semear não teria o que desempatar. Ver
+   * `variacaoDoFundo` em `lib/fundos.ts`.
+   */
+  semente?: string;
   breadcrumbs?: Crumb[];
   children?: React.ReactNode;
 };
@@ -52,11 +60,15 @@ type Props = {
  * compõe sem passar pela thread principal — mesmo efeito percebido, sem a
  * conta.
  */
-export function PageHero({ eyebrow, title, lede, scene = "none", fundo, breadcrumbs, children }: Props) {
+export function PageHero({ eyebrow, title, lede, scene = "none", fundo, semente, breadcrumbs, children }: Props) {
   return (
     <section className="relative overflow-hidden pt-32 pb-24 sm:pt-36 sm:pb-32">
       <div className="camada-fundo absolute inset-0">
-        <div className="aurora" data-fundo={fundo} />
+        <div
+          className="aurora"
+          data-fundo={fundo}
+          style={semente ? variacaoDoFundo(semente) : undefined}
+        />
         <div className="mesh-bg" />
       </div>
       {scene !== "none" && (
