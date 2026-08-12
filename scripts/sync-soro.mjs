@@ -16,14 +16,23 @@ import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import TurndownService from "turndown";
+import { classificar } from "./categorias.mjs";
 
 const TOKEN = process.env.SORO_EMBED_TOKEN ?? "85ab1693-799e-4f7e-8017-4b1ea52c3567";
 const API = "https://app.trysoro.com";
 const DESTINO = "content/artigos";
 const IMAGENS = "public/images/blog";
 
-/** Categoria padrão dos artigos vindos da Soro. */
-const CATEGORIA = "Medicina Endocanabinoide";
+/*
+  A categoria sai do texto do artigo, e não de uma constante.
+
+  Aqui havia `const CATEGORIA = "Medicina Endocanabinoide"`, carimbada em tudo
+  que chegava. No site no ar isso virou um artigo sobre telemedicina, outro
+  sobre check-up e outro sobre dor no treino, os três anunciados ao leitor como
+  se fossem sobre cannabis — onze dos dezesseis. Ver `categorias.mjs`, e
+  `npm run verificar-categorias`, que confere o classificador contra a
+  classificação feita à mão.
+*/
 
 const td = new TurndownService({
   headingStyle: "atx",
@@ -92,7 +101,7 @@ function montarMdx(artigo, markdown, imagemLocal) {
     `title: "${yaml(artigo.title)}"`,
     `description: "${yaml(artigo.excerpt)}"`,
     `date: "${data}"`,
-    `category: "${CATEGORIA}"`,
+    `category: "${yaml(classificar(artigo.title ?? "", markdown))}"`,
     "tags: []",
     "faq: []",
     imagemLocal ? `image: "${imagemLocal}"` : null,

@@ -31,7 +31,12 @@ function parseFile(filename: string): Article {
     description: data.description,
     date: data.date,
     updated: data.updated,
-    category: data.category ?? "Medicina",
+    /*
+      A reserva é "Clínica médica", a mesma de `scripts/categorias.mjs` — a
+      área mais ampla do consultório. Antes era "Medicina", que não existe na
+      lista de categorias e apareceria ao leitor como um rótulo órfão.
+    */
+    category: data.category ?? "Clínica médica",
     tags: data.tags ?? [],
     faq: data.faq ?? [],
     readingMinutes: Math.max(2, Math.round(words / 200)),

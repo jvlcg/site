@@ -39,20 +39,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       authors: [site.name],
       section: article.category,
       tags: article.tags,
-      images: [
-        {
-          url: `/og/blog/${slug}.png`,
-          width: 1200,
-          height: 630,
-          alt: article.title,
-        },
-      ],
+      /*
+        Sem `images` aqui de propósito.
+
+        Havia uma lista apontando para `/og/blog/{slug}.png`, caminho onde
+        nunca existiu arquivo nenhum — 404 nos dezesseis artigos, conferido em
+        produção. Como o valor explícito ganha do automático, ele também
+        escondia a imagem certa.
+
+        O `opengraph-image.tsx` desta mesma pasta gera a imagem no build e o
+        Next a anuncia sozinho, com URL absoluta e as dimensões corretas. Uma
+        lista escrita à mão aqui voltaria a atropelá-lo.
+      */
     },
     twitter: {
       card: "summary_large_image",
       title: article.title,
       description: article.description,
-      images: [`/og/blog/${slug}.png`],
     },
   };
 }
