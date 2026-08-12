@@ -39,6 +39,7 @@ export default function CadastroPage() {
   return (
     <>
       <PageHero
+        fundo="acolhe"
         eyebrow="Cadastro"
         title={
           <>

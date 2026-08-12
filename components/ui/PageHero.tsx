@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Reveal } from "./Reveal";
 import { ThreeScene } from "@/components/three/ThreeScene";
+import type { Fundo } from "@/lib/fundos";
 
 type Crumb = { name: string; path: string };
 
@@ -12,8 +13,12 @@ type Props = {
   /**
    * A animação do fundo desta página.
    *
-   * Onze variações, uma por assunto — ver o bloco "UM FUNDO POR PÁGINA" em
-   * globals.css, onde cada movimento está justificado pelo tema da página.
+   * Vinte e uma variações, uma por assunto — ver o bloco "UM FUNDO POR PÁGINA"
+   * em globals.css, onde cada movimento está justificado pelo tema da página.
+   *
+   * A lista mora em `lib/fundos.ts` porque duas coisas a usam: este herói e o
+   * `FundoDaPagina`, das páginas de herói próprio. Escrita nos dois lugares,
+   * ela divergiria.
    *
    * É prop e não dedução a partir da rota de propósito: `PageHero` roda no
    * servidor e não conhece o caminho. Descobrir isso exigiria um componente
@@ -21,18 +26,7 @@ type Props = {
    * páginas para escolher um `keyframes`, o que é caro demais pelo que
    * entrega. Passar explicitamente custa uma palavra por página.
    */
-  fundo?:
-    | "espiral"
-    | "orbita"
-    | "mare"
-    | "pulso"
-    | "varredura"
-    | "respiro"
-    | "deriva"
-    | "ondulacao"
-    | "pendulo"
-    | "cintila"
-    | "convergencia";
+  fundo?: Fundo;
   breadcrumbs?: Crumb[];
   children?: React.ReactNode;
 };

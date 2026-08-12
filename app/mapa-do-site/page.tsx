@@ -59,6 +59,7 @@ export default function MapaDoSitePage() {
   return (
     <>
       <PageHero
+        fundo="malha"
         eyebrow="Navegação"
         title={
           <>
