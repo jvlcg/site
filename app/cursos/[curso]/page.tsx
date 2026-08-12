@@ -75,6 +75,7 @@ export default async function CursoPage({ params }: Props) {
   return (
     <>
       <PageHero
+        fundo="trilha"
         eyebrow={curso.acesso === "pago" ? "Curso" : "Curso gratuito"}
         title={curso.titulo}
         lede={curso.resumo}

@@ -47,7 +47,7 @@ export default function VoluntariadoPage() {
   return (
     <>
       <PageHero
-        fundo="convergencia"
+        fundo="semear"
         eyebrow="Comunidade"
         title={
           <>

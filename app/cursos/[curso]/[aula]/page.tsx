@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FundoDaPagina } from "@/components/ui/FundoDaPagina";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Reveal } from "@/components/ui/Reveal";
@@ -84,6 +85,7 @@ export default async function AulaPage({ params }: Props) {
 
   return (
     <article className="relative overflow-hidden pt-28 pb-24 sm:pt-32">
+        <FundoDaPagina fundo="foco" />
       <div className="mesh-bg opacity-40" />
       <div className="relative mx-auto max-w-4xl px-5 sm:px-8">
         <nav aria-label="Trilha de navegação" className="mb-6">
