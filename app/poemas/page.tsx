@@ -28,6 +28,7 @@ export default function PoemasPage() {
     <>
       <PageHero
         fundo="cintila"
+        semente="/poemas"
         eyebrow="Escrita"
         title={
           <>

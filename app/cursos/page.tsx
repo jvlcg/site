@@ -72,6 +72,7 @@ export default function CursosPage() {
     <>
       <PageHero
         fundo="deriva"
+        semente="/cursos"
         eyebrow="Aulas"
         title={
           <>

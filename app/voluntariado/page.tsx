@@ -48,6 +48,7 @@ export default function VoluntariadoPage() {
     <>
       <PageHero
         fundo="semear"
+        semente="/voluntariado"
         eyebrow="Comunidade"
         title={
           <>

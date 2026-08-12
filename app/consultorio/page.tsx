@@ -40,6 +40,7 @@ export default function ConsultorioPage() {
     <>
       <PageHero
         fundo="respiro"
+        semente="/consultorio"
         eyebrow="Unidade presencial"
         title={
           <>

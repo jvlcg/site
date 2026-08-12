@@ -70,6 +70,7 @@ export default function MedicinaEsportivaPage() {
     <>
       <PageHero
         fundo="pulso"
+        semente="/medicina-esportiva"
         eyebrow="Medicina Esportiva & Performance"
         title={
           <>

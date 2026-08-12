@@ -157,10 +157,18 @@ async function medir(page, rota) {
 
     const cs = getComputedStyle(aurora);
     const antes = getComputedStyle(aurora, "::before");
+    /*
+      Posição, tamanho e força — os três. Só posição não bastava: duas páginas
+      com manchas em lugares diferentes mas do mesmo tamanho e da mesma cor
+      continuam parecendo a mesma página.
+    */
     const variaveis = [
       "--fundo-dur", "--fundo-fase", "--fundo-espelho",
       "--fundo-g1x", "--fundo-g1y", "--fundo-g2x",
       "--fundo-g2y", "--fundo-g3x", "--fundo-g3y",
+      "--fundo-r1", "--fundo-r1v", "--fundo-r2",
+      "--fundo-r2v", "--fundo-r3", "--fundo-r3v",
+      "--fundo-f1", "--fundo-f2", "--fundo-f3",
     ].map((v) => cs.getPropertyValue(v).trim());
 
     return {
@@ -280,11 +288,12 @@ try {
 
   /* ---------- Desktop: cobertura, unicidade e movimento ---------- */
   const vistos = new Map();
+  const impressoes = new Map();
   const rotas = await comAba(navegador, { viewport: { width: 1440, height: 900 } }, async (page) => {
     const lista = [...ROTAS, ...(await rotasDinamicas(page))];
 
     for (const rota of lista) {
-      const { fundo, animacoes } = await medir(page, rota);
+      const { fundo, animacoes, impressao } = await medir(page, rota);
 
       if (!fundo) {
         problemas.push(`${rota} — sem fundo nenhum`);
@@ -300,6 +309,26 @@ try {
         problemas.push(`${rota} — fundo "${fundo}" repetido de ${vistos.get(fundo)}`);
       } else {
         vistos.set(fundo, rota);
+      }
+
+      /*
+        E a composição também precisa ser própria.
+
+        Esta conferência olhava só o **nome** da animação, e por isso deixou
+        passar o problema inteiro: as vinte e uma páginas tinham nomes
+        diferentes e desenhavam a mesma imagem — a mesma mancha, na mesma
+        posição, na mesma cor. Só o movimento mudava, e movimento de vinte
+        segundos ninguém percebe ao chegar numa página e rolar.
+
+        A impressão inclui posição, tamanho e força de cada mancha. Duas
+        páginas com a mesma impressão são, para quem olha, a mesma página.
+      */
+      if (impressoes.has(impressao)) {
+        problemas.push(
+          `${rota} — composição idêntica à de ${impressoes.get(impressao)}`
+        );
+      } else {
+        impressoes.set(impressao, rota);
       }
 
       const dur = rodando[0]?.duracao;
