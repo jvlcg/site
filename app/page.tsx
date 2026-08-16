@@ -16,7 +16,7 @@ import { getAllArticles } from "@/lib/articles";
 import { faqForSchema } from "@/lib/chat-faq";
 import { site, whatsappLink } from "@/lib/site-config";
 import { JsonLd, breadcrumbSchema, faqSchema } from "@/lib/schema";
-import { variacaoDoFundo } from "@/lib/fundos";
+import { variacaoDoFundo, desenhoDoFundo } from "@/lib/fundos";
 
 const areas = [
   {
@@ -108,7 +108,7 @@ export default function HomePage() {
             cena neural em WebGL logo atrás. As duas camadas passam a contar a
             mesma história em vez de disputar a atenção.
           */}
-          <div className="aurora" data-fundo="orbita" style={variacaoDoFundo("/")} />
+          <div className="aurora" data-fundo="orbita" data-desenho={desenhoDoFundo("/")} style={variacaoDoFundo("/")} />
           <div className="mesh-bg" />
         </div>
         <ThreeScene kind="neural" className="absolute inset-0" />

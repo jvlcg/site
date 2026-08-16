@@ -17,9 +17,26 @@ import { whatsappLink } from "@/lib/site-config";
 */
 const headerLinks = [
   { href: "/sobre", label: "Sobre", cor: "--nav-sobre" },
-  /* Rótulo curto no topo: "Cannabis Medicinal" inteiro não cabe entre os doze
-     itens, e a página se identifica sozinha assim que abre. */
-  { href: "/cannabis-medicinal", label: "Cannabis", cor: "--nav-cannabis" },
+  /*
+    "Endocanabinoide", e não "Cannabis".
+
+    Nomeia a **abordagem médica** — a avaliação do sistema endocanabinoide —
+    em vez da substância. A distinção não é de estilo: o CFM restringe a
+    divulgação de produtos pelo médico, e um item de menu escrito "Cannabis"
+    anuncia a substância, não o cuidado. "Endocanabinoide" descreve o que se
+    faz na consulta.
+
+    Continua sendo **área de atuação**, nunca especialidade: não existe RQE em
+    medicina endocanabinoide, e anunciar especialidade sem registro é
+    infração. O texto do site trata disso explicitamente em `/cannabis-medicinal`
+    e no FAQ.
+
+    O endereço segue `/cannabis-medicinal`: é como o paciente busca, está
+    indexado no Google há meses, e trocá-lo custaria as posições sem ganho de
+    conformidade — a regra é sobre o que se anuncia, não sobre o caminho do
+    arquivo.
+  */
+  { href: "/cannabis-medicinal", label: "Endocanabinoide", cor: "--nav-cannabis" },
   { href: "/clinica-medica", label: "Clínica Médica", cor: "--nav-clinica" },
   { href: "/medicina-esportiva", label: "Esportiva", cor: "--nav-esportiva" },
   { href: "/telemedicina", label: "Telemedicina", cor: "--nav-telemedicina" },

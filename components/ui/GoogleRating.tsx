@@ -24,12 +24,21 @@ export function GoogleRating({ className = "" }: { className?: string }) {
             </svg>
           </span>
           <div>
-            <p className="flex items-center gap-2 font-display font-semibold">
-              Avaliações no Google
-              <span className="text-[var(--accent)]" aria-hidden="true">
-                ★★★★★
-              </span>
-            </p>
+            {/*
+              Sem as cinco estrelas que ficavam aqui.
+
+              Eram decorativas e `aria-hidden`, mas quem olha não lê o código:
+              lê "cinco estrelas". Era uma nota **afirmada sem existir** — o
+              perfil pode ter 4,6, pode ter 3,8, e nem esse número foi
+              confirmado ainda.
+
+              Duas coisas erradas de uma vez: dizer um número que ninguém
+              apurou, e publicar avaliação de paciente como peça do próprio
+              site, que é o que as normas de publicidade médica vedam. O link
+              para o perfil do Google continua — lá o conteúdo é de terceiro,
+              publicado fora daqui, e não passa por edição do consultório.
+            */}
+            <p className="font-display font-semibold">Avaliações no Google</p>
             <p className="mt-0.5 text-sm text-muted">
               Leia a experiência de pacientes reais no perfil verificado do consultório.
             </p>

@@ -1534,3 +1534,134 @@ html[data-menu="aberto"] [data-flutuante] {
   outline: 2px solid var(--fg);
   outline-offset: 2px;
 }
+
+/*
+  ═══════════════════════════════════════════════════════════════════════
+  DESENHOS DE FUNDO
+  ═══════════════════════════════════════════════════════════════════════
+
+  Até aqui, "um fundo por página" queria dizer a mesma névoa colorida em toda
+  página, mudando de lugar. Ele apontou isso três vezes, e nas três eu respondi
+  variando parâmetros — posição, tamanho, cor, velocidade. Continuava sendo
+  névoa. O que muda a percepção não é o parâmetro, é o **desenho**.
+
+  São seis, e cada um é uma linguagem visual distinta. Todos com a mesma
+  paleta e a mesma discrição: o que se percebe é a diferença entre eles, não a
+  presença de qualquer um.
+
+  O custo continua o mesmo: degradê pintado uma vez, `transform` composto pela
+  GPU. Nenhum `filter`, que é o que já custou dezesseis pontos de Lighthouse
+  nesta base — ver o comentário da `.aurora`.
+
+  ## Sobre a intensidade
+
+  A primeira versão usava a mesma força das manchas, e ficou alta demais: as
+  listras viraram papel de parede e as ondas, caderno pautado — com linhas
+  horizontais atravessando o título, que é o oposto do que este site precisa
+  fazer. Os valores fixos e baixos daqui vieram de calibrar contra os anéis,
+  que saíram na medida certa de primeira: percebe-se ao comparar duas páginas,
+  não se percebe ao ler uma.
+
+  Por isso a geometria **não** usa `--fundo-f*`, que chega a 64%: aquilo é
+  força de mancha difusa, e traço fino na mesma porcentagem grita.
+*/
+
+/* névoa: as manchas de sempre — fica com as páginas de acolhimento */
+.aurora[data-desenho="aneis"]::before {
+  background:
+    repeating-radial-gradient(
+      circle at var(--fundo-g1x, 30%) var(--fundo-g1y, 40%),
+      color-mix(in oklab, var(--accent) 12%, transparent) 0,
+      transparent 1.5px,
+      transparent 62px
+    ),
+    radial-gradient(60% 60% at var(--fundo-g2x, 70%) var(--fundo-g2y, 30%),
+      color-mix(in oklab, var(--color-teal-flow) var(--fundo-f2, 22%), transparent), transparent 72%);
+}
+/* anéis: círculos concêntricos que se abrem a partir de um ponto */
+@keyframes desenho-aneis {
+  from { transform: scale(0.86) rotate(0deg); }
+  to   { transform: scale(1.34) rotate(8deg); }
+}
+.aurora[data-desenho="aneis"]::before {
+  animation-name: desenho-aneis !important;
+}
+
+/* malha: pontos em grade, deslizando na diagonal — ar de instrumento */
+.aurora[data-desenho="pontos"]::before {
+  background:
+    radial-gradient(circle at center,
+      color-mix(in oklab, var(--accent) 14%, transparent) 1.1px,
+      transparent 1.3px),
+    radial-gradient(70% 70% at var(--fundo-g2x, 68%) var(--fundo-g2y, 26%),
+      color-mix(in oklab, var(--color-teal-flow) var(--fundo-f2, 20%), transparent), transparent 74%);
+  background-size: 26px 26px, 100% 100%;
+}
+@keyframes desenho-pontos {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(52px, 52px, 0); }
+}
+.aurora[data-desenho="pontos"]::before {
+  animation-name: desenho-pontos !important;
+}
+
+/* faixas: listras diagonais largas, correndo devagar */
+.aurora[data-desenho="faixas"]::before {
+  background:
+    repeating-linear-gradient(
+      118deg,
+      color-mix(in oklab, var(--accent) 9%, transparent) 0 2px,
+      transparent 2px 96px
+    ),
+    radial-gradient(64% 64% at var(--fundo-g3x, 60%) var(--fundo-g3y, 70%),
+      color-mix(in oklab, var(--color-gold) var(--fundo-f3, 24%), transparent), transparent 76%);
+}
+@keyframes desenho-faixas {
+  from { transform: translate3d(-9%, -5%, 0); }
+  to   { transform: translate3d(9%, 5%, 0); }
+}
+.aurora[data-desenho="faixas"]::before {
+  animation-name: desenho-faixas !important;
+}
+
+/* leque: varredura cônica girando — como um radar muito lento */
+.aurora[data-desenho="leque"]::before {
+  background:
+    conic-gradient(
+      from 0deg at var(--fundo-g1x, 50%) var(--fundo-g1y, 40%),
+      color-mix(in oklab, var(--accent) 16%, transparent),
+      transparent 22%,
+      color-mix(in oklab, var(--color-teal-flow) 13%, transparent) 48%,
+      transparent 70%,
+      color-mix(in oklab, var(--color-gold) 12%, transparent) 88%,
+      transparent
+    );
+}
+@keyframes desenho-leque {
+  from { transform: rotate(0deg) scale(1.5); }
+  to   { transform: rotate(360deg) scale(1.5); }
+}
+.aurora[data-desenho="leque"]::before {
+  animation-name: desenho-leque !important;
+  animation-timing-function: linear !important;
+  animation-direction: normal !important;
+}
+
+/* ondas: bandas horizontais que sobem, como respiração registrada em papel */
+.aurora[data-desenho="ondas"]::before {
+  background:
+    repeating-linear-gradient(
+      0deg,
+      color-mix(in oklab, var(--color-teal-flow) 7%, transparent) 0 1px,
+      transparent 1px 64px
+    ),
+    radial-gradient(70% 50% at var(--fundo-g1x, 40%) var(--fundo-g1y, 30%),
+      color-mix(in oklab, var(--accent) var(--fundo-f1, 26%), transparent), transparent 74%);
+}
+@keyframes desenho-ondas {
+  from { transform: translate3d(0, 4%, 0) scaleY(1); }
+  to   { transform: translate3d(0, -4%, 0) scaleY(1.12); }
+}
+.aurora[data-desenho="ondas"]::before {
+  animation-name: desenho-ondas !important;
+}
