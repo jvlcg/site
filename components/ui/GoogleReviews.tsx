@@ -1,151 +1,47 @@
-import { getGoogleReviews } from "@/lib/google-reviews";
-import { site } from "@/lib/site-config";
 import { GoogleRating } from "./GoogleRating";
-import { SectionHeading } from "./SectionHeading";
-import { Reveal } from "./Reveal";
-import { JsonLd } from "@/lib/schema";
-
-function Stars({ n }: { n: number }) {
-  return (
-    <span className="text-[var(--accent)]" aria-label={`${n} de 5 estrelas`}>
-      {"★".repeat(Math.round(n))}
-      <span className="text-faint">{"★".repeat(5 - Math.round(n))}</span>
-    </span>
-  );
-}
-
-const GoogleG = (
-  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true">
-    <path d="M12 11v2.8h4.6c-.2 1.2-1.5 3.6-4.6 3.6a5.4 5.4 0 0 1 0-10.8c1.7 0 2.8.7 3.4 1.3l2.3-2.2A8 8 0 1 0 12 20c4.6 0 7.7-3.2 7.7-7.8 0-.5 0-.9-.1-1.2H12z" />
-  </svg>
-);
 
 /**
- * Bloco de avaliações. Se houver chave da Places API configurada, mostra as
- * avaliações reais do Google AO VIVO (nota, total, comentários) + botões para
- * ver todas e deixar a sua. Sem chave, usa o fallback (botão para o Google).
+ * O bloco de avaliações do Google.
+ *
+ * ## Por que ele não reproduz mais as avaliações
+ *
+ * Até aqui, com a chave da Places API configurada, este componente publicava
+ * na home: a nota do perfil em estrelas, o total de avaliações, **o texto de
+ * até seis avaliações com o nome de quem escreveu**, e um `aggregateRating`
+ * no Schema — que é o que faz o Google exibir estrelas no resultado da busca.
+ *
+ * Medido em produção antes da mudança: `ratingValue: 5`, `reviewCount: 28`,
+ * sessenta caracteres de estrela no HTML e três textos de pacientes visíveis
+ * na primeira dobra.
+ *
+ * Reproduzir avaliação de paciente como peça do próprio site é o que as normas
+ * de publicidade médica vedam. Não é detalhe de redação: a diferença entre
+ * **apontar** para um perfil público de terceiro e **republicar** o depoimento
+ * dentro da peça publicitária é exatamente onde a regra corta. O FAQ deste
+ * mesmo site já explicava isso ao paciente enquanto a home fazia o contrário.
+ *
+ * ## O que ficou
+ *
+ * O convite para ler as avaliações no Google. Lá o conteúdo é de terceiro,
+ * publicado fora daqui, sem edição do consultório — e, como o próprio FAQ
+ * argumenta, mais difícil de manipular justamente por isso.
+ *
+ * ## Se um dia for reativado
+ *
+ * Isto aqui é o lugar. `lib/google-reviews.ts` continua no repositório e
+ * funcionando; o que saiu foi a **renderização pública**. Antes de religar,
+ * vale a confirmação do CRM-GO — há leitura de que dado agregado de plataforma
+ * independente não equivale a depoimento, e essa é uma decisão médica, não de
+ * código.
+ *
+ * Nota: sem a chamada a `getGoogleReviews()`, a Places API deixa de ser
+ * consultada a cada renderização. A chave pode ser removida do ambiente se
+ * nada mais a usar.
  */
-export async function GoogleReviews({ className = "" }: { className?: string }) {
-  const data = await getGoogleReviews();
-
-  if (!data) {
-    // Fallback compatível com CFM até a API ser configurada.
-    return (
-      <div className={`mx-auto max-w-4xl px-5 sm:px-8 ${className}`}>
-        <GoogleRating />
-      </div>
-    );
-  }
-
+export function GoogleReviews({ className = "" }: { className?: string }) {
   return (
-    <section className={`mx-auto max-w-7xl px-5 sm:px-8 ${className}`}>
-      <div className="flex flex-wrap items-end justify-between gap-6">
-        <SectionHeading
-          eyebrow="Avaliações no Google"
-          title="A experiência de quem já foi atendido"
-          lede="Avaliações públicas de pacientes, direto do perfil do consultório no Google — atualizadas automaticamente."
-        />
-        <Reveal className="glass flex items-center gap-4 rounded-2xl px-6 py-4">
-          <span className="text-[var(--accent)]">{GoogleG}</span>
-          <div>
-            <p className="font-display text-2xl font-semibold">
-              {data.rating.toFixed(1).replace(".", ",")}{" "}
-              <Stars n={data.rating} />
-            </p>
-            <p className="text-xs text-faint">{data.total} avaliações no Google</p>
-          </div>
-        </Reveal>
-      </div>
-
-      {data.reviews.length > 0 && (
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {data.reviews.slice(0, 6).map((r, i) => (
-            <Reveal key={i} delay={(i % 3) * 80} className="glass card-hover flex h-full flex-col rounded-3xl p-7">
-              <div className="flex items-center gap-3">
-                {r.photo ? (
-                  /*
-                    O Google entrega a foto de perfil no tamanho que a URL
-                    pedir, e o padrão dela é `=s128`. Como o círculo aqui tem
-                    40 px, vinham 128 px para exibir 40 — 27 KiB baixados para
-                    jogar fora, e é exatamente o que o PageSpeed apontava.
-                    `s96` cobre tela de 2× com folga.
-
-                    `lazy` porque o bloco de avaliações fica bem abaixo da
-                    dobra: baixar seis fotos antes de alguém rolar até lá é
-                    disputar banda com o que está na tela.
-
-                    `<img>` e não `next/image` de propósito: são URLs de
-                    terceiro, com host que muda, e passar pelo otimizador da
-                    Vercel custaria uma ida ao servidor por foto sem ganho.
-                  */
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={r.photo.replace(/=s\d+/, "=s96")}
-                    alt=""
-                    width={40}
-                    height={40}
-                    loading="lazy"
-                    decoding="async"
-                    referrerPolicy="no-referrer"
-                    className="h-10 w-10 rounded-full object-cover"
-                  />
-                ) : (
-                  <span className="glass flex h-10 w-10 items-center justify-center rounded-full font-display text-sm font-semibold">
-                    {r.author.charAt(0)}
-                  </span>
-                )}
-                <div>
-                  <p className="text-sm font-medium">{r.author}</p>
-                  <p className="text-xs text-faint">{r.relativeTime}</p>
-                </div>
-              </div>
-              <div className="mt-4">
-                <Stars n={r.rating} />
-              </div>
-              <p className="mt-3 flex-1 text-[0.92rem] leading-relaxed text-muted line-clamp-6">
-                {r.text}
-              </p>
-              <p className="mt-4 flex items-center gap-1.5 text-[0.7rem] text-faint">
-                <span className="text-[var(--accent)]">{GoogleG}</span> via Google
-              </p>
-            </Reveal>
-          ))}
-        </div>
-      )}
-
-      <Reveal className="mt-10 flex flex-wrap gap-4">
-        <a
-          href={data.writeReviewUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-primary"
-        >
-          Deixar minha avaliação
-          <span aria-hidden="true">→</span>
-        </a>
-        <a
-          href={data.mapsUri}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-ghost"
-        >
-          Ver todas no Google ↗
-        </a>
-      </Reveal>
-
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "MedicalClinic",
-          "@id": `${site.url}/#clinic`,
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: data.rating,
-            reviewCount: data.total,
-            bestRating: 5,
-          },
-        }}
-      />
-    </section>
+    <div className={`mx-auto max-w-4xl px-5 sm:px-8 ${className}`}>
+      <GoogleRating />
+    </div>
   );
 }
