@@ -61,7 +61,7 @@ Artigos sem `origem: soro` são escritos à mão e o sync nunca os toca.
 | parece | é |
 |---|---|
 | `alt=""` nas capas de aula (`components/cursos/Capa.tsx`) | **correto.** A imagem fica ao lado do próprio título; com texto alternativo o leitor de tela anunciaria a mesma frase duas vezes |
-| ausência de WebGL/Three.js nos heróis | **medido.** Com a cena, o bloqueio da thread principal vai de 163 ms para 12.518 ms. A profundidade vem de `transform` e degradê |
+| a cena 3D dos heróis só monta depois que o visitante mexe o mouse, rola ou toca | **é o portão que sustenta o site.** `components/three/` não é código morto: `ThreeScene` está em `app/page.tsx`, `/cannabis-medicinal` e `PageHero`. Montada de imediato, ela leva o bloqueio da thread principal de 163 ms para **12.518 ms** — praticamente todo o custo do site. Adiar só para depois do `load` já foi tentado: o desktop caiu de 97 para 59. Até o gesto, o que aparece é o degradê animado de `lib/fundos.ts` |
 | nenhum `filter: blur()` nas camadas de fundo | **medido.** Três desfoques de tela cheia custaram 16 pontos de Lighthouse (97→81 desktop, 78→63 celular) |
 | títulos de artigo acima de 60 caracteres | **tolerado de propósito.** É manchete escrita pelo médico; encurtar piora o site para quem lê. Só os rótulos de página de serviço foram encurtados |
 | `/cannabis-medicinal` com menu escrito "Endocanabinoide" | **correto.** O rótulo nomeia a abordagem médica; o endereço ficou por SEO |
