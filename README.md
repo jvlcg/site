@@ -659,28 +659,35 @@ e WhatsApp Business.
 `dr-jose-victor-terno.jpg`, `dr-jose-victor-perfil.jpg`. Para trocar qualquer retrato,
 basta apontar o `src` do componente para outro arquivo desta pasta.
 
-## Avaliações do Google (ao vivo)
+## Avaliações do Google — por que o site NÃO as reproduz
 
-O bloco de avaliações (`components/ui/GoogleReviews.tsx` + `lib/google-reviews.ts`) puxa
-as avaliações **reais do Google Meu Negócio** pela **Places API (New)**, no servidor, com
-cache de 1 hora (ISR). Mostra nota, total, comentários e botões "Deixar minha avaliação"
-(abre o formulário do Google) e "Ver todas no Google". A `aggregateRating` entra no Schema
-automaticamente quando os dados chegam.
+O site mostra **apenas um convite** para ler as avaliações no perfil do Google
+(`components/ui/GoogleRating.tsx`). Ele não exibe nota, não exibe estrelas, não
+copia comentário de paciente e não declara `aggregateRating` no Schema.
 
-**Como ativar:**
-1. No [Google Cloud Console](https://console.cloud.google.com/), crie um projeto, ative a
-   **Places API (New)** e habilite o faturamento (o uso aqui cabe na cota gratuita).
-2. Gere uma **chave de API** e restrinja a "Places API (New)".
-3. Na Vercel, defina `GOOGLE_PLACES_API_KEY` (e, se quiser fixar, `GOOGLE_PLACE_ID`).
+Isso é uma decisão de conformidade, não uma limitação técnica — e foi revertida
+de um estado anterior em que o site fazia tudo isso.
 
-Sem a chave, o site mostra o **fallback**: um botão que leva ao perfil do Google
-(`components/ui/GoogleRating.tsx`) — nada quebra.
+**O que já esteve no ar, e saiu:** com `GOOGLE_PLACES_API_KEY` configurada, a home
+publicava a nota em estrelas, o total de avaliações, o texto de até seis avaliações
+**com o nome de quem escreveu**, e um `aggregateRating` que fazia o Google exibir
+estrelas no resultado de busca. Medido em produção antes da remoção:
+`ratingValue: 5`, `reviewCount: 28`, sessenta caracteres de estrela no HTML e três
+depoimentos visíveis na primeira dobra.
 
-> **Por que não copiamos os comentários no código?** O Google bloqueia leitura automática
-> das avaliações, texto fixo envelhece e depoimentos "colados" como publicidade esbarram
-> nas normas do CFM. Puxar ao vivo pela API oficial (conteúdo público de terceiros) é a
-> forma correta, sempre atualizada. Pacientes avaliam **no próprio Google** — o site só
-> exibe e encaminha para o formulário oficial.
+**Por que saiu:** reproduzir avaliação de paciente como peça do próprio site é o que
+as normas de publicidade médica vedam. A linha divisória não é a origem do dado nem
+se ele está atualizado — é a diferença entre **apontar** para um perfil público de
+terceiro e **republicar** o depoimento dentro da peça publicitária. Uma versão
+anterior deste README argumentava o contrário; estava errada.
+
+**Não religue sem decisão médica.** `lib/google-reviews.ts` continua no repositório e
+funcionando; o que saiu foi a renderização pública, e o motivo está escrito em
+`components/ui/GoogleReviews.tsx`, no ponto exato onde alguém tentaria reativar.
+Há leitura de que dado agregado de plataforma independente não equivale a depoimento
+— mas essa é uma avaliação do CRM-GO, não de quem escreve o código.
+
+`GOOGLE_PLACES_API_KEY` e `GOOGLE_PLACE_ID` ficaram sem uso no site público.
 
 ## Publicando um novo artigo
 
