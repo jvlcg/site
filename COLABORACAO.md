@@ -151,6 +151,9 @@ Está detalhado no `AGENTS.md`. Em uma linha cada:
 - **Arquivos com `origem: soro` pertencem ao robô.** Edição à mão em
   `content/artigos/*.mdx` com essa marca dura até a próxima execução do sync.
 - **Nunca escrever dados de teste no banco de produção.**
+- **O repositório é público.** Segredo commitado aqui é segredo publicado, e
+  apagar o commit depois não desfaz — já foi clonado e indexado. Chave e token
+  vivem na Vercel (produção apenas) ou nos GitHub Secrets, nunca no código.
 
 ## 7. Conferir o repositório não é conferir o site
 
